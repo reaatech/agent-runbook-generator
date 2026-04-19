@@ -1,0 +1,101 @@
+{
+  "name": "agent-runbook-generator",
+  "version": "1.0.0",
+  "description": "CLI tool and library that generates operator runbooks from service repositories using AI analysis",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "agent-runbook-generator": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map",
+    "skills"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "dev": "tsc --watch",
+    "lint": "eslint src tests",
+    "format": "prettier --write src tests",
+    "format:check": "prettier --check src tests",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ci": "vitest run --coverage --reporter=junit --reporter=default",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "prepare": "husky install",
+    "prepublishOnly": "npm run clean && npm run build",
+    "prepack": "npm run clean && npm run build",
+    "start": "node dist/cli.js"
+  },
+  "keywords": [
+    "runbook",
+    "sre",
+    "operations",
+    "incident-response",
+    "mcp",
+    "agent",
+    "devops",
+    "monitoring",
+    "alerts",
+    "dashboard"
+  ],
+  "author": "Rick Somers <rick@reaatech.com> (https://reaatech.com)",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.27.0",
+    "@google/generative-ai": "^0.21.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@opentelemetry/api": "^1.7.0",
+    "@opentelemetry/exporter-metrics-otlp-http": "^0.214.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.46.0",
+    "@opentelemetry/resources": "^1.19.0",
+    "@opentelemetry/sdk-metrics": "^1.30.1",
+    "@opentelemetry/sdk-trace-base": "^1.19.0",
+    "@opentelemetry/sdk-trace-node": "^1.19.0",
+    "@opentelemetry/semantic-conventions": "^1.19.0",
+    "chalk": "^5.3.0",
+    "cli-progress": "^3.12.0",
+    "commander": "^11.1.0",
+    "ignore": "^5.3.0",
+    "openai": "^4.28.0",
+    "pino": "^8.18.0",
+    "tree-sitter": "^0.21.0",
+    "yaml": "^2.3.4",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/cli-progress": "^3.11.5",
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "@vitest/coverage-v8": "^1.2.0",
+    "eslint": "^8.56.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.2.4",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reaatech/agent-runbook-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/reaatech/agent-runbook-generator/issues"
+  },
+  "homepage": "https://github.com/reaatech/agent-runbook-generator#readme",
+  "sideEffects": false
+}
