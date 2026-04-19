@@ -1,0 +1,45 @@
+# Example runbook generation configuration
+
+service:
+  name: my-service
+  team: platform-engineering
+  repository: https://github.com/reaatech/my-service
+  description: Core platform service for user management
+
+generation:
+  # LLM provider configuration
+  provider: claude-opus
+  model: claude-opus-4-5-20260506
+  
+  # Sections to generate
+  sections:
+    - alerts
+    - dashboards
+    - failure-modes
+    - rollback
+    - incident-response
+    - health-checks
+    - service-map
+  
+  # Alert configuration
+  alerts:
+    slo_targets:
+      availability: 99.9
+      latency_p99: 500
+    
+  # Dashboard configuration
+  dashboards:
+    platform: grafana
+    refresh_interval: 30s
+  
+  # Output configuration
+  output:
+    format: markdown
+    include_toc: true
+    include_cross_references: true
+
+# Optional: Custom templates
+templates:
+  runbook: standard
+  incident_response: default
+  on_call_handoff: default
