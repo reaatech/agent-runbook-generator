@@ -31,6 +31,7 @@ RUN addgroup -g 1001 -S appgroup && \
 
 # Copy package files and install production dependencies only
 COPY package*.json ./
+ENV HUSKY=0
 RUN npm ci --omit=dev && npm cache clean --force
 
 # Copy built artifacts from builder
