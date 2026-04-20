@@ -26,7 +26,7 @@ export async function execute(args: Record<string, unknown>): Promise<Record<str
   await scanRepository(repoPath);
   const depAnalysis = mapDependencies(repoPath);
 
-  const dependencies: ServiceDependency[] = depAnalysis.externalServices.map(es => ({
+  const dependencies: ServiceDependency[] = depAnalysis.externalServices.map((es) => ({
     name: es.name,
     type: es.type,
     direction: 'downstream' as const,
@@ -44,13 +44,13 @@ export async function execute(args: Record<string, unknown>): Promise<Record<str
     serviceName,
     format,
     graph: exportedGraph,
-    nodes: graph.nodes.map(n => ({
+    nodes: graph.nodes.map((n) => ({
       id: n.id,
       name: n.name,
       type: n.type,
       critical: n.critical,
     })),
-    edges: graph.edges.map(e => ({
+    edges: graph.edges.map((e) => ({
       source: e.source,
       target: e.target,
       type: e.type,

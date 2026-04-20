@@ -13,12 +13,7 @@ import {
   type ExternalService,
   type DeploymentPlatform,
 } from '../types/domain.js';
-import {
-  directoryExists,
-  readFile,
-  readJsonFile,
-  listFiles,
-} from '../utils/index.js';
+import { directoryExists, readFile, readJsonFile, listFiles } from '../utils/index.js';
 
 // File patterns for language detection
 const LANGUAGE_PATTERNS: Record<ProgrammingLanguage, string[]> = {
@@ -39,7 +34,7 @@ const PACKAGE_FILES: Record<string, string[]> = {
   'pyproject.toml': ['flask', 'django', 'fastapi', 'tornado'],
   'go.mod': ['gin', 'echo', 'chi', 'fiber', 'beego'],
   'pom.xml': ['spring-boot', 'quarkus', 'micronaut'],
-  'Gemfile': ['rails', 'sinatra', 'hanami'],
+  Gemfile: ['rails', 'sinatra', 'hanami'],
   'Cargo.toml': ['actix', 'rocket', 'warp'],
 };
 
@@ -70,7 +65,7 @@ const FRAMEWORK_SERVICE_TYPE: Record<string, ServiceType> = {
   rocket: 'web-api',
   warp: 'web-api',
   bull: 'worker',
-  'bullmq': 'worker',
+  bullmq: 'worker',
   celery: 'worker',
   sidekiq: 'worker',
   'sidekiq-cron': 'worker',
@@ -124,7 +119,14 @@ export async function scanRepository(
   let ig: { ignores: (path: string) => boolean; add: (patterns: string[]) => void };
   try {
     const IgModule = await import('ignore');
-    const Ig = (IgModule as unknown as { default: (options?: unknown) => { ignores: (path: string) => boolean; add: (patterns: string[]) => void } }).default;
+    const Ig = (
+      IgModule as unknown as {
+        default: (options?: unknown) => {
+          ignores: (path: string) => boolean;
+          add: (patterns: string[]) => void;
+        };
+      }
+    ).default;
     ig = Ig();
   } catch {
     // Fallback: create a minimal ignore implementation
@@ -165,7 +167,9 @@ export async function scanRepository(
   // Detect external services
   const externalServices = detectExternalServices(filteredFiles, repoPath, language);
 
-  const packageJsonPath = filteredFiles.find((f) => f.endsWith('package.json') && !f.includes('node_modules'));
+  const packageJsonPath = filteredFiles.find(
+    (f) => f.endsWith('package.json') && !f.includes('node_modules'),
+  );
   let serviceName: string | undefined;
   let description: string | undefined;
   if (packageJsonPath) {
@@ -192,10 +196,7 @@ export async function scanRepository(
 /**
  * Detect the primary programming language
  */
-function detectLanguage(
-  files: string[],
-  _repoPath: string,
-): ProgrammingLanguage {
+function detectLanguage(files: string[], _repoPath: string): ProgrammingLanguage {
   const languageCounts: Record<ProgrammingLanguage, number> = {
     typescript: 0,
     javascript: 0,
@@ -295,11 +296,7 @@ function detectFramework(
 /**
  * Detect the service type
  */
-function detectServiceType(
-  framework: Framework,
-  files: string[],
-  _repoPath: string,
-): ServiceType {
+function detectServiceType(framework: Framework, files: string[], _repoPath: string): ServiceType {
   // Check framework mapping
   if (framework && FRAMEWORK_SERVICE_TYPE[framework]) {
     return FRAMEWORK_SERVICE_TYPE[framework];
@@ -323,18 +320,14 @@ function detectServiceType(
   }
 
   // Check for function patterns
-  const hasFunctionPatterns = files.some((f) =>
-    f.toLowerCase().includes('function'),
-  );
+  const hasFunctionPatterns = files.some((f) => f.toLowerCase().includes('function'));
   if (hasFunctionPatterns) {
     return 'function';
   }
 
   // Default to web-api if there are HTTP-related files
   const hasHttpFiles = files.some((f) =>
-    ['route', 'handler', 'controller', 'endpoint'].some((p) =>
-      f.toLowerCase().includes(p),
-    ),
+    ['route', 'handler', 'controller', 'endpoint'].some((p) => f.toLowerCase().includes(p)),
   );
   if (hasHttpFiles) {
     return 'web-api';
@@ -369,9 +362,8 @@ function analyzeStructure(
     }
   }
 
-  const hasTests = files.some((f) =>
-    f.toLowerCase().includes('test') ||
-    f.toLowerCase().includes('spec'),
+  const hasTests = files.some(
+    (f) => f.toLowerCase().includes('test') || f.toLowerCase().includes('spec'),
   );
   const hasDockerfile = files.some((f) => f.endsWith('Dockerfile'));
   const hasKubernetesManifests = files.some(
@@ -534,9 +526,7 @@ function findEntryPoints(
 
   // Java entry points
   if (language === 'java') {
-    const applicationClass = files.find((f) =>
-      f.endsWith('Application.java'),
-    );
+    const applicationClass = files.find((f) => f.endsWith('Application.java'));
     if (applicationClass) {
       entryPoints.push({
         file: path.relative(repoPath, applicationClass),
@@ -584,15 +574,18 @@ function detectExternalServices(
     kafka: [{ type: 'queue', name: 'kafka' }],
     rabbitmq: [{ type: 'queue', name: 'rabbitmq' }],
     sqs: [{ type: 'queue', name: 'sqs' }],
-    's3': [{ type: 'storage', name: 's3' }],
-    'gcs': [{ type: 'storage', name: 'gcs' }],
+    s3: [{ type: 'storage', name: 's3' }],
+    gcs: [{ type: 'storage', name: 'gcs' }],
     'azure-blob': [{ type: 'storage', name: 'azure-blob' }],
   };
 
   // Check package files for service dependencies
   const packageJsonPath = files.find((f) => f.endsWith('package.json'));
   if (packageJsonPath) {
-    const packageJson = readJsonFile<{ dependencies?: Record<string, string>; devDependencies?: Record<string, string> }>(packageJsonPath);
+    const packageJson = readJsonFile<{
+      dependencies?: Record<string, string>;
+      devDependencies?: Record<string, string>;
+    }>(packageJsonPath);
     if (packageJson) {
       const allDeps = {
         ...packageJson.dependencies,
@@ -655,8 +648,7 @@ function detectExternalServices(
 
   // Deduplicate services
   const uniqueServices = services.filter(
-    (service, index, self) =>
-      index === self.findIndex((s) => s.name === service.name),
+    (service, index, self) => index === self.findIndex((s) => s.name === service.name),
   );
 
   return uniqueServices;
@@ -665,10 +657,7 @@ function detectExternalServices(
 /**
  * Detect deployment platform from repository files
  */
-export function detectDeploymentPlatform(
-  files: string[],
-  _repoPath: string,
-): DeploymentPlatform {
+export function detectDeploymentPlatform(files: string[], _repoPath: string): DeploymentPlatform {
   // Check for Kubernetes manifests
   const k8sFiles = files.filter(
     (f) =>
@@ -683,8 +672,7 @@ export function detectDeploymentPlatform(
   // Check for ECS task definitions
   const ecsFiles = files.filter(
     (f) =>
-      (f.endsWith('.json') || f.endsWith('.yaml')) &&
-      f.toLowerCase().includes('task-definition'),
+      (f.endsWith('.json') || f.endsWith('.yaml')) && f.toLowerCase().includes('task-definition'),
   );
   if (ecsFiles.length > 0) {
     return 'ecs';

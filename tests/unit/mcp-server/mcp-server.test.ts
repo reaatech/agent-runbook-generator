@@ -64,7 +64,8 @@ describe('RunbookMCPServer', () => {
 
   describe('tool registration', () => {
     it('registers analysis tools', async () => {
-      const { registerAnalyzeTools } = await import('../../../src/mcp-server/tools/analyze/index.js');
+      const { registerAnalyzeTools } =
+        await import('../../../src/mcp-server/tools/analyze/index.js');
       const tools = registerAnalyzeTools();
       expect(tools.length).toBe(5);
       const names = tools.map((t) => t.name);
@@ -76,7 +77,8 @@ describe('RunbookMCPServer', () => {
     });
 
     it('registers generation tools', async () => {
-      const { registerGenerateTools } = await import('../../../src/mcp-server/tools/generate/index.js');
+      const { registerGenerateTools } =
+        await import('../../../src/mcp-server/tools/generate/index.js');
       const tools = registerGenerateTools();
       expect(tools.length).toBe(7);
       const names = tools.map((t) => t.name);
@@ -90,7 +92,8 @@ describe('RunbookMCPServer', () => {
     });
 
     it('registers validation tools', async () => {
-      const { registerValidateTools } = await import('../../../src/mcp-server/tools/validate/index.js');
+      const { registerValidateTools } =
+        await import('../../../src/mcp-server/tools/validate/index.js');
       const tools = registerValidateTools();
       expect(tools.length).toBe(4);
       const names = tools.map((t) => t.name);

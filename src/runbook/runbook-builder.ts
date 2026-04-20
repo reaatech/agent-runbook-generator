@@ -81,7 +81,11 @@ export function buildRunbook(
   }
 
   // Dashboards section
-  if (includeSection('Dashboards') && generatedSections.dashboards && generatedSections.dashboards.length > 0) {
+  if (
+    includeSection('Dashboards') &&
+    generatedSections.dashboards &&
+    generatedSections.dashboards.length > 0
+  ) {
     sections.push({
       id: generateId('section'),
       title: 'Dashboards',
@@ -92,7 +96,11 @@ export function buildRunbook(
   }
 
   // Failure Modes section
-  if (includeSection('Failure Modes') && generatedSections.failureModes && generatedSections.failureModes.length > 0) {
+  if (
+    includeSection('Failure Modes') &&
+    generatedSections.failureModes &&
+    generatedSections.failureModes.length > 0
+  ) {
     sections.push({
       id: generateId('section'),
       title: 'Failure Modes',
@@ -133,7 +141,11 @@ export function buildRunbook(
   }
 
   // Health Checks section
-  if (includeSection('Health Checks') && generatedSections.healthChecks && generatedSections.healthChecks.length > 0) {
+  if (
+    includeSection('Health Checks') &&
+    generatedSections.healthChecks &&
+    generatedSections.healthChecks.length > 0
+  ) {
     sections.push({
       id: generateId('section'),
       title: 'Health Checks',
@@ -199,11 +211,11 @@ function generateServiceOverview(context: AnalysisContext, config: RunbookBuildC
 
 ### Key Files
 
-${repo.configFiles.map(f => `- \`${f}\``).join('\n')}
+${repo.configFiles.map((f) => `- \`${f}\``).join('\n')}
 
 ### Entry Points
 
-${repo.entryPoints.map(e => `- \`${e.file}\``).join('\n')}`;
+${repo.entryPoints.map((e) => `- \`${e.file}\``).join('\n')}`;
 }
 
 function generateQuickLinks(_context: AnalysisContext, config: RunbookBuildConfig): string {
@@ -230,9 +242,9 @@ function generateQuickLinks(_context: AnalysisContext, config: RunbookBuildConfi
 }
 
 function generateAlertsSection(alerts: AlertDefinition[]): string {
-  const criticalAlerts = alerts.filter(a => a.severity === 'critical');
-  const warningAlerts = alerts.filter(a => a.severity === 'warning');
-  const infoAlerts = alerts.filter(a => a.severity === 'info');
+  const criticalAlerts = alerts.filter((a) => a.severity === 'critical');
+  const warningAlerts = alerts.filter((a) => a.severity === 'warning');
+  const infoAlerts = alerts.filter((a) => a.severity === 'info');
 
   let content = '## Alert Definitions\n\n';
 
@@ -240,7 +252,7 @@ function generateAlertsSection(alerts: AlertDefinition[]): string {
     content += '### Critical Alerts\n\n';
     content += '| Alert | Condition | Threshold | Escalation |\n';
     content += '|-------|-----------|-----------|------------|\n';
-    criticalAlerts.forEach(a => {
+    criticalAlerts.forEach((a) => {
       content += `| ${a.name} | ${a.condition} | ${a.threshold} | ${a.escalationPolicy} |\n`;
     });
     content += '\n';
@@ -250,7 +262,7 @@ function generateAlertsSection(alerts: AlertDefinition[]): string {
     content += '### Warning Alerts\n\n';
     content += '| Alert | Condition | Threshold | Escalation |\n';
     content += '|-------|-----------|-----------|------------|\n';
-    warningAlerts.forEach(a => {
+    warningAlerts.forEach((a) => {
       content += `| ${a.name} | ${a.condition} | ${a.threshold} | ${a.escalationPolicy} |\n`;
     });
     content += '\n';
@@ -260,7 +272,7 @@ function generateAlertsSection(alerts: AlertDefinition[]): string {
     content += '### Info Alerts\n\n';
     content += '| Alert | Condition | Threshold |\n';
     content += '|-------|-----------|-----------|\n';
-    infoAlerts.forEach(a => {
+    infoAlerts.forEach((a) => {
       content += `| ${a.name} | ${a.condition} | ${a.threshold} |\n`;
     });
     content += '\n';
@@ -270,7 +282,7 @@ function generateAlertsSection(alerts: AlertDefinition[]): string {
 }
 
 function generateAlertSubsections(alerts: AlertDefinition[]): RunbookSection[] {
-  return alerts.map(alert => ({
+  return alerts.map((alert) => ({
     id: generateId('subsection'),
     title: alert.name,
     order: 0,
@@ -292,7 +304,7 @@ function generateDashboardsSection(dashboards: DashboardConfig[]): string {
     if (d.panels.length > 0) {
       content += '| Panel | Type | Query |\n';
       content += '|-------|------|-------|\n';
-      d.panels.forEach(p => {
+      d.panels.forEach((p) => {
         content += `| ${p.title} | ${p.type} | \`${p.query}\` |\n`;
       });
       content += '\n';
@@ -310,11 +322,13 @@ function getDetectionStrings(detection: FailureMode['detection']): string[] {
 function generateFailureModesSection(failureModes: FailureMode[]): string {
   let content = '## Failure Modes\n\n';
 
-  failureModes.forEach(fm => {
+  failureModes.forEach((fm) => {
     content += `### ${fm.name}\n\n`;
     content += `**Description:** ${fm.description}\n\n`;
-    content += `**Detection:**\n${getDetectionStrings(fm.detection).map(d => `- ${d}`).join('\n')}\n\n`;
-    content += `**Mitigation:**\n${fm.mitigation.map(m => `- ${m}`).join('\n')}\n\n`;
+    content += `**Detection:**\n${getDetectionStrings(fm.detection)
+      .map((d) => `- ${d}`)
+      .join('\n')}\n\n`;
+    content += `**Mitigation:**\n${fm.mitigation.map((m) => `- ${m}`).join('\n')}\n\n`;
     content += `**Escalation:** ${fm.escalation}\n\n`;
     content += `**Runbook Section:** ${fm.runbookSection}\n\n`;
   });
@@ -323,11 +337,17 @@ function generateFailureModesSection(failureModes: FailureMode[]): string {
 }
 
 function generateFailureModeSubsections(failureModes: FailureMode[]): RunbookSection[] {
-  return failureModes.map(fm => ({
+  return failureModes.map((fm) => ({
     id: generateId('subsection'),
     title: fm.name,
     order: 0,
-    content: `### ${fm.name}\n\n**Description:** ${fm.description}\n\n**Detection:**\n${getDetectionStrings(fm.detection).map(d => `- ${d}`).join('\n')}\n\n**Mitigation:**\n${fm.mitigation.map(m => `- ${m}`).join('\n')}\n\n**Escalation:** ${fm.escalation}`,
+    content: `### ${fm.name}\n\n**Description:** ${fm.description}\n\n**Detection:**\n${getDetectionStrings(
+      fm.detection,
+    )
+      .map((d) => `- ${d}`)
+      .join(
+        '\n',
+      )}\n\n**Mitigation:**\n${fm.mitigation.map((m) => `- ${m}`).join('\n')}\n\n**Escalation:** ${fm.escalation}`,
     subsections: [],
   }));
 }
@@ -335,15 +355,15 @@ function generateFailureModeSubsections(failureModes: FailureMode[]): RunbookSec
 function generateRollbackSection(procedures: RollbackProcedure[]): string {
   let content = '## Rollback Procedures\n\n';
 
-  procedures.forEach(proc => {
+  procedures.forEach((proc) => {
     content += `### ${proc.name}\n\n`;
     content += `**Description:** ${proc.description}\n\n`;
-    content += `**Trigger Conditions:**\n${proc.triggerConditions.map(t => `- ${t}`).join('\n')}\n\n`;
+    content += `**Trigger Conditions:**\n${proc.triggerConditions.map((t) => `- ${t}`).join('\n')}\n\n`;
     content += `**Estimated Duration:** ${proc.estimatedTotalDuration}\n\n`;
     content += `**Requires Approval:** ${proc.requiresApproval ? 'Yes' : 'No'}\n\n`;
     content += `**Steps:**\n\n`;
 
-    proc.steps.forEach(step => {
+    proc.steps.forEach((step) => {
       content += `${step.order}. **${step.title}**\n`;
       content += `   ${step.description}\n`;
       if (step.commands.length > 0) {
@@ -357,7 +377,7 @@ function generateRollbackSection(procedures: RollbackProcedure[]): string {
 }
 
 function generateRollbackSubsections(procedures: RollbackProcedure[]): RunbookSection[] {
-  return procedures.map(proc => ({
+  return procedures.map((proc) => ({
     id: generateId('subsection'),
     title: proc.name,
     order: 0,
@@ -369,12 +389,12 @@ function generateRollbackSubsections(procedures: RollbackProcedure[]): RunbookSe
 function generateIncidentResponseSection(workflows: IncidentWorkflow[]): string {
   let content = '## Incident Response\n\n';
 
-  workflows.forEach(wf => {
+  workflows.forEach((wf) => {
     content += `### ${wf.name}\n\n`;
     content += `**Description:** ${wf.description}\n\n`;
     content += `**Severity:** ${wf.severity}\n\n`;
     content += `**Response Time:** ${wf.responseTime}\n\n`;
-    content += `**Escalation Path:**\n${wf.escalationPath.map(e => `- ${e}`).join('\n')}\n\n`;
+    content += `**Escalation Path:**\n${wf.escalationPath.map((e) => `- ${e}`).join('\n')}\n\n`;
   });
 
   return content;
@@ -383,7 +403,7 @@ function generateIncidentResponseSection(workflows: IncidentWorkflow[]): string 
 function generateHealthChecksSection(checks: HealthCheck[]): string {
   let content = '## Health Checks\n\n';
 
-  checks.forEach(check => {
+  checks.forEach((check) => {
     content += `### ${check.name}\n\n`;
     content += `**Type:** ${check.type}\n\n`;
     content += `**Endpoint:** ${check.endpoint}\n\n`;
@@ -396,8 +416,8 @@ function generateHealthChecksSection(checks: HealthCheck[]): string {
 }
 
 function generateDependenciesSection(deps: ServiceDependency[]): string {
-  const upstream = deps.filter(d => d.direction === 'upstream');
-  const downstream = deps.filter(d => d.direction === 'downstream');
+  const upstream = deps.filter((d) => d.direction === 'upstream');
+  const downstream = deps.filter((d) => d.direction === 'downstream');
 
   let content = '## Service Dependencies\n\n';
 
@@ -405,7 +425,7 @@ function generateDependenciesSection(deps: ServiceDependency[]): string {
     content += '### Upstream Dependencies\n\n';
     content += '| Service | Type | Critical | Description |\n';
     content += '|---------|------|----------|-------------|\n';
-    upstream.forEach(d => {
+    upstream.forEach((d) => {
       content += `| ${d.name} | ${d.type} | ${d.critical ? 'Yes' : 'No'} | ${d.description ?? '-'} |\n`;
     });
     content += '\n';
@@ -415,7 +435,7 @@ function generateDependenciesSection(deps: ServiceDependency[]): string {
     content += '### Downstream Dependencies\n\n';
     content += '| Service | Type | Description |\n';
     content += '|---------|------|-------------|\n';
-    downstream.forEach(d => {
+    downstream.forEach((d) => {
       content += `| ${d.name} | ${d.type} | ${d.description ?? '-'} |\n`;
     });
     content += '\n';
@@ -430,10 +450,10 @@ function generateDependenciesSection(deps: ServiceDependency[]): string {
 export function generateTOC(runbook: Runbook): string {
   let toc = '# Table of Contents\n\n';
 
-  runbook.sections.forEach(section => {
+  runbook.sections.forEach((section) => {
     toc += `${section.order}. [${section.title}](#${section.title.toLowerCase().replace(/\s+/g, '-')})\n`;
 
-    section.subsections.forEach(sub => {
+    section.subsections.forEach((sub) => {
       toc += `   - [${sub.title}](#${sub.title.toLowerCase().replace(/\s+/g, '-')})\n`;
     });
   });
@@ -474,8 +494,8 @@ export function validateCompleteness(
   const sectionTitles = runbook.sections.map((s: Record<string, unknown>) => s.title as string);
 
   for (const required of requiredSections) {
-    const found = sectionTitles.find(
-      (title) => title?.toLowerCase().includes(required.toLowerCase()),
+    const found = sectionTitles.find((title) =>
+      title?.toLowerCase().includes(required.toLowerCase()),
     );
 
     if (found) {
@@ -514,7 +534,10 @@ export { buildRunbook as generateFullRunbook };
 import type { CompletenessResult } from '../types/domain.js';
 
 function normalizeSectionName(sectionName: string): string {
-  return sectionName.toLowerCase().replace(/[-_\s]+/g, ' ').trim();
+  return sectionName
+    .toLowerCase()
+    .replace(/[-_\s]+/g, ' ')
+    .trim();
 }
 
 function getSectionValidationContent(section?: Record<string, unknown>): string {

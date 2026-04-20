@@ -51,7 +51,7 @@ const PACKAGE_CATEGORIES: Record<string, Dependency['category']> = {
   azure: 'storage',
   prometheus: 'monitoring',
   datadog: 'monitoring',
-  'opentelemetry': 'monitoring',
+  opentelemetry: 'monitoring',
   pino: 'utility',
   winston: 'utility',
   bunyan: 'utility',
@@ -183,7 +183,8 @@ export function mapDependencies(repoPath: string): DependencyAnalysis {
   if (pomXmlPath) {
     const content = readFile(pomXmlPath);
     if (content) {
-      const depPattern = /<dependency>\s*<groupId>([^<]+)<\/groupId>\s*<artifactId>([^<]+)<\/artifactId>\s*(?:<version>([^<]+)<\/version>)?/g;
+      const depPattern =
+        /<dependency>\s*<groupId>([^<]+)<\/groupId>\s*<artifactId>([^<]+)<\/artifactId>\s*(?:<version>([^<]+)<\/version>)?/g;
       let match;
       while ((match = depPattern.exec(content)) !== null) {
         const groupId = match[1]!;
@@ -233,19 +234,39 @@ export function mapDependencies(repoPath: string): DependencyAnalysis {
 function getPackagePurpose(name: string): string {
   const lowerName = name.toLowerCase();
 
-  if (lowerName.includes('express') || lowerName.includes('fastify') || lowerName.includes('flask') || lowerName.includes('django') || lowerName.includes('gin')) {
+  if (
+    lowerName.includes('express') ||
+    lowerName.includes('fastify') ||
+    lowerName.includes('flask') ||
+    lowerName.includes('django') ||
+    lowerName.includes('gin')
+  ) {
     return 'Web framework';
   }
-  if (lowerName.includes('pg') || lowerName.includes('mysql') || lowerName.includes('mongo') || lowerName.includes('sequelize')) {
+  if (
+    lowerName.includes('pg') ||
+    lowerName.includes('mysql') ||
+    lowerName.includes('mongo') ||
+    lowerName.includes('sequelize')
+  ) {
     return 'Database driver/ORM';
   }
   if (lowerName.includes('redis') || lowerName.includes('cache')) {
     return 'Caching client';
   }
-  if (lowerName.includes('kafka') || lowerName.includes('queue') || lowerName.includes('bull') || lowerName.includes('celery')) {
+  if (
+    lowerName.includes('kafka') ||
+    lowerName.includes('queue') ||
+    lowerName.includes('bull') ||
+    lowerName.includes('celery')
+  ) {
     return 'Message queue client';
   }
-  if (lowerName.includes('prometheus') || lowerName.includes('metrics') || lowerName.includes('telemetry')) {
+  if (
+    lowerName.includes('prometheus') ||
+    lowerName.includes('metrics') ||
+    lowerName.includes('telemetry')
+  ) {
     return 'Monitoring/observability';
   }
   if (lowerName.includes('pino') || lowerName.includes('winston') || lowerName.includes('log')) {
@@ -254,19 +275,39 @@ function getPackagePurpose(name: string): string {
   if (lowerName.includes('aws') || lowerName.includes('gcp') || lowerName.includes('azure')) {
     return 'Cloud provider SDK';
   }
-  if (lowerName.includes('test') || lowerName.includes('spec') || lowerName.includes('jest') || lowerName.includes('mocha') || lowerName.includes('pytest')) {
+  if (
+    lowerName.includes('test') ||
+    lowerName.includes('spec') ||
+    lowerName.includes('jest') ||
+    lowerName.includes('mocha') ||
+    lowerName.includes('pytest')
+  ) {
     return 'Testing framework';
   }
-  if (lowerName.includes('jwt') || lowerName.includes('auth') || lowerName.includes('passport') || lowerName.includes('bcrypt')) {
+  if (
+    lowerName.includes('jwt') ||
+    lowerName.includes('auth') ||
+    lowerName.includes('passport') ||
+    lowerName.includes('bcrypt')
+  ) {
     return 'Authentication/security';
   }
-  if (lowerName.includes('cors') || lowerName.includes('helmet') || lowerName.includes('compression')) {
+  if (
+    lowerName.includes('cors') ||
+    lowerName.includes('helmet') ||
+    lowerName.includes('compression')
+  ) {
     return 'Middleware';
   }
   if (lowerName.includes('dotenv') || lowerName.includes('config')) {
     return 'Configuration';
   }
-  if (lowerName.includes('zod') || lowerName.includes('joi') || lowerName.includes('yup') || lowerName.includes('validator')) {
+  if (
+    lowerName.includes('zod') ||
+    lowerName.includes('joi') ||
+    lowerName.includes('yup') ||
+    lowerName.includes('validator')
+  ) {
     return 'Validation';
   }
 

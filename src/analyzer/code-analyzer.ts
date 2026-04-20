@@ -3,10 +3,7 @@
  */
 
 import * as path from 'path';
-import {
-  type ProgrammingLanguage,
-  type Framework,
-} from '../types/domain.js';
+import { type ProgrammingLanguage, type Framework } from '../types/domain.js';
 import { readFile, listFiles } from '../utils/index.js';
 
 export interface CodeAnalysis {
@@ -131,8 +128,7 @@ function findCodeEntryPoints(
     }
 
     // Look for Express app.listen or server.listen
-    if ((language === 'typescript' || language === 'javascript') &&
-        content.includes('.listen(')) {
+    if ((language === 'typescript' || language === 'javascript') && content.includes('.listen(')) {
       const lines = content.split('\n');
       const lineNum = lines.findIndex((l) => l.includes('.listen(')) + 1;
       entryPoints.push({
@@ -167,10 +163,7 @@ function findApiEndpoints(
     if (['express', 'fastify', 'koa'].includes(framework)) {
       const httpMethods = ['get', 'post', 'put', 'patch', 'delete'];
       for (const method of httpMethods) {
-        const pattern = new RegExp(
-          `\\.${method}\\(['"\`]([^'"\`]+)['"\`]`,
-          'g',
-        );
+        const pattern = new RegExp(`\\.${method}\\(['"\`]([^'"\`]+)['"\`]`, 'g');
         let match;
         while ((match = pattern.exec(content)) !== null) {
           endpoints.push({
@@ -185,7 +178,8 @@ function findApiEndpoints(
 
     // Flask routes
     if (['flask', 'django', 'fastapi'].includes(framework)) {
-      const routePattern = /@(?:app|router)\.(?:get|post|put|patch|delete)\(['"\`]([^'"\`]+)['"\`]\)/g;
+      const routePattern =
+        /@(?:app|router)\.(?:get|post|put|patch|delete)\(['"\`]([^'"\`]+)['"\`]\)/g;
       let match;
       while ((match = routePattern.exec(content)) !== null) {
         const methodMatch = match[0].match(/@(?:app|router)\.(\w+)/);
@@ -202,10 +196,7 @@ function findApiEndpoints(
     if (['gin', 'echo', 'chi'].includes(framework)) {
       const methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
       for (const method of methods) {
-        const pattern = new RegExp(
-          `\\.${method.toLowerCase()}\\(['"\`]([^'"\`]+)['"\`]`,
-          'g',
-        );
+        const pattern = new RegExp(`\\.${method.toLowerCase()}\\(['"\`]([^'"\`]+)['"\`]`, 'g');
         let match;
         while ((match = pattern.exec(content)) !== null) {
           endpoints.push({
@@ -231,7 +222,10 @@ function findExternalConnections(
   _language: ProgrammingLanguage,
 ): ExternalConnection[] {
   const connections: ExternalConnection[] = [];
-  const connectionPatterns: Record<string, { type: ExternalConnection['type']; pattern: RegExp }[]> = {
+  const connectionPatterns: Record<
+    string,
+    { type: ExternalConnection['type']; pattern: RegExp }[]
+  > = {
     postgresql: [{ type: 'database', pattern: /postgres(?:ql)?:\/\//i }],
     mysql: [{ type: 'database', pattern: /mysql:\/\//i }],
     mongodb: [{ type: 'database', pattern: /mongodb:\/\//i }],

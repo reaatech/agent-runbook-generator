@@ -15,10 +15,7 @@ export interface FailureAnalysis {
 /**
  * Identify potential failure modes in a service
  */
-export function identifyFailureModes(
-  repoPath: string,
-  context: AnalysisContext,
-): FailureAnalysis {
+export function identifyFailureModes(repoPath: string, context: AnalysisContext): FailureAnalysis {
   const files = listFiles(repoPath, true);
   const failureModes: FailureMode[] = [];
   const singlePointsOfFailure: string[] = [];
@@ -28,7 +25,7 @@ export function identifyFailureModes(
   const externalServices = context.externalServices;
 
   // Database-related failures
-  if (externalServices.some(s => s.type === 'database')) {
+  if (externalServices.some((s) => s.type === 'database')) {
     failureModes.push({
       id: 'ident-db-connection-failure',
       name: 'Database Connection Failure',
@@ -53,7 +50,7 @@ export function identifyFailureModes(
   }
 
   // Cache-related failures
-  if (externalServices.some(s => s.type === 'cache')) {
+  if (externalServices.some((s) => s.type === 'cache')) {
     failureModes.push({
       id: 'ident-cache-failure',
       name: 'Cache Failure',
@@ -78,7 +75,7 @@ export function identifyFailureModes(
   }
 
   // Queue-related failures
-  if (externalServices.some(s => s.type === 'queue')) {
+  if (externalServices.some((s) => s.type === 'queue')) {
     failureModes.push({
       id: 'ident-queue-failure',
       name: 'Message Queue Failure',
@@ -86,11 +83,7 @@ export function identifyFailureModes(
       category: 'queue',
       severity: 'high',
       likelihood: 'medium',
-      detection: [
-        'Queue depth increasing',
-        'Message processing errors',
-        'Consumer lag increasing',
-      ],
+      detection: ['Queue depth increasing', 'Message processing errors', 'Consumer lag increasing'],
       mitigation: [
         'Scale up consumers',
         'Enable dead letter queue',
@@ -110,16 +103,8 @@ export function identifyFailureModes(
     category: 'application',
     severity: 'critical',
     likelihood: 'medium',
-    detection: [
-      'Memory utilization above 85%',
-      'OOM kills in logs',
-      'Increased GC pressure',
-    ],
-    mitigation: [
-      'Scale horizontally',
-      'Increase memory limits',
-      'Identify and fix memory leaks',
-    ],
+    detection: ['Memory utilization above 85%', 'OOM kills in logs', 'Increased GC pressure'],
+    mitigation: ['Scale horizontally', 'Increase memory limits', 'Identify and fix memory leaks'],
     escalation: 'P1 - On-call engineer',
     runbookSection: 'memory-exhaustion',
   });
@@ -133,16 +118,8 @@ export function identifyFailureModes(
     category: 'application',
     severity: 'high',
     likelihood: 'medium',
-    detection: [
-      'CPU utilization above 80%',
-      'Increased request latency',
-      'Thread pool saturation',
-    ],
-    mitigation: [
-      'Scale horizontally',
-      'Optimize hot code paths',
-      'Enable rate limiting',
-    ],
+    detection: ['CPU utilization above 80%', 'Increased request latency', 'Thread pool saturation'],
+    mitigation: ['Scale horizontally', 'Optimize hot code paths', 'Enable rate limiting'],
     escalation: 'P2 - On-call engineer',
     runbookSection: 'cpu-exhaustion',
   });
@@ -156,11 +133,7 @@ export function identifyFailureModes(
     category: 'resource',
     severity: 'high',
     likelihood: 'low',
-    detection: [
-      'Disk utilization above 85%',
-      'Write errors in logs',
-      'Log rotation failures',
-    ],
+    detection: ['Disk utilization above 85%', 'Write errors in logs', 'Log rotation failures'],
     mitigation: [
       'Clean up old logs',
       'Increase disk size',
@@ -195,10 +168,10 @@ export function identifyFailureModes(
   riskScore += 20;
 
   // Check for single points of failure
-  if (externalServices.filter(s => s.type === 'database').length === 1) {
+  if (externalServices.filter((s) => s.type === 'database').length === 1) {
     singlePointsOfFailure.push('Single database instance');
   }
-  if (externalServices.filter(s => s.type === 'cache').length === 1) {
+  if (externalServices.filter((s) => s.type === 'cache').length === 1) {
     singlePointsOfFailure.push('Single cache instance');
   }
 
@@ -215,7 +188,11 @@ export function identifyFailureModes(
     }
 
     // Check for missing timeout configurations
-    if (content.includes('fetch(') || content.includes('http.get(') || content.includes('http.post(')) {
+    if (
+      content.includes('fetch(') ||
+      content.includes('http.get(') ||
+      content.includes('http.post(')
+    ) {
       if (!content.includes('timeout') && !content.includes('signal')) {
         singlePointsOfFailure.push(`Missing timeout in ${relativePath}`);
       }
@@ -265,20 +242,18 @@ export function getCommonFailureModes(serviceType: string): FailureMode[] {
       );
       break;
     case 'worker':
-      modes.push(
-        {
-          id: 'common-job-failure',
-          name: 'Job Processing Failure',
-          description: 'Background jobs failing to process',
-          category: 'application',
-          severity: 'high',
-          likelihood: 'medium',
-          detection: ['Job retry count increasing', 'Dead letter queue growth'],
-          mitigation: ['Fix job handler bugs', 'Increase job timeout'],
-          escalation: 'P2 - Development team',
-          runbookSection: 'job-failure',
-        },
-      );
+      modes.push({
+        id: 'common-job-failure',
+        name: 'Job Processing Failure',
+        description: 'Background jobs failing to process',
+        category: 'application',
+        severity: 'high',
+        likelihood: 'medium',
+        detection: ['Job retry count increasing', 'Dead letter queue growth'],
+        mitigation: ['Fix job handler bugs', 'Increase job timeout'],
+        escalation: 'P2 - Development team',
+        runbookSection: 'job-failure',
+      });
       break;
     case 'lambda':
     case 'function':

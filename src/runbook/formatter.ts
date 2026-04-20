@@ -23,7 +23,7 @@ export function formatAsMarkdown(runbook: Runbook): string {
   markdown += '\n---\n\n';
 
   // Sections
-  runbook.sections.forEach(section => {
+  runbook.sections.forEach((section) => {
     markdown += formatSectionAsMarkdown(section);
   });
 
@@ -33,12 +33,18 @@ export function formatAsMarkdown(runbook: Runbook): string {
 function generateMarkdownTOC(runbook: Runbook): string {
   let toc = '## Table of Contents\n\n';
 
-  runbook.sections.forEach(section => {
-    const anchor = section.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  runbook.sections.forEach((section) => {
+    const anchor = section.title
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '');
     toc += `${section.order}. [${section.title}](#${anchor})\n`;
 
     section.subsections.forEach((sub, idx) => {
-      const subAnchor = sub.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const subAnchor = sub.title
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
       toc += `   ${idx + 1}. [${sub.title}](#${subAnchor})\n`;
     });
   });
@@ -51,7 +57,7 @@ function formatSectionAsMarkdown(section: RunbookSection): string {
   content += normalizeEmbeddedHeadings(section.content, 2);
   content += '\n\n';
 
-  section.subsections.forEach(sub => {
+  section.subsections.forEach((sub) => {
     content += `### ${sub.title}\n\n`;
     content += `${normalizeEmbeddedHeadings(sub.content, 3)}\n\n`;
   });
@@ -60,10 +66,12 @@ function formatSectionAsMarkdown(section: RunbookSection): string {
 }
 
 function normalizeEmbeddedHeadings(content: string, minimumLevel: number): string {
-  return content.replace(/^(#{1,6})\s+(.+)$/gm, (_match, hashes: string, title: string) => {
-    const adjustedLevel = Math.min(6, Math.max(minimumLevel + 1, hashes.length + 1));
-    return `${'#'.repeat(adjustedLevel)} ${title}`;
-  }).trim();
+  return content
+    .replace(/^(#{1,6})\s+(.+)$/gm, (_match, hashes: string, title: string) => {
+      const adjustedLevel = Math.min(6, Math.max(minimumLevel + 1, hashes.length + 1));
+      return `${'#'.repeat(adjustedLevel)} ${title}`;
+    })
+    .trim();
 }
 
 /**
@@ -184,8 +192,14 @@ function markdownToHtml(md: string): string {
   });
 
   // Headers (escape content)
-  html = html.replace(/^### (.*$)/gm, (_match, content: string) => `<h3>${escapeHtml(content)}</h3>`);
-  html = html.replace(/^## (.*$)/gm, (_match, content: string) => `<h2>${escapeHtml(content)}</h2>`);
+  html = html.replace(
+    /^### (.*$)/gm,
+    (_match, content: string) => `<h3>${escapeHtml(content)}</h3>`,
+  );
+  html = html.replace(
+    /^## (.*$)/gm,
+    (_match, content: string) => `<h2>${escapeHtml(content)}</h2>`,
+  );
   html = html.replace(/^# (.*$)/gm, (_match, content: string) => `<h1>${escapeHtml(content)}</h1>`);
 
   // Bold
@@ -193,9 +207,10 @@ function markdownToHtml(md: string): string {
 
   // Links (escape href to prevent javascript: URLs)
   html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, text: string, href: string) => {
-    const safeHref = href.startsWith('http') || href.startsWith('#') || href.startsWith('/')
-      ? escapeHtml(href)
-      : '#';
+    const safeHref =
+      href.startsWith('http') || href.startsWith('#') || href.startsWith('/')
+        ? escapeHtml(href)
+        : '#';
     return `<a href="${safeHref}">${escapeHtml(text)}</a>`;
   });
 
@@ -208,7 +223,10 @@ function markdownToHtml(md: string): string {
     const cells = content.split('|').map((c: string) => c.trim());
     const isHeader = cells[0]?.includes('---');
     if (isHeader) return '';
-    const cellTag = cells[0]?.toLowerCase().includes('alert') || cells[0]?.toLowerCase().includes('panel') ? 'th' : 'td';
+    const cellTag =
+      cells[0]?.toLowerCase().includes('alert') || cells[0]?.toLowerCase().includes('panel')
+        ? 'th'
+        : 'td';
     return `<tr>${cells.map((c: string) => `<${cellTag}>${escapeHtml(c)}</${cellTag}>`).join('')}</tr>`;
   });
 

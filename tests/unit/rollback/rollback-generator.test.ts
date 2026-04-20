@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { generateRollbackProcedures } from '../../../src/rollback/rollback-generator.js';
-import type { AnalysisContext, RollbackProcedure, RollbackStep } from '../../../src/types/domain.js';
+import type {
+  AnalysisContext,
+  RollbackProcedure,
+  RollbackStep,
+} from '../../../src/types/domain.js';
 
 function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext {
   return {

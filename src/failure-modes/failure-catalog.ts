@@ -16,11 +16,7 @@ export const FAILURE_CATALOG: Record<string, FailureMode[]> = {
       category: 'infrastructure',
       severity: 'critical',
       likelihood: 'low',
-      detection: [
-        'Health check failures',
-        'Instance unreachable',
-        'No heartbeat signals',
-      ],
+      detection: ['Health check failures', 'Instance unreachable', 'No heartbeat signals'],
       mitigation: [
         'Auto-restart the service',
         'Failover to standby instance',
@@ -56,16 +52,8 @@ export const FAILURE_CATALOG: Record<string, FailureMode[]> = {
       category: 'infrastructure',
       severity: 'high',
       likelihood: 'low',
-      detection: [
-        'DNS lookup timeouts',
-        'NXDOMAIN errors',
-        'Service discovery failures',
-      ],
-      mitigation: [
-        'Use IP-based fallbacks',
-        'Enable DNS caching',
-        'Switch to backup DNS servers',
-      ],
+      detection: ['DNS lookup timeouts', 'NXDOMAIN errors', 'Service discovery failures'],
+      mitigation: ['Use IP-based fallbacks', 'Enable DNS caching', 'Switch to backup DNS servers'],
       escalation: 'P2 - Infrastructure team',
       runbookSection: 'dns-failure',
     },
@@ -78,11 +66,7 @@ export const FAILURE_CATALOG: Record<string, FailureMode[]> = {
       category: 'database',
       severity: 'critical',
       likelihood: 'medium',
-      detection: [
-        'Connection pool at 100%',
-        'Connection timeout errors',
-        'Slow query performance',
-      ],
+      detection: ['Connection pool at 100%', 'Connection timeout errors', 'Slow query performance'],
       mitigation: [
         'Increase connection pool size',
         'Kill long-running queries',
@@ -118,11 +102,7 @@ export const FAILURE_CATALOG: Record<string, FailureMode[]> = {
       category: 'database',
       severity: 'high',
       likelihood: 'medium',
-      detection: [
-        'Deadlock errors in logs',
-        'Transaction timeouts',
-        'Application retry storms',
-      ],
+      detection: ['Deadlock errors in logs', 'Transaction timeouts', 'Application retry storms'],
       mitigation: [
         'Kill blocking transactions',
         'Review and optimize transaction order',
@@ -182,11 +162,7 @@ export const FAILURE_CATALOG: Record<string, FailureMode[]> = {
       category: 'queue',
       severity: 'high',
       likelihood: 'medium',
-      detection: [
-        'Queue depth above threshold',
-        'Message age increasing',
-        'Consumer lag growing',
-      ],
+      detection: ['Queue depth above threshold', 'Message age increasing', 'Consumer lag growing'],
       mitigation: [
         'Scale consumers horizontally',
         'Increase consumer processing rate',
@@ -224,11 +200,7 @@ export const FAILURE_CATALOG: Record<string, FailureMode[]> = {
       category: 'application',
       severity: 'critical',
       likelihood: 'medium',
-      detection: [
-        'Steadily increasing memory usage',
-        'Increasing GC frequency',
-        'OOM kills',
-      ],
+      detection: ['Steadily increasing memory usage', 'Increasing GC frequency', 'OOM kills'],
       mitigation: [
         'Restart affected instances',
         'Capture heap dump for analysis',
@@ -286,11 +258,7 @@ export const FAILURE_CATALOG: Record<string, FailureMode[]> = {
       category: 'external',
       severity: 'high',
       likelihood: 'medium',
-      detection: [
-        'Increased error rate from API calls',
-        'Timeout errors',
-        'Rate limit responses',
-      ],
+      detection: ['Increased error rate from API calls', 'Timeout errors', 'Rate limit responses'],
       mitigation: [
         'Enable circuit breaker',
         'Use cached/fallback data',
@@ -340,9 +308,7 @@ export function getAllFailureModes(): FailureMode[] {
  * Find failure modes by name
  */
 export function findFailureMode(name: string): FailureMode | undefined {
-  return getAllFailureModes().find(
-    (mode) => mode.name.toLowerCase() === name.toLowerCase(),
-  );
+  return getAllFailureModes().find((mode) => mode.name.toLowerCase() === name.toLowerCase());
 }
 
 /**

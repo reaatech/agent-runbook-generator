@@ -45,8 +45,7 @@ export async function generateRunbookArtifacts(
   const dependencyAnalysis = mapDependencies(options.path);
   const parsedConfig = parseConfigs(options.path);
 
-  const serviceName =
-    options.serviceName || repositoryAnalysis.serviceName || 'unknown-service';
+  const serviceName = options.serviceName || repositoryAnalysis.serviceName || 'unknown-service';
   const teamName = options.teamName || 'platform';
 
   const analysisContext: AnalysisContext = {
@@ -81,14 +80,16 @@ export async function generateRunbookArtifacts(
       serviceName,
       platform: 'kubernetes',
     }),
-    dependencies: dependencyAnalysis.externalServices.map((service): ServiceDependency => ({
-      name: service.name,
-      type: service.type,
-      direction: 'downstream' as const,
-      protocol: service.type === 'queue' ? 'async' as const : 'tcp' as const,
-      critical: true,
-      description: `Referenced via ${service.connectionEnvVar || 'application configuration'}`,
-    })),
+    dependencies: dependencyAnalysis.externalServices.map(
+      (service): ServiceDependency => ({
+        name: service.name,
+        type: service.type,
+        direction: 'downstream' as const,
+        protocol: service.type === 'queue' ? ('async' as const) : ('tcp' as const),
+        critical: true,
+        description: `Referenced via ${service.connectionEnvVar || 'application configuration'}`,
+      }),
+    ),
   };
 
   const { buildRunbook } = await import('./runbook-builder.js');
@@ -106,10 +107,7 @@ export async function generateRunbookArtifacts(
   return { analysisContext, runbook };
 }
 
-export function parseRunbookDocument(
-  raw: string,
-  sourceHint?: string,
-): Record<string, unknown> {
+export function parseRunbookDocument(raw: string, sourceHint?: string): Record<string, unknown> {
   try {
     return JSON.parse(raw) as Record<string, unknown>;
   } catch {
@@ -228,7 +226,9 @@ export function validateRunbookAccuracy(
   }
 
   for (const expectedSection of getExpectedSectionTitles()) {
-    if (!sectionTitles.some((title) => title.toLowerCase().includes(expectedSection.toLowerCase()))) {
+    if (
+      !sectionTitles.some((title) => title.toLowerCase().includes(expectedSection.toLowerCase()))
+    ) {
       discrepancies.push({
         section: expectedSection,
         expected: `${expectedSection} section present`,
@@ -257,9 +257,7 @@ export function validateRunbookAccuracy(
   };
 }
 
-export function validateRunbookLinks(
-  runbook: Record<string, unknown>,
-): LinkValidationResult {
+export function validateRunbookLinks(runbook: Record<string, unknown>): LinkValidationResult {
   const markdown = getRunbookText(runbook);
   const headings = extractHeadingAnchors(markdown, runbook);
   const validLinks: LinkInfo[] = [];
@@ -327,9 +325,7 @@ export function createCiValidationResult(
   }
 
   if (accuracy.accuracyScore < accuracyThreshold) {
-    failures.push(
-      `Accuracy score ${accuracy.accuracyScore} below threshold ${accuracyThreshold}`,
-    );
+    failures.push(`Accuracy score ${accuracy.accuracyScore} below threshold ${accuracyThreshold}`);
   }
 
   const linkValidation = validateRunbookLinks(runbook);
@@ -385,10 +381,7 @@ function getRunbookText(runbook: Record<string, unknown>): string {
     .join('\n');
 }
 
-function extractHeadingAnchors(
-  markdown: string,
-  runbook: Record<string, unknown>,
-): Set<string> {
+function extractHeadingAnchors(markdown: string, runbook: Record<string, unknown>): Set<string> {
   const anchors = new Set<string>();
 
   for (const line of markdown.split('\n')) {
@@ -408,7 +401,10 @@ function extractHeadingAnchors(
 }
 
 function toAnchor(title: string): string {
-  return title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  return title
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '');
 }
 
 function getExpectedSectionTitles(): string[] {

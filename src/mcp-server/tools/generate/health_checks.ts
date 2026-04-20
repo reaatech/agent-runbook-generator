@@ -4,7 +4,11 @@
 
 import type { AnalysisContext, RepositoryAnalysis } from '../../../types/domain.js';
 import { scanRepository } from '../../../analyzer/repository-scanner.js';
-import { generateHealthChecks, generateKubernetesProbeYaml, type HealthCheckConfig } from '../../../health-checks/check-generator.js';
+import {
+  generateHealthChecks,
+  generateKubernetesProbeYaml,
+  type HealthCheckConfig,
+} from '../../../health-checks/check-generator.js';
 import { mapDependencies } from '../../../analyzer/dependency-mapper.js';
 
 interface HealthChecksArgs {
@@ -63,12 +67,15 @@ export async function execute(args: Record<string, unknown>): Promise<Record<str
   };
 
   const checks = generateHealthChecks(repoPath, context, config);
-  const yamlConfig = generateKubernetesProbeYaml(checks, serviceName.toLowerCase().replace(/[^a-z0-9]/g, '-'));
+  const yamlConfig = generateKubernetesProbeYaml(
+    checks,
+    serviceName.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+  );
 
   return {
     serviceName,
     platform,
-    checks: checks.map(c => ({
+    checks: checks.map((c) => ({
       name: c.name,
       type: c.type,
       endpoint: c.endpoint,
@@ -79,9 +86,9 @@ export async function execute(args: Record<string, unknown>): Promise<Record<str
     kubernetesConfig: platform === 'kubernetes' ? yamlConfig : undefined,
     summary: {
       totalChecks: checks.length,
-      livenessChecks: checks.filter(c => c.type === 'liveness').length,
-      readinessChecks: checks.filter(c => c.type === 'readiness').length,
-      startupChecks: checks.filter(c => c.type === 'startup').length,
+      livenessChecks: checks.filter((c) => c.type === 'liveness').length,
+      readinessChecks: checks.filter((c) => c.type === 'readiness').length,
+      startupChecks: checks.filter((c) => c.type === 'startup').length,
     },
   };
 }

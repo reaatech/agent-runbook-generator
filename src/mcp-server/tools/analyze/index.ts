@@ -14,8 +14,16 @@ export function registerAnalyzeTools(): Tool[] {
         properties: {
           path: { type: 'string', description: 'Path to the repository' },
           depth: { type: 'number', description: 'Analysis depth (default: 3)', default: 3 },
-          include_patterns: { type: 'array', items: { type: 'string' }, description: 'File patterns to include' },
-          exclude_patterns: { type: 'array', items: { type: 'string' }, description: 'File patterns to exclude' },
+          include_patterns: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'File patterns to include',
+          },
+          exclude_patterns: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'File patterns to exclude',
+          },
         },
         required: ['path'],
       },
@@ -38,8 +46,16 @@ export function registerAnalyzeTools(): Tool[] {
       inputSchema: {
         type: 'object',
         properties: {
-          analysis_context: { type: 'object', description: 'Analysis context from previous analysis' },
-          depth: { type: 'string', enum: ['shallow', 'medium', 'deep'], description: 'Analysis depth', default: 'medium' },
+          analysis_context: {
+            type: 'object',
+            description: 'Analysis context from previous analysis',
+          },
+          depth: {
+            type: 'string',
+            enum: ['shallow', 'medium', 'deep'],
+            description: 'Analysis depth',
+            default: 'medium',
+          },
         },
         required: ['analysis_context'],
       },
@@ -51,7 +67,12 @@ export function registerAnalyzeTools(): Tool[] {
         type: 'object',
         properties: {
           path: { type: 'string', description: 'Path to the repository' },
-          platform: { type: 'string', enum: ['prometheus', 'datadog', 'cloudwatch', 'any'], description: 'Monitoring platform', default: 'any' },
+          platform: {
+            type: 'string',
+            enum: ['prometheus', 'datadog', 'cloudwatch', 'any'],
+            description: 'Monitoring platform',
+            default: 'any',
+          },
         },
         required: ['path'],
       },
@@ -62,7 +83,10 @@ export function registerAnalyzeTools(): Tool[] {
       inputSchema: {
         type: 'object',
         properties: {
-          analysis_context: { type: 'object', description: 'Analysis context from repository scan' },
+          analysis_context: {
+            type: 'object',
+            description: 'Analysis context from repository scan',
+          },
         },
         required: ['analysis_context'],
       },

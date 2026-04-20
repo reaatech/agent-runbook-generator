@@ -29,10 +29,7 @@ export class ProviderAdapter {
   /**
    * Format messages for specific provider
    */
-  formatMessages(
-    systemPrompt: string,
-    userPrompt: string,
-  ): ProviderMessage[] {
+  formatMessages(systemPrompt: string, userPrompt: string): ProviderMessage[] {
     return [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userPrompt },
@@ -42,10 +39,7 @@ export class ProviderAdapter {
   /**
    * Format request for Claude API
    */
-  formatForClaude(
-    systemPrompt: string,
-    userPrompt: string,
-  ): ProviderRequest {
+  formatForClaude(systemPrompt: string, userPrompt: string): ProviderRequest {
     return {
       model: this.config.model ?? 'claude-opus-4-5-20260506',
       messages: this.formatMessages(systemPrompt, userPrompt),
@@ -57,10 +51,7 @@ export class ProviderAdapter {
   /**
    * Format request for OpenAI API
    */
-  formatForOpenAI(
-    systemPrompt: string,
-    userPrompt: string,
-  ): ProviderRequest {
+  formatForOpenAI(systemPrompt: string, userPrompt: string): ProviderRequest {
     return {
       model: this.config.model ?? 'gpt-4-turbo',
       messages: this.formatMessages(systemPrompt, userPrompt),
@@ -72,10 +63,7 @@ export class ProviderAdapter {
   /**
    * Format request for Gemini API
    */
-  formatForGemini(
-    systemPrompt: string,
-    userPrompt: string,
-  ): ProviderRequest {
+  formatForGemini(systemPrompt: string, userPrompt: string): ProviderRequest {
     // Gemini uses a different format
     return {
       model: this.config.model ?? 'gemini-pro',
@@ -143,14 +131,19 @@ export class ProviderAdapter {
    */
   private parseGeminiResponse(rawResponse: unknown): AgentResponse {
     const response = rawResponse as {
-      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> }; finishReason?: string | null }>;
+      candidates?: Array<{
+        content?: { parts?: Array<{ text?: string }> };
+        finishReason?: string | null;
+      }>;
       modelVersion?: string;
       usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number };
     };
 
     return {
       content: response.candidates?.[0]?.content?.parts?.[0]?.text ?? '',
-      tokensUsed: (response.usageMetadata?.promptTokenCount ?? 0) + (response.usageMetadata?.candidatesTokenCount ?? 0),
+      tokensUsed:
+        (response.usageMetadata?.promptTokenCount ?? 0) +
+        (response.usageMetadata?.candidatesTokenCount ?? 0),
       model: response.modelVersion ?? 'gemini-pro',
       finishReason: response.candidates?.[0]?.finishReason ?? undefined,
     } as AgentResponse;

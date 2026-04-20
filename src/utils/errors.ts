@@ -7,7 +7,7 @@ export class AppError extends Error {
     message: string,
     public code: string,
     public statusCode: number = 500,
-    public details?: Record<string, unknown>
+    public details?: Record<string, unknown>,
   ) {
     super(message);
     this.name = 'AppError';
@@ -24,9 +24,7 @@ export class ValidationError extends AppError {
 
 export class NotFoundError extends AppError {
   constructor(resource: string, identifier?: string) {
-    const message = identifier
-      ? `${resource} '${identifier}' not found`
-      : `${resource} not found`;
+    const message = identifier ? `${resource} '${identifier}' not found` : `${resource} not found`;
     super(message, 'NOT_FOUND', 404, { resource, identifier });
     this.name = 'NotFoundError';
   }
@@ -57,7 +55,7 @@ export class LLMError extends AppError {
   constructor(
     message: string,
     public provider: string,
-    public originalError?: Error
+    public originalError?: Error,
   ) {
     super(message, 'LLM_ERROR', 500, { provider });
     this.name = 'LLMError';

@@ -300,9 +300,7 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
 /**
  * Get templates by category
  */
-export function getTemplatesByCategory(
-  category: WidgetTemplate['category'],
-): WidgetTemplate[] {
+export function getTemplatesByCategory(category: WidgetTemplate['category']): WidgetTemplate[] {
   return WIDGET_TEMPLATES.filter((t) => t.category === category);
 }
 

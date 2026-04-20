@@ -4,10 +4,7 @@
 
 import * as path from 'path';
 import YAML from 'yaml';
-import {
-  type DeploymentPlatform,
-  type MonitoringPlatform,
-} from '../types/domain.js';
+import { type DeploymentPlatform, type MonitoringPlatform } from '../types/domain.js';
 import { readFile, listFiles } from '../utils/index.js';
 
 export interface ParsedConfig {
@@ -68,10 +65,7 @@ export function parseConfigs(repoPath: string): ParsedConfig {
 /**
  * Extract environment variables from config files
  */
-function extractEnvironmentVariables(
-  repoPath: string,
-  files: string[],
-): EnvironmentVariable[] {
+function extractEnvironmentVariables(repoPath: string, files: string[]): EnvironmentVariable[] {
   const envVars: EnvironmentVariable[] = [];
   const secretPatterns = [
     /password/i,
@@ -84,8 +78,8 @@ function extractEnvironmentVariables(
   ];
 
   // Parse .env files
-  const envFiles = files.filter((f) =>
-    f.endsWith('.env') || f.endsWith('.env.example') || f.endsWith('.env.sample'),
+  const envFiles = files.filter(
+    (f) => f.endsWith('.env') || f.endsWith('.env.example') || f.endsWith('.env.sample'),
   );
 
   for (const envFile of envFiles) {
@@ -118,17 +112,10 @@ function extractEnvironmentVariables(
 /**
  * Parse infrastructure-as-code configurations
  */
-function parseInfrastructureConfig(
-  repoPath: string,
-  files: string[],
-): InfrastructureConfig {
+function parseInfrastructureConfig(repoPath: string, files: string[]): InfrastructureConfig {
   const terraformFiles = files.filter((f) => f.endsWith('.tf'));
-  const pulumiFiles = files.filter((f) =>
-    f.endsWith('Pulumi.yaml') || f.includes('pulumi'),
-  );
-  const cdkFiles = files.filter((f) =>
-    f.endsWith('cdk.json') || f.includes('cdk'),
-  );
+  const pulumiFiles = files.filter((f) => f.endsWith('Pulumi.yaml') || f.includes('pulumi'));
+  const cdkFiles = files.filter((f) => f.endsWith('cdk.json') || f.includes('cdk'));
 
   const resources: ResourceInfo[] = [];
 
@@ -137,9 +124,7 @@ function parseInfrastructureConfig(
     const content = readFile(tfFile);
     if (content) {
       // Extract resource blocks
-      const resourceMatches = content.matchAll(
-        /resource\s+"([^"]+)"\s+"([^"]+)"/g,
-      );
+      const resourceMatches = content.matchAll(/resource\s+"([^"]+)"\s+"([^"]+)"/g);
       for (const match of resourceMatches) {
         resources.push({
           type: match[1]!,
@@ -175,10 +160,7 @@ function parseInfrastructureConfig(
 /**
  * Parse deployment configuration
  */
-function parseDeploymentConfig(
-  repoPath: string,
-  files: string[],
-): DeploymentConfig {
+function parseDeploymentConfig(repoPath: string, files: string[]): DeploymentConfig {
   const dockerfiles = files.filter((f) => f.endsWith('Dockerfile'));
   const k8sManifests = files.filter(
     (f) =>
@@ -214,21 +196,14 @@ function parseDeploymentConfig(
 /**
  * Parse monitoring configuration
  */
-function parseMonitoringConfig(
-  _repoPath: string,
-  files: string[],
-): MonitoringConfig {
+function parseMonitoringConfig(_repoPath: string, files: string[]): MonitoringConfig {
   const prometheusRules = files.filter(
     (f) =>
       (f.endsWith('.yaml') || f.endsWith('.yml')) &&
       (f.includes('prometheus') || f.includes('alerts') || f.includes('rules')),
   );
-  const datadogFiles = files.filter(
-    (f) => f.toLowerCase().includes('datadog'),
-  );
-  const cloudwatchFiles = files.filter(
-    (f) => f.toLowerCase().includes('cloudwatch'),
-  );
+  const datadogFiles = files.filter((f) => f.toLowerCase().includes('datadog'));
+  const cloudwatchFiles = files.filter((f) => f.toLowerCase().includes('cloudwatch'));
 
   let platform: MonitoringPlatform = 'unknown';
   if (prometheusRules.length > 0) {

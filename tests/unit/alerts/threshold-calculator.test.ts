@@ -11,7 +11,7 @@ describe('calculateSloThresholds', () => {
   it('generates error rate threshold from availability SLO', () => {
     const thresholds = calculateSloThresholds({ availability: 99.9, latencyP99: 200 });
     expect(thresholds.length).toBeGreaterThan(0);
-    const errRate = thresholds.find(t => t.metric === 'error_rate');
+    const errRate = thresholds.find((t) => t.metric === 'error_rate');
     expect(errRate).toBeDefined();
     expect(errRate!.threshold).toBeCloseTo(0.1, 1);
     expect(errRate!.operator).toBe('gt');
@@ -19,7 +19,7 @@ describe('calculateSloThresholds', () => {
 
   it('includes latency P99 threshold', () => {
     const thresholds = calculateSloThresholds({ availability: 99.9, latencyP99: 200 });
-    const p99 = thresholds.find(t => t.metric === 'latency_p99');
+    const p99 = thresholds.find((t) => t.metric === 'latency_p99');
     expect(p99).toBeDefined();
     expect(p99!.threshold).toBe(200);
   });
@@ -30,14 +30,14 @@ describe('calculateSloThresholds', () => {
       latencyP99: 200,
       latencyP95: 100,
     });
-    const p95 = thresholds.find(t => t.metric === 'latency_p95');
+    const p95 = thresholds.find((t) => t.metric === 'latency_p95');
     expect(p95).toBeDefined();
     expect(p95!.threshold).toBe(100);
   });
 
   it('does not include P95 threshold when not provided', () => {
     const thresholds = calculateSloThresholds({ availability: 99.9, latencyP99: 200 });
-    expect(thresholds.find(t => t.metric === 'latency_p95')).toBeUndefined();
+    expect(thresholds.find((t) => t.metric === 'latency_p95')).toBeUndefined();
   });
 });
 
@@ -45,7 +45,7 @@ describe('calculateResourceThresholds', () => {
   it('returns standard resource thresholds', () => {
     const thresholds = calculateResourceThresholds();
     expect(thresholds.length).toBe(4);
-    const metrics = thresholds.map(t => t.metric);
+    const metrics = thresholds.map((t) => t.metric);
     expect(metrics).toContain('cpu_utilization');
     expect(metrics).toContain('memory_utilization');
     expect(metrics).toContain('disk_utilization');
@@ -54,7 +54,7 @@ describe('calculateResourceThresholds', () => {
 
   it('uses gt operator for all thresholds', () => {
     const thresholds = calculateResourceThresholds();
-    expect(thresholds.every(t => t.operator === 'gt')).toBe(true);
+    expect(thresholds.every((t) => t.operator === 'gt')).toBe(true);
   });
 });
 
@@ -62,7 +62,7 @@ describe('calculateBurnRateThresholds', () => {
   it('generates fast, slow, and critical burn rate thresholds', () => {
     const thresholds = calculateBurnRateThresholds({ availability: 99.9, latencyP99: 200 });
     expect(thresholds.length).toBe(3);
-    const metrics = thresholds.map(t => t.metric);
+    const metrics = thresholds.map((t) => t.metric);
     expect(metrics).toContain('burn_rate_fast');
     expect(metrics).toContain('burn_rate_slow');
     expect(metrics).toContain('burn_rate_critical');
@@ -70,8 +70,8 @@ describe('calculateBurnRateThresholds', () => {
 
   it('fast burn threshold is higher than slow burn', () => {
     const thresholds = calculateBurnRateThresholds({ availability: 99.9, latencyP99: 200 });
-    const fast = thresholds.find(t => t.metric === 'burn_rate_fast')!;
-    const slow = thresholds.find(t => t.metric === 'burn_rate_slow')!;
+    const fast = thresholds.find((t) => t.metric === 'burn_rate_fast')!;
+    const slow = thresholds.find((t) => t.metric === 'burn_rate_slow')!;
     expect(fast.threshold).toBeGreaterThan(slow.threshold);
   });
 });
@@ -80,13 +80,13 @@ describe('getDefaultThresholds', () => {
   it('returns three threshold configs', () => {
     const thresholds = getDefaultThresholds();
     expect(thresholds).toHaveLength(3);
-    expect(thresholds.every(t => typeof t.value === 'number')).toBe(true);
-    expect(thresholds.every(t => typeof t.color === 'string')).toBe(true);
+    expect(thresholds.every((t) => typeof t.value === 'number')).toBe(true);
+    expect(thresholds.every((t) => typeof t.color === 'string')).toBe(true);
   });
 
   it('has green, yellow, red colors', () => {
     const thresholds = getDefaultThresholds();
-    const colors = thresholds.map(t => t.color);
+    const colors = thresholds.map((t) => t.color);
     expect(colors).toEqual(['green', 'yellow', 'red']);
   });
 });

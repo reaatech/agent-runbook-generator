@@ -44,9 +44,7 @@ vi.mock('../../../../../src/service-map/dependency-analyzer.js', () => ({
       { id: 'test-service', name: 'test-service', type: 'service', critical: true },
       { id: 'express', name: 'express', type: 'dependency', critical: false },
     ],
-    edges: [
-      { source: 'test-service', target: 'express', type: 'depends-on', critical: false },
-    ],
+    edges: [{ source: 'test-service', target: 'express', type: 'depends-on', critical: false }],
     criticalPaths: [['test-service']],
   }),
 }));
@@ -74,15 +72,17 @@ vi.mock('../../../../../src/health-checks/check-generator.js', () => ({
       successCriteria: 'status == 200',
     },
   ]),
-  generateKubernetesProbeYaml: vi.fn().mockReturnValue('livenessProbe:\n  httpGet:\n    path: /health\n    port: 8080'),
+  generateKubernetesProbeYaml: vi
+    .fn()
+    .mockReturnValue('livenessProbe:\n  httpGet:\n    path: /health\n    port: 8080'),
 }));
 
 describe('Service Map MCP Tool', () => {
   describe('execute', () => {
     it('should generate service map with default format', async () => {
-      const result = await executeServiceMap({
+      const result = (await executeServiceMap({
         analysis_context: { path: '/test/path' },
-      }) as Record<string, unknown>;
+      })) as Record<string, unknown>;
 
       expect(result.serviceName).toBe('unknown-service');
       expect(result.format).toBe('mermaid');
@@ -93,26 +93,26 @@ describe('Service Map MCP Tool', () => {
     });
 
     it('should generate service map with custom format', async () => {
-      const result = await executeServiceMap({
+      const result = (await executeServiceMap({
         analysis_context: { path: '/test/path' },
         format: 'json',
-      }) as Record<string, unknown>;
+      })) as Record<string, unknown>;
 
       expect(result.format).toBe('json');
     });
 
     it('should use serviceName from context', async () => {
-      const result = await executeServiceMap({
+      const result = (await executeServiceMap({
         analysis_context: { path: '/test/path', serviceName: 'my-custom-service' },
-      }) as Record<string, unknown>;
+      })) as Record<string, unknown>;
 
       expect(result.serviceName).toBe('my-custom-service');
     });
 
     it('should return summary with counts', async () => {
-      const result = await executeServiceMap({
+      const result = (await executeServiceMap({
         analysis_context: { path: '/test/path' },
-      }) as Record<string, unknown>;
+      })) as Record<string, unknown>;
 
       expect(result.summary).toBeDefined();
       expect((result.summary as Record<string, number>).totalNodes).toBeDefined();
@@ -124,10 +124,10 @@ describe('Service Map MCP Tool', () => {
 describe('Health Checks MCP Tool', () => {
   describe('execute', () => {
     it('should generate health checks for kubernetes platform', async () => {
-      const result = await executeHealthChecks({
+      const result = (await executeHealthChecks({
         service_context: { path: '/test/path', serviceName: 'test-service' },
         platform: 'kubernetes',
-      }) as Record<string, unknown>;
+      })) as Record<string, unknown>;
 
       expect(result.serviceName).toBe('test-service');
       expect(result.platform).toBe('kubernetes');
@@ -137,17 +137,17 @@ describe('Health Checks MCP Tool', () => {
     });
 
     it('should generate health checks for load-balancer platform', async () => {
-      const result = await executeHealthChecks({
+      const result = (await executeHealthChecks({
         service_context: { path: '/test/path', serviceName: 'test-service' },
         platform: 'load-balancer',
-      }) as Record<string, unknown>;
+      })) as Record<string, unknown>;
 
       expect(result.platform).toBe('load-balancer');
       expect(result.kubernetesConfig).toBeUndefined();
     });
 
     it('should use custom service context values', async () => {
-      const result = await executeHealthChecks({
+      const result = (await executeHealthChecks({
         service_context: {
           path: '/test/path',
           serviceName: 'my-service',
@@ -155,16 +155,16 @@ describe('Health Checks MCP Tool', () => {
           endpoint: '/custom-health',
         },
         platform: 'prometheus',
-      }) as Record<string, unknown>;
+      })) as Record<string, unknown>;
 
       expect(result.serviceName).toBe('my-service');
     });
 
     it('should return summary with check counts', async () => {
-      const result = await executeHealthChecks({
+      const result = (await executeHealthChecks({
         service_context: { path: '/test/path', serviceName: 'test-service' },
         platform: 'kubernetes',
-      }) as Record<string, unknown>;
+      })) as Record<string, unknown>;
 
       expect(result.summary).toBeDefined();
       expect((result.summary as Record<string, number>).totalChecks).toBeGreaterThan(0);
@@ -173,10 +173,10 @@ describe('Health Checks MCP Tool', () => {
     });
 
     it('should default to unknown-service when serviceName not provided', async () => {
-      const result = await executeHealthChecks({
+      const result = (await executeHealthChecks({
         service_context: { path: '/test/path' },
         platform: 'datadog',
-      }) as Record<string, unknown>;
+      })) as Record<string, unknown>;
 
       expect(result.serviceName).toBe('unknown-service');
     });

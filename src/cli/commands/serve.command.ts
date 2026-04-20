@@ -32,9 +32,9 @@ export interface ServeOptions {
 async function executeServe(options: Record<string, unknown>): Promise<void> {
   const serveOptions: ServeOptions = {
     port: parseIntOptional(options.port, 3000),
-    host: options.host as string ?? '0.0.0.0',
+    host: (options.host as string) ?? '0.0.0.0',
     otelEndpoint: options.otelEndpoint as string,
-    logLevel: options.logLevel as string ?? 'info',
+    logLevel: (options.logLevel as string) ?? 'info',
   };
 
   // Initialize observability
@@ -67,8 +67,10 @@ async function executeServe(options: Record<string, unknown>): Promise<void> {
     });
 
     /* eslint-disable no-console */
-      console.log('MCP server started over stdio transport');
-      console.log(`Port/host flags are informational only in this release: ${serveOptions.host}:${serveOptions.port}`);
+    console.log('MCP server started over stdio transport');
+    console.log(
+      `Port/host flags are informational only in this release: ${serveOptions.host}:${serveOptions.port}`,
+    );
     console.log('Available tools:');
     console.log('  - runbook.analyze.repository');
     console.log('  - runbook.analyze.dependencies');

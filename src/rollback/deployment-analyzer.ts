@@ -2,7 +2,11 @@
  * Deployment Analyzer - Identifies deployment mechanism and rollback capabilities
  */
 
-import { type AnalysisContext, type DeploymentPlatform, type RollbackCapability } from '../types/domain.js';
+import {
+  type AnalysisContext,
+  type DeploymentPlatform,
+  type RollbackCapability,
+} from '../types/domain.js';
 import { listFiles, readFile } from '../utils/index.js';
 import * as path from 'path';
 
@@ -23,10 +27,7 @@ export interface DeploymentConfig {
 /**
  * Analyze deployment configuration
  */
-export function analyzeDeployment(
-  repoPath: string,
-  context: AnalysisContext,
-): DeploymentAnalysis {
+export function analyzeDeployment(repoPath: string, context: AnalysisContext): DeploymentAnalysis {
   const files = listFiles(repoPath, true);
   const configParser = context.configParser as Record<string, { platform?: string }> | undefined;
   const platform = (configParser?.deployment?.platform ?? 'unknown') as DeploymentPlatform;
@@ -153,14 +154,12 @@ export function analyzeDeployment(
       break;
 
     default:
-      capabilities.push(
-        {
-          type: 'manual-rollback',
-          description: 'Manual rollback required',
-          command: 'Deploy previous version manually',
-          automated: false,
-        },
-      );
+      capabilities.push({
+        type: 'manual-rollback',
+        description: 'Manual rollback required',
+        command: 'Deploy previous version manually',
+        automated: false,
+      });
   }
 
   // Check for deployment scripts

@@ -82,49 +82,34 @@ describe('generateMitigations', () => {
   });
 
   it('generates memory-specific mitigations', () => {
-    const plans = generateMitigations(
-      [makeFailureMode('Memory Exhaustion')],
-      makeContext(),
-    );
+    const plans = generateMitigations([makeFailureMode('Memory Exhaustion')], makeContext());
     const plan = plans[0];
-    expect(plan.immediateActions.some(a => a.includes('Restart'))).toBe(true);
+    expect(plan.immediateActions.some((a) => a.includes('Restart'))).toBe(true);
     expect(plan.monitoringChanges.length).toBeGreaterThanOrEqual(2);
   });
 
   it('generates cpu-specific mitigations', () => {
-    const plans = generateMitigations(
-      [makeFailureMode('CPU Exhaustion')],
-      makeContext(),
-    );
+    const plans = generateMitigations([makeFailureMode('CPU Exhaustion')], makeContext());
     const plan = plans[0];
-    expect(plan.immediateActions.some(a => a.includes('rate'))).toBe(true);
+    expect(plan.immediateActions.some((a) => a.includes('rate'))).toBe(true);
   });
 
   it('generates network partition mitigations with code changes', () => {
-    const plans = generateMitigations(
-      [makeFailureMode('Network Partition')],
-      makeContext(),
-    );
+    const plans = generateMitigations([makeFailureMode('Network Partition')], makeContext());
     const plan = plans[0];
     expect(plan.codeChanges.length).toBeGreaterThan(0);
-    expect(plan.longTermImprovements.some(i => i.includes('circuit breaker'))).toBe(true);
+    expect(plan.longTermImprovements.some((i) => i.includes('circuit breaker'))).toBe(true);
   });
 
   it('generates cache mitigations', () => {
-    const plans = generateMitigations(
-      [makeFailureMode('Cache Failure')],
-      makeContext(),
-    );
+    const plans = generateMitigations([makeFailureMode('Cache Failure')], makeContext());
     const plan = plans[0];
     expect(plan.codeChanges.length).toBeGreaterThan(0);
-    expect(plan.longTermImprovements.some(i => i.includes('cache-aside'))).toBe(true);
+    expect(plan.longTermImprovements.some((i) => i.includes('cache-aside'))).toBe(true);
   });
 
   it('generates generic mitigations for unknown failure mode', () => {
-    const plans = generateMitigations(
-      [makeFailureMode('Some Unknown Failure')],
-      makeContext(),
-    );
+    const plans = generateMitigations([makeFailureMode('Some Unknown Failure')], makeContext());
     const plan = plans[0];
     expect(plan.immediateActions.length).toBeGreaterThan(0);
     expect(plan.shortTermFixes.length).toBeGreaterThan(0);

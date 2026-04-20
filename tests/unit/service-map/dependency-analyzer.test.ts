@@ -46,12 +46,18 @@ describe('generateDependencyGraph', () => {
   const deps: ServiceDependency[] = [
     { name: 'postgres', type: 'database', direction: 'upstream', protocol: 'tcp', critical: true },
     { name: 'redis', type: 'cache', direction: 'upstream', protocol: 'tcp', critical: false },
-    { name: 'payment-svc', type: 'service', direction: 'downstream', protocol: 'http', critical: false },
+    {
+      name: 'payment-svc',
+      type: 'service',
+      direction: 'downstream',
+      protocol: 'http',
+      critical: false,
+    },
   ];
 
   it('creates a node for the service itself', () => {
     const graph = generateDependencyGraph(deps, 'my-app');
-    const serviceNode = graph.nodes.find(n => n.id === 'my-app');
+    const serviceNode = graph.nodes.find((n) => n.id === 'my-app');
     expect(serviceNode).toBeDefined();
     expect(serviceNode!.type).toBe('service');
     expect(serviceNode!.critical).toBe(true);
@@ -64,15 +70,15 @@ describe('generateDependencyGraph', () => {
 
   it('maps dependency types to node types correctly', () => {
     const graph = generateDependencyGraph(deps, 'my-app');
-    const dbNode = graph.nodes.find(n => n.id === 'postgres');
-    const cacheNode = graph.nodes.find(n => n.id === 'redis');
+    const dbNode = graph.nodes.find((n) => n.id === 'postgres');
+    const cacheNode = graph.nodes.find((n) => n.id === 'redis');
     expect(dbNode!.type).toBe('database');
     expect(cacheNode!.type).toBe('cache');
   });
 
   it('creates upstream edges from service to dep', () => {
     const graph = generateDependencyGraph(deps, 'my-app');
-    const upstreamEdge = graph.edges.find(e => e.target === 'postgres');
+    const upstreamEdge = graph.edges.find((e) => e.target === 'postgres');
     expect(upstreamEdge).toBeDefined();
     expect(upstreamEdge!.source).toBe('my-app');
     expect(upstreamEdge!.type).toBe('sync');
@@ -80,7 +86,7 @@ describe('generateDependencyGraph', () => {
 
   it('creates downstream edges from dep to service', () => {
     const graph = generateDependencyGraph(deps, 'my-app');
-    const downstreamEdge = graph.edges.find(e => e.target === 'my-app');
+    const downstreamEdge = graph.edges.find((e) => e.target === 'my-app');
     expect(downstreamEdge).toBeDefined();
     expect(downstreamEdge!.source).toBe('payment-svc');
   });
@@ -95,7 +101,7 @@ describe('generateDependencyGraph', () => {
 
   it('identifies critical paths for critical database deps', () => {
     const graph = generateDependencyGraph(deps, 'my-app');
-    const dbPath = graph.criticalPaths.find(p => p.name.includes('postgres'));
+    const dbPath = graph.criticalPaths.find((p) => p.name.includes('postgres'));
     expect(dbPath).toBeDefined();
     expect(dbPath!.riskLevel).toBe('high');
   });
@@ -149,10 +155,7 @@ describe('analyzeDependencies', () => {
       path.join(fixtureDir, 'api.ts'),
       "fetch('https://external-api.example.com/v1/data');",
     );
-    fs.writeFileSync(
-      path.join(fixtureDir, 'queue.ts'),
-      "kafka.produce('order-events');",
-    );
+    fs.writeFileSync(path.join(fixtureDir, 'queue.ts'), "kafka.produce('order-events');");
   });
 
   afterAll(() => {
@@ -164,7 +167,7 @@ describe('analyzeDependencies', () => {
       fixtureDir,
       makeContext({ externalServices: [{ type: 'database', name: 'postgres' }] }),
     );
-    const dbDep = result.find(d => d.name === 'postgres');
+    const dbDep = result.find((d) => d.name === 'postgres');
     expect(dbDep).toBeDefined();
     expect(dbDep!.direction).toBe('upstream');
     expect(dbDep!.critical).toBe(true);
@@ -172,14 +175,14 @@ describe('analyzeDependencies', () => {
 
   it('detects API calls in code', () => {
     const result = analyzeDependencies(fixtureDir, makeContext());
-    const apiDep = result.find(d => d.name.includes('external-api'));
+    const apiDep = result.find((d) => d.name.includes('external-api'));
     expect(apiDep).toBeDefined();
     expect(apiDep!.type).toBe('api');
   });
 
   it('detects queue calls in code', () => {
     const result = analyzeDependencies(fixtureDir, makeContext());
-    const queueDep = result.find(d => d.name.includes('kafka'));
+    const queueDep = result.find((d) => d.name.includes('kafka'));
     expect(queueDep).toBeDefined();
     expect(queueDep!.critical).toBe(true);
   });

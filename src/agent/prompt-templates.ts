@@ -2,7 +2,7 @@
  * Prompt Templates - Templates for LLM prompts
  */
 
-export type PromptType = 
+export type PromptType =
   | 'repository-analysis'
   | 'failure-mode-identification'
   | 'runbook-alerts'
@@ -68,10 +68,10 @@ export function getPromptTemplate(type: PromptType): PromptTemplate {
  */
 function applyVariables(template: string, variables: Partial<PromptVariables>): string {
   let result = template;
-  
+
   for (const [key, value] of Object.entries(variables)) {
     if (value === undefined) continue;
-    
+
     const placeholder = `{${key}}`;
     if (typeof value === 'string') {
       result = result.replace(new RegExp(placeholder, 'g'), value);
@@ -79,7 +79,7 @@ function applyVariables(template: string, variables: Partial<PromptVariables>): 
       result = result.replace(new RegExp(placeholder, 'g'), value.join(', '));
     }
   }
-  
+
   return result;
 }
 

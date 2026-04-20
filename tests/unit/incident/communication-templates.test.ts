@@ -22,7 +22,7 @@ describe('COMMUNICATION_TEMPLATES', () => {
   });
 
   it('has expected category ids', () => {
-    const ids = COMMUNICATION_TEMPLATES.map(c => c.id);
+    const ids = COMMUNICATION_TEMPLATES.map((c) => c.id);
     expect(ids).toContain('incident-notification');
     expect(ids).toContain('status-updates');
     expect(ids).toContain('resolution');

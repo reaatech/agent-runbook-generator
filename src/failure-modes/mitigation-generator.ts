@@ -40,10 +40,7 @@ export function generateMitigations(
 /**
  * Generate mitigation for a specific failure mode
  */
-function generateMitigationForMode(
-  mode: FailureMode,
-  _context: AnalysisContext,
-): MitigationPlan {
+function generateMitigationForMode(mode: FailureMode, _context: AnalysisContext): MitigationPlan {
   const plan: MitigationPlan = {
     failureMode: mode,
     immediateActions: [],
@@ -279,9 +276,11 @@ function generateMitigationForMode(
 /**
  * Suggest circuit breaker configuration
  */
-export function suggestCircuitBreakerConfig(
-  _serviceName: string,
-): { threshold: number; timeout: number; resetTimeout: number } {
+export function suggestCircuitBreakerConfig(_serviceName: string): {
+  threshold: number;
+  timeout: number;
+  resetTimeout: number;
+} {
   return {
     threshold: 5, // Number of failures before opening
     timeout: 30000, // Time to wait before allowing a test request
@@ -292,9 +291,12 @@ export function suggestCircuitBreakerConfig(
 /**
  * Suggest retry configuration
  */
-export function suggestRetryConfig(
-  _serviceName: string,
-): { maxRetries: number; baseDelay: number; maxDelay: number; factor: number } {
+export function suggestRetryConfig(_serviceName: string): {
+  maxRetries: number;
+  baseDelay: number;
+  maxDelay: number;
+  factor: number;
+} {
   return {
     maxRetries: 3,
     baseDelay: 1000, // 1 second
@@ -306,9 +308,11 @@ export function suggestRetryConfig(
 /**
  * Suggest timeout configuration
  */
-export function suggestTimeoutConfig(
-  _serviceName: string,
-): { connect: number; request: number; idle: number } {
+export function suggestTimeoutConfig(_serviceName: string): {
+  connect: number;
+  request: number;
+  idle: number;
+} {
   return {
     connect: 5000, // 5 seconds
     request: 30000, // 30 seconds

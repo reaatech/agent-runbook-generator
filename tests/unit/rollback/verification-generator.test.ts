@@ -105,7 +105,7 @@ describe('generateVerificationChecklist', () => {
 
   it('each item starts with checkbox marker', () => {
     const result = generateVerificationChecklist(makeContext(), 'kubernetes');
-    const checklistItems = result.filter(r => r.startsWith('[ ]'));
+    const checklistItems = result.filter((r) => r.startsWith('[ ]'));
     expect(checklistItems.length).toBeGreaterThan(0);
   });
 

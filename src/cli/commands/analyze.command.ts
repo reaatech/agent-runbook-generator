@@ -37,11 +37,11 @@ export interface AnalyzeOptions {
 async function executeAnalyze(path: string, options: Record<string, unknown>): Promise<void> {
   const analyzeOptions: AnalyzeOptions = {
     depth: parseIntOptional(options.depth, 3),
-    include: (options.include as string)?.split(',').map(p => p.trim()),
-    exclude: (options.exclude as string)?.split(',').map(p => p.trim()),
-    includeDev: options.includeDev as boolean ?? false,
+    include: (options.include as string)?.split(',').map((p) => p.trim()),
+    exclude: (options.exclude as string)?.split(',').map((p) => p.trim()),
+    includeDev: (options.includeDev as boolean) ?? false,
     output: options.output as string,
-    json: options.json as boolean ?? false,
+    json: (options.json as boolean) ?? false,
   };
 
   initLogger({

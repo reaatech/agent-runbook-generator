@@ -92,7 +92,7 @@ describe('listFiles', () => {
   it('lists files in a directory', () => {
     const files = listFiles(process.cwd());
     expect(files.length).toBeGreaterThan(0);
-    expect(files.some(f => f.includes('package.json'))).toBe(true);
+    expect(files.some((f) => f.includes('package.json'))).toBe(true);
   });
 
   it('returns empty array for non-existent directory', () => {
@@ -102,7 +102,7 @@ describe('listFiles', () => {
   it('lists recursively when flag is true', () => {
     const files = listFiles(path.join(process.cwd(), 'src'), true);
     expect(files.length).toBeGreaterThan(0);
-    expect(files.some(f => f.includes(path.sep))).toBe(true);
+    expect(files.some((f) => f.includes(path.sep))).toBe(true);
   });
 });
 
@@ -195,9 +195,7 @@ describe('retry', () => {
   });
 
   it('throws after exhausting all attempts', async () => {
-    await expect(
-      retry(() => Promise.reject(new Error('nope')), 2, 10),
-    ).rejects.toThrow('nope');
+    await expect(retry(() => Promise.reject(new Error('nope')), 2, 10)).rejects.toThrow('nope');
   });
 });
 
@@ -230,7 +228,9 @@ describe('redactSecrets', () => {
   });
 
   it('leaves long alphanumeric strings that are not secret keys unchanged', () => {
-    expect(redactSecrets('key=abcdefghijklmnopqrstuvwxyz123456')).toBe('key=abcdefghijklmnopqrstuvwxyz123456');
+    expect(redactSecrets('key=abcdefghijklmnopqrstuvwxyz123456')).toBe(
+      'key=abcdefghijklmnopqrstuvwxyz123456',
+    );
   });
 
   it('leaves normal text unchanged', () => {

@@ -2,7 +2,10 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { analyzeDeployment, getRollbackCommands } from '../../../src/rollback/deployment-analyzer.js';
+import {
+  analyzeDeployment,
+  getRollbackCommands,
+} from '../../../src/rollback/deployment-analyzer.js';
 import type { AnalysisContext } from '../../../src/types/domain.js';
 
 function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext {
@@ -102,9 +105,12 @@ describe('analyzeDeployment', () => {
   });
 
   it('analyzes kubernetes deployment', () => {
-    const result = analyzeDeployment(fixtureDir, makeContext({
-      configParser: { deployment: { platform: 'kubernetes' } },
-    }));
+    const result = analyzeDeployment(
+      fixtureDir,
+      makeContext({
+        configParser: { deployment: { platform: 'kubernetes' } },
+      }),
+    );
     expect(result.platform).toBe('kubernetes');
     expect(result.deploymentConfig.replicas).toBe(3);
     expect(result.deploymentConfig.strategy).toBe('rolling');
@@ -112,21 +118,27 @@ describe('analyzeDeployment', () => {
   });
 
   it('returns capabilities for kubernetes platform', () => {
-    const result = analyzeDeployment(fixtureDir, makeContext({
-      configParser: { deployment: { platform: 'kubernetes' } },
-    }));
+    const result = analyzeDeployment(
+      fixtureDir,
+      makeContext({
+        configParser: { deployment: { platform: 'kubernetes' } },
+      }),
+    );
     expect(result.capabilities.length).toBeGreaterThanOrEqual(3);
-    const types = result.capabilities.map(c => c.type);
+    const types = result.capabilities.map((c) => c.type);
     expect(types).toContain('kubectl-rollback');
     expect(types).toContain('kubectl-scale');
   });
 
   it('returns capabilities for ecs platform', () => {
-    const result = analyzeDeployment(fixtureDir, makeContext({
-      configParser: { deployment: { platform: 'ecs' } },
-    }));
+    const result = analyzeDeployment(
+      fixtureDir,
+      makeContext({
+        configParser: { deployment: { platform: 'ecs' } },
+      }),
+    );
     expect(result.capabilities.length).toBeGreaterThanOrEqual(2);
-    const types = result.capabilities.map(c => c.type);
+    const types = result.capabilities.map((c) => c.type);
     expect(types).toContain('ecs-rollback');
   });
 

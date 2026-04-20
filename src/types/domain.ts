@@ -3,12 +3,7 @@
  */
 
 /** Service type detection categories */
-export type ServiceType =
-  | 'web-api'
-  | 'worker'
-  | 'lambda'
-  | 'function'
-  | 'unknown';
+export type ServiceType = 'web-api' | 'worker' | 'lambda' | 'function' | 'unknown';
 
 /** Programming language detection */
 export type ProgrammingLanguage =
@@ -61,11 +56,7 @@ export type MonitoringPlatform =
 export type AlertSeverity = 'critical' | 'warning' | 'info';
 
 /** Alert type */
-export type AlertType =
-  | 'slo_burn_rate'
-  | 'resource'
-  | 'application'
-  | 'synthetic';
+export type AlertType = 'slo_burn_rate' | 'resource' | 'application' | 'synthetic';
 
 /** Failure mode category */
 export type FailureCategory =
@@ -306,11 +297,13 @@ export interface FailureMode {
 /**
  * Failure detection configuration
  */
-export type FailureDetection = string[] | {
-  metrics: string[];
-  symptoms: string[];
-  alertExpression?: string;
-};
+export type FailureDetection =
+  | string[]
+  | {
+      metrics: string[];
+      symptoms: string[];
+      alertExpression?: string;
+    };
 
 /**
  * Single point of failure
@@ -410,18 +403,28 @@ export interface IncidentWorkflow {
 /**
  * Incident severity
  */
-export type IncidentSeverity = 'sev1' | 'sev2' | 'sev3' | 'sev4' | 'critical' | 'high' | 'medium' | 'low';
+export type IncidentSeverity =
+  | 'sev1'
+  | 'sev2'
+  | 'sev3'
+  | 'sev4'
+  | 'critical'
+  | 'high'
+  | 'medium'
+  | 'low';
 
 /**
  * Workflow step
  */
-export type WorkflowStep = string | {
-  order: number;
-  action: string;
-  description: string;
-  assignee?: string;
-  timeout?: number;
-};
+export type WorkflowStep =
+  | string
+  | {
+      order: number;
+      action: string;
+      description: string;
+      assignee?: string;
+      timeout?: number;
+    };
 
 /**
  * Escalation matrix

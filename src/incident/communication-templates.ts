@@ -40,7 +40,17 @@ export const COMMUNICATION_TEMPLATES: TemplateCategory[] = [
 • Runbook: {runbook_url}
 
 Join incident bridge: {bridge_url}`,
-        variables: ['severity', 'service', 'team', 'time', 'impact', 'dashboard_url', 'logs_url', 'runbook_url', 'bridge_url'],
+        variables: [
+          'severity',
+          'service',
+          'team',
+          'time',
+          'impact',
+          'dashboard_url',
+          'logs_url',
+          'runbook_url',
+          'bridge_url',
+        ],
       },
       {
         id: generateId('template'),
@@ -69,7 +79,16 @@ Links:
 - Incident Bridge: {bridge_url}
 
 This is an automated message from the incident response system.`,
-        variables: ['severity', 'service', 'time', 'impact', 'update_interval', 'dashboard_url', 'runbook_url', 'bridge_url'],
+        variables: [
+          'severity',
+          'service',
+          'time',
+          'impact',
+          'update_interval',
+          'dashboard_url',
+          'runbook_url',
+          'bridge_url',
+        ],
       },
     ],
   },
@@ -143,7 +162,14 @@ We apologize for any inconvenience.`,
 • Follow-up actions will be tracked
 
 Thank you to everyone who helped resolve this incident!`,
-        variables: ['service', 'severity', 'duration', 'root_cause', 'resolution', 'postmortem_date'],
+        variables: [
+          'service',
+          'severity',
+          'duration',
+          'root_cause',
+          'resolution',
+          'postmortem_date',
+        ],
       },
       {
         id: generateId('template'),
@@ -192,7 +218,18 @@ Action Items:
 The full post-mortem document is available at: {postmortem_url}
 
 Please review and provide feedback by {feedback_deadline}.`,
-        variables: ['service', 'date', 'duration', 'severity', 'summary', 'impact', 'root_cause', 'action_items', 'postmortem_url', 'feedback_deadline'],
+        variables: [
+          'service',
+          'date',
+          'duration',
+          'severity',
+          'summary',
+          'impact',
+          'root_cause',
+          'action_items',
+          'postmortem_url',
+          'feedback_deadline',
+        ],
       },
     ],
   },
@@ -225,7 +262,15 @@ Please review and provide feedback by {feedback_deadline}.`,
 {watch_list}
 
 Any questions? Reach out to {outgoing} before end of shift.`,
-        variables: ['date', 'outgoing', 'incoming', 'active_incidents', 'pending_items', 'recent_changes', 'watch_list'],
+        variables: [
+          'date',
+          'outgoing',
+          'incoming',
+          'active_incidents',
+          'pending_items',
+          'recent_changes',
+          'watch_list',
+        ],
       },
     ],
   },
@@ -235,7 +280,7 @@ Any questions? Reach out to {outgoing} before end of shift.`,
  * Get templates by category
  */
 export function getTemplatesByCategory(categoryId: string): CommunicationTemplate[] {
-  const category = COMMUNICATION_TEMPLATES.find(c => c.id === categoryId);
+  const category = COMMUNICATION_TEMPLATES.find((c) => c.id === categoryId);
   return category?.templates ?? [];
 }
 
@@ -244,7 +289,7 @@ export function getTemplatesByCategory(categoryId: string): CommunicationTemplat
  */
 export function getTemplateByName(name: string): CommunicationTemplate | undefined {
   for (const category of COMMUNICATION_TEMPLATES) {
-    const template = category.templates.find(t => t.name.toLowerCase() === name.toLowerCase());
+    const template = category.templates.find((t) => t.name.toLowerCase() === name.toLowerCase());
     if (template) return template;
   }
   return undefined;

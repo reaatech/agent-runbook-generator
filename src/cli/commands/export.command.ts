@@ -38,8 +38,8 @@ async function executeExport(input: string, options: Record<string, unknown>): P
     output: options.output as string,
     format: (options.format as 'markdown' | 'html' | 'pdf' | 'json') ?? 'markdown',
     template: options.template as string,
-    includeToc: options.includeToc as boolean ?? true,
-    includeCrossRefs: options.includeCrossRefs as boolean ?? true,
+    includeToc: (options.includeToc as boolean) ?? true,
+    includeCrossRefs: (options.includeCrossRefs as boolean) ?? true,
   };
 
   // Initialize logger
@@ -65,7 +65,10 @@ async function executeExport(input: string, options: Record<string, unknown>): P
 
     // Format runbook
     info('Formatting runbook...');
-    const formattedContent = formatRunbook(runbook as unknown as Runbook, exportOptions.format as OutputFormat);
+    const formattedContent = formatRunbook(
+      runbook as unknown as Runbook,
+      exportOptions.format as OutputFormat,
+    );
 
     // Write output file
     writeFileSync(exportOptions.output, formattedContent);

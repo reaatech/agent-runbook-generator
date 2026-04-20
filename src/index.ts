@@ -50,11 +50,7 @@ export type {
   DashboardVariable,
 } from './types/domain.js';
 
-export type {
-  RollbackStep,
-  VerificationStep,
-  RollbackCheck,
-} from './types/domain.js';
+export type { RollbackStep, VerificationStep, RollbackCheck } from './types/domain.js';
 
 export type {
   WorkflowStep,
@@ -63,9 +59,7 @@ export type {
   CommunicationTemplate,
 } from './types/domain.js';
 
-export type {
-  HealthCheckItem,
-} from './types/domain.js';
+export type { HealthCheckItem } from './types/domain.js';
 
 export type {
   ServiceMap,
@@ -119,16 +113,33 @@ export {
 } from './runbook/pipeline.js';
 
 // Incident response
-export { generateIncidentWorkflows, generateStandardWorkflow, generateEscalationPolicy } from './incident/workflow-generator.js';
-export { getTemplatesByCategory, getTemplateByName, applyTemplateVariables, createTemplate } from './incident/communication-templates.js';
+export {
+  generateIncidentWorkflows,
+  generateStandardWorkflow,
+  generateEscalationPolicy,
+} from './incident/workflow-generator.js';
+export {
+  getTemplatesByCategory,
+  getTemplateByName,
+  applyTemplateVariables,
+  createTemplate,
+} from './incident/communication-templates.js';
 
 // Service mapping
 export { analyzeDependencies } from './service-map/dependency-analyzer.js';
-export { generateServiceMap, exportGraph, generateServiceMapSummary } from './service-map/graph-generator.js';
+export {
+  generateServiceMap,
+  exportGraph,
+  generateServiceMapSummary,
+} from './service-map/graph-generator.js';
 
 // Health checks
 export { identifyHealthChecks } from './health-checks/check-identifier.js';
-export { generateHealthChecks, generateKubernetesProbeYaml, generateHealthCheckEndpoint } from './health-checks/check-generator.js';
+export {
+  generateHealthChecks,
+  generateKubernetesProbeYaml,
+  generateHealthCheckEndpoint,
+} from './health-checks/check-generator.js';
 
 // Agent
 export { AnalysisAgent, createAnalysisAgent } from './agent/analysis-agent.js';
@@ -140,8 +151,21 @@ export { RunbookMCPServer, createMCPServer } from './mcp-server/mcp-server.js';
 
 // Observability
 export { initLogger, getLogger, info, warn, error, debug } from './observability/logger.js';
-export { initTracing, startAnalysisSpan, startGenerationSpan, startValidationSpan } from './observability/tracing.js';
-export { initMetrics, recordGeneration, recordSectionGenerated, recordAgentCall, recordAnalysisDuration, recordAgentCost, recordCompleteness } from './observability/metrics.js';
+export {
+  initTracing,
+  startAnalysisSpan,
+  startGenerationSpan,
+  startValidationSpan,
+} from './observability/tracing.js';
+export {
+  initMetrics,
+  recordGeneration,
+  recordSectionGenerated,
+  recordAgentCall,
+  recordAnalysisDuration,
+  recordAgentCost,
+  recordCompleteness,
+} from './observability/metrics.js';
 
 import { exportRunbook } from './runbook/formatter.js';
 import { generateRunbookArtifacts } from './runbook/pipeline.js';
@@ -156,9 +180,7 @@ export interface GenerateRunbookOptions {
   model?: string;
 }
 
-export async function generateRunbook(
-  options: GenerateRunbookOptions,
-): Promise<Runbook> {
+export async function generateRunbook(options: GenerateRunbookOptions): Promise<Runbook> {
   const { runbook } = await generateRunbookArtifacts({
     path: options.path,
     sections: options.sections,

@@ -3,9 +3,7 @@
  */
 
 import YAML from 'yaml';
-import {
-  type AlertDefinition,
-} from '../types/domain.js';
+import { type AlertDefinition } from '../types/domain.js';
 import { readFile, listFiles } from '../utils/index.js';
 
 export interface ExtractedAlerts {
@@ -47,7 +45,11 @@ export function extractAlerts(repoPath: string): ExtractedAlerts {
                 if (rule.labels?.severity === 'critical' || rule.labels?.severity === 'warning') {
                   if (rule.expr?.includes('slo') || rule.expr?.includes('error_budget')) {
                     sloAlerts.push(alert);
-                  } else if (rule.expr?.includes('cpu') || rule.expr?.includes('memory') || rule.expr?.includes('disk')) {
+                  } else if (
+                    rule.expr?.includes('cpu') ||
+                    rule.expr?.includes('memory') ||
+                    rule.expr?.includes('disk')
+                  ) {
                     resourceAlerts.push(alert);
                   }
                 }
@@ -93,8 +95,8 @@ function parsePrometheusAlert(
   _file: string,
   _repoPath: string,
 ): AlertDefinition {
-  const annotations = rule.annotations as Record<string, unknown> ?? {};
-  const labels = rule.labels as Record<string, unknown> ?? {};
+  const annotations = (rule.annotations as Record<string, unknown>) ?? {};
+  const labels = (rule.labels as Record<string, unknown>) ?? {};
 
   return {
     name: String(rule.alert ?? 'unknown'),

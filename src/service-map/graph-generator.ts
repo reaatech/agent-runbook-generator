@@ -102,9 +102,17 @@ export function exportToJson(graph: DependencyGraph): string {
  * Escape a string value for safe YAML output
  */
 function escapeYamlString(value: string): string {
-  if (value.includes('"') || value.includes(':') || value.includes('#') ||
-      value.includes("'") || value.includes('\n') || value.includes('{') ||
-      value.includes('}') || value.includes('[') || value.includes(']')) {
+  if (
+    value.includes('"') ||
+    value.includes(':') ||
+    value.includes('#') ||
+    value.includes("'") ||
+    value.includes('\n') ||
+    value.includes('{') ||
+    value.includes('}') ||
+    value.includes('[') ||
+    value.includes(']')
+  ) {
     return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
   }
   return value;
@@ -227,7 +235,9 @@ export function generateServiceMapSummary(graph: DependencyGraph): string {
   summary.push('## Service Dependency Summary\n');
 
   summary.push(`**Total Dependencies:** ${graph.nodes.length - 1}`);
-  summary.push(`**Critical Dependencies:** ${graph.nodes.filter(n => n.critical && n.type !== 'service').length}`);
+  summary.push(
+    `**Critical Dependencies:** ${graph.nodes.filter((n) => n.critical && n.type !== 'service').length}`,
+  );
   summary.push(`**Critical Paths:** ${graph.criticalPaths.length}\n`);
 
   summary.push('### Dependencies by Type\n');

@@ -37,12 +37,12 @@ export interface GenerateOptions {
 
 async function executeGenerate(path: string, options: Record<string, unknown>): Promise<void> {
   const generateOptions: GenerateOptions = {
-    output: options.output as string ?? 'runbook.md',
+    output: (options.output as string) ?? 'runbook.md',
     format: (options.format as 'markdown' | 'html' | 'json') ?? 'markdown',
-    sections: (options.sections as string)?.split(',').map(s => s.trim()),
+    sections: (options.sections as string)?.split(',').map((s) => s.trim()),
     provider: (options.provider as 'claude' | 'openai' | 'gemini' | 'mock') ?? 'mock',
     model: options.model as string,
-    json: options.json as boolean ?? false,
+    json: (options.json as boolean) ?? false,
   };
 
   // Initialize logger
@@ -92,7 +92,7 @@ async function executeGenerate(path: string, options: Record<string, unknown>): 
       // eslint-disable-next-line no-console
       console.log(`Runbook generated: ${generateOptions.output}`);
       // eslint-disable-next-line no-console
-      console.log(`Sections: ${runbook.sections.map(s => s.title).join(', ')}`);
+      console.log(`Sections: ${runbook.sections.map((s) => s.title).join(', ')}`);
     }
 
     endSpanSuccess(span);

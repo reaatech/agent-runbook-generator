@@ -56,7 +56,7 @@ describe('generateDashboard', () => {
     });
     expect(dash.variables).toBeDefined();
     expect(dash.variables!.length).toBeGreaterThan(0);
-    expect(dash.variables!.some(v => v.name === 'instance')).toBe(true);
+    expect(dash.variables!.some((v) => v.name === 'instance')).toBe(true);
   });
 
   it('uses default refreshInterval and timeRange', () => {

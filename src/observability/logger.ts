@@ -18,11 +18,20 @@ export interface LoggerConfig {
 let logger: PinoLogger | null = null;
 let currentRunId: string | null = null;
 
-const SENSITIVE_KEYS = ['password', 'api_key', 'secret', 'token', 'auth', 'credential', 'access_key', 'private_key'];
+const SENSITIVE_KEYS = [
+  'password',
+  'api_key',
+  'secret',
+  'token',
+  'auth',
+  'credential',
+  'access_key',
+  'private_key',
+];
 
 function isSensitiveKey(key: string): boolean {
   const lower = key.toLowerCase();
-  return SENSITIVE_KEYS.some(s => lower.includes(s));
+  return SENSITIVE_KEYS.some((s) => lower.includes(s));
 }
 
 function redactObject(obj: Record<string, unknown>): Record<string, unknown> {
@@ -162,7 +171,7 @@ export function error(message: string, meta?: Record<string, unknown> | Error): 
           stack: meta.stack,
         },
       },
-      message
+      message,
     );
   } else {
     getLogger().error(redactObject(meta || {}), message);

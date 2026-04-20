@@ -4,7 +4,11 @@ import {
   generateEscalationPolicy,
   generateStandardWorkflow,
 } from '../../../src/incident/workflow-generator.js';
-import type { AnalysisContext, IncidentWorkflow, EscalationPolicy } from '../../../src/types/domain.js';
+import type {
+  AnalysisContext,
+  IncidentWorkflow,
+  EscalationPolicy,
+} from '../../../src/types/domain.js';
 
 function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext {
   return {
@@ -52,7 +56,7 @@ describe('generateIncidentWorkflows', () => {
 
   it('includes P1 critical workflow', () => {
     const workflows = generateIncidentWorkflows(makeContext(), config);
-    const p1 = workflows.find(w => w.name.includes('P1'));
+    const p1 = workflows.find((w) => w.name.includes('P1'));
     expect(p1).toBeDefined();
     expect(p1.severity).toBe('critical');
     expect(p1.responseTime).toBe('5 minutes');
@@ -60,7 +64,7 @@ describe('generateIncidentWorkflows', () => {
 
   it('includes P2 high severity workflow', () => {
     const workflows = generateIncidentWorkflows(makeContext(), config);
-    const p2 = workflows.find(w => w.name.includes('P2'));
+    const p2 = workflows.find((w) => w.name.includes('P2'));
     expect(p2).toBeDefined();
     expect(p2.severity).toBe('high');
     expect(p2.responseTime).toBe('15 minutes');
@@ -68,14 +72,14 @@ describe('generateIncidentWorkflows', () => {
 
   it('includes P3 medium severity workflow', () => {
     const workflows = generateIncidentWorkflows(makeContext(), config);
-    const p3 = workflows.find(w => w.name.includes('P3'));
+    const p3 = workflows.find((w) => w.name.includes('P3'));
     expect(p3).toBeDefined();
     expect(p3.severity).toBe('medium');
   });
 
   it('includes P4 low severity workflow', () => {
     const workflows = generateIncidentWorkflows(makeContext(), config);
-    const p4 = workflows.find(w => w.name.includes('P4'));
+    const p4 = workflows.find((w) => w.name.includes('P4'));
     expect(p4).toBeDefined();
     expect(p4.severity).toBe('low');
     expect(p4.responseTime).toBe('Next business day');

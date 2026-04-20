@@ -143,15 +143,12 @@ export function getDefaultThresholds(): ThresholdConfig[] {
 /**
  * Calculate threshold based on historical data patterns
  */
-export function calculateDynamicThreshold(
-  values: number[],
-  multiplier: number = 3,
-): number {
+export function calculateDynamicThreshold(values: number[], multiplier: number = 3): number {
   if (values.length === 0) return 0;
 
   const mean = values.reduce((a, b) => a + b, 0) / values.length;
   const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
   const stdDev = Math.sqrt(variance);
 
-  return mean + (multiplier * stdDev);
+  return mean + multiplier * stdDev;
 }

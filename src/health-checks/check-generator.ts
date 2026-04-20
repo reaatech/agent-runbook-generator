@@ -29,7 +29,7 @@ export function generateHealthChecks(
   // Merge and deduplicate
   const allChecks = [...existingChecks];
   for (const check of platformChecks) {
-    if (!allChecks.find(c => c.endpoint === check.endpoint && c.type === check.type)) {
+    if (!allChecks.find((c) => c.endpoint === check.endpoint && c.type === check.type)) {
       allChecks.push(check);
     }
   }
@@ -166,9 +166,9 @@ export function generateKubernetesProbeYaml(
   checks: HealthCheck[],
   containerName: string = 'app',
 ): string {
-  const liveness = checks.find(c => c.type === 'liveness');
-  const readiness = checks.find(c => c.type === 'readiness');
-  const startup = checks.find(c => c.type === 'startup');
+  const liveness = checks.find((c) => c.type === 'liveness');
+  const readiness = checks.find((c) => c.type === 'readiness');
+  const startup = checks.find((c) => c.type === 'startup');
 
   let yaml = `containers:\n  - name: ${containerName}\n`;
 
@@ -215,7 +215,7 @@ export function generateKubernetesProbeYaml(
  * Generate load balancer health check configuration
  */
 export function generateLoadBalancerConfig(checks: HealthCheck[]): string {
-  const check = checks.find(c => c.type === 'liveness');
+  const check = checks.find((c) => c.type === 'liveness');
   if (!check) return '';
 
   return `health_check {
@@ -235,20 +235,17 @@ export function generateLoadBalancerConfig(checks: HealthCheck[]): string {
 function parseInterval(interval: string): number {
   const match = interval.match(/^(\d+)(s|m)?$/);
   if (!match) return 30;
-  
+
   const value = parseInt(match[1]!, 10);
   const unit = match[2] ?? 's';
-  
+
   return unit === 'm' ? value * 60 : value;
 }
 
 /**
  * Generate health check endpoint implementation
  */
-export function generateHealthCheckEndpoint(
-  checks: HealthCheck[],
-  language: string,
-): string {
+export function generateHealthCheckEndpoint(checks: HealthCheck[], language: string): string {
   switch (language) {
     case 'typescript':
       return generateTypeScriptEndpoint(checks);

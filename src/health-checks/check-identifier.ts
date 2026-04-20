@@ -16,10 +16,7 @@ export interface HealthCheckCandidate {
 /**
  * Identify existing health checks in the codebase
  */
-export function identifyHealthChecks(
-  repoPath: string,
-  context: AnalysisContext,
-): HealthCheck[] {
+export function identifyHealthChecks(repoPath: string, context: AnalysisContext): HealthCheck[] {
   const checks: HealthCheck[] = [];
   const candidates: HealthCheckCandidate[] = [];
 
@@ -49,7 +46,7 @@ export function identifyHealthChecks(
   // Add recommended checks based on dependencies
   const recommendedChecks = generateRecommendedChecks(context);
   for (const check of recommendedChecks) {
-    if (!checks.find(c => c.endpoint === check.endpoint)) {
+    if (!checks.find((c) => c.endpoint === check.endpoint)) {
       checks.push(check);
     }
   }
@@ -75,7 +72,9 @@ function extractHealthCheckPatterns(content: string): Omit<HealthCheckCandidate,
   }
 
   // Match FastAPI/Flask health check routes
-  const pythonMatches = content.matchAll(/@(app|router)\.get\(['"`]\/(health|ready|live|startup)['"`]/g);
+  const pythonMatches = content.matchAll(
+    /@(app|router)\.get\(['"`]\/(health|ready|live|startup)['"`]/g,
+  );
   for (const match of pythonMatches) {
     const endpoint = match[2]!;
     patterns.push({
@@ -86,7 +85,9 @@ function extractHealthCheckPatterns(content: string): Omit<HealthCheckCandidate,
   }
 
   // Match Spring Boot actuator endpoints
-  const springMatches = content.matchAll(/@(GetMapping|RequestMapping)\(['"`]\/(health|ready|live)['"`]/g);
+  const springMatches = content.matchAll(
+    /@(GetMapping|RequestMapping)\(['"`]\/(health|ready|live)['"`]/g,
+  );
   for (const match of springMatches) {
     const endpoint = match[2]!;
     patterns.push({
@@ -162,7 +163,7 @@ function generateRecommendedChecks(context: AnalysisContext): HealthCheck[] {
   });
 
   // Database health check if database dependency exists
-  const hasDatabase = context.externalServices.some(s => s.type === 'database');
+  const hasDatabase = context.externalServices.some((s) => s.type === 'database');
   if (hasDatabase) {
     checks.push({
       endpoint: '/health/database',
@@ -175,7 +176,7 @@ function generateRecommendedChecks(context: AnalysisContext): HealthCheck[] {
   }
 
   // Cache health check if cache dependency exists
-  const hasCache = context.externalServices.some(s => s.type === 'cache');
+  const hasCache = context.externalServices.some((s) => s.type === 'cache');
   if (hasCache) {
     checks.push({
       endpoint: '/health/cache',

@@ -54,27 +54,35 @@ CMD ["node", "src/index.js"]`,
 
   describe('analyze command', () => {
     it('should analyze a repository and output JSON', async () => {
-      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
-        const child = spawn('node', [cliPath, 'analyze', testRepoPath, '--json'], {
-          cwd: process.cwd(),
-        });
+      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>(
+        (resolve) => {
+          const child = spawn('node', [cliPath, 'analyze', testRepoPath, '--json'], {
+            cwd: process.cwd(),
+          });
 
-        let stdout = '';
-        let stderr = '';
+          let stdout = '';
+          let stderr = '';
 
-        child.stdout?.on('data', (data) => { stdout += data.toString(); });
-        child.stderr?.on('data', (data) => { stderr += data.toString(); });
+          child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+          });
+          child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+          });
 
-        child.on('close', (code) => {
-          resolve({ stdout, stderr, exitCode: code ?? 0 });
-        });
-      });
+          child.on('close', (code) => {
+            resolve({ stdout, stderr, exitCode: code ?? 0 });
+          });
+        },
+      );
 
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toBeTruthy();
 
       let parsed;
-      expect(() => { parsed = JSON.parse(result.stdout); }).not.toThrow();
+      expect(() => {
+        parsed = JSON.parse(result.stdout);
+      }).not.toThrow();
 
       expect(parsed).toHaveProperty('repository');
       expect(parsed.repository).toHaveProperty('language');
@@ -82,41 +90,57 @@ CMD ["node", "src/index.js"]`,
     });
 
     it('should respect --depth option', async () => {
-      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
-        const child = spawn('node', [cliPath, 'analyze', testRepoPath, '--depth', '5', '--json'], {
-          cwd: process.cwd(),
-        });
+      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>(
+        (resolve) => {
+          const child = spawn(
+            'node',
+            [cliPath, 'analyze', testRepoPath, '--depth', '5', '--json'],
+            {
+              cwd: process.cwd(),
+            },
+          );
 
-        let stdout = '';
-        let stderr = '';
+          let stdout = '';
+          let stderr = '';
 
-        child.stdout?.on('data', (data) => { stdout += data.toString(); });
-        child.stderr?.on('data', (data) => { stderr += data.toString(); });
+          child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+          });
+          child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+          });
 
-        child.on('close', (code) => {
-          resolve({ stdout, stderr, exitCode: code ?? 0 });
-        });
-      });
+          child.on('close', (code) => {
+            resolve({ stdout, stderr, exitCode: code ?? 0 });
+          });
+        },
+      );
 
       expect(result.exitCode).toBe(0);
     });
 
     it('should handle missing repository path', async () => {
-      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
-        const child = spawn('node', [cliPath, 'analyze', '/nonexistent/path', '--json'], {
-          cwd: process.cwd(),
-        });
+      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>(
+        (resolve) => {
+          const child = spawn('node', [cliPath, 'analyze', '/nonexistent/path', '--json'], {
+            cwd: process.cwd(),
+          });
 
-        let stdout = '';
-        let stderr = '';
+          let stdout = '';
+          let stderr = '';
 
-        child.stdout?.on('data', (data) => { stdout += data.toString(); });
-        child.stderr?.on('data', (data) => { stderr += data.toString(); });
+          child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+          });
+          child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+          });
 
-        child.on('close', (code) => {
-          resolve({ stdout, stderr, exitCode: code ?? 0 });
-        });
-      });
+          child.on('close', (code) => {
+            resolve({ stdout, stderr, exitCode: code ?? 0 });
+          });
+        },
+      );
 
       expect(result.exitCode).not.toBe(0);
     });
@@ -126,23 +150,29 @@ CMD ["node", "src/index.js"]`,
     it('should generate a runbook and write to file', async () => {
       const outputPath = join(testDir, 'generated-runbook.md');
 
-      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
-        const child = spawn(
-          'node',
-          [cliPath, 'generate', testRepoPath, '-o', outputPath, '--provider', 'mock'],
-          { cwd: process.cwd() },
-        );
+      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>(
+        (resolve) => {
+          const child = spawn(
+            'node',
+            [cliPath, 'generate', testRepoPath, '-o', outputPath, '--provider', 'mock'],
+            { cwd: process.cwd() },
+          );
 
-        let stdout = '';
-        let stderr = '';
+          let stdout = '';
+          let stderr = '';
 
-        child.stdout?.on('data', (data) => { stdout += data.toString(); });
-        child.stderr?.on('data', (data) => { stderr += data.toString(); });
+          child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+          });
+          child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+          });
 
-        child.on('close', (code) => {
-          resolve({ stdout, stderr, exitCode: code ?? 0 });
-        });
-      });
+          child.on('close', (code) => {
+            resolve({ stdout, stderr, exitCode: code ?? 0 });
+          });
+        },
+      );
 
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain('Runbook generated:');
@@ -154,28 +184,36 @@ CMD ["node", "src/index.js"]`,
     });
 
     it('should output JSON with --json flag', async () => {
-      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
-        const child = spawn(
-          'node',
-          [cliPath, 'generate', testRepoPath, '--json', '--provider', 'mock'],
-          { cwd: process.cwd() },
-        );
+      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>(
+        (resolve) => {
+          const child = spawn(
+            'node',
+            [cliPath, 'generate', testRepoPath, '--json', '--provider', 'mock'],
+            { cwd: process.cwd() },
+          );
 
-        let stdout = '';
-        let stderr = '';
+          let stdout = '';
+          let stderr = '';
 
-        child.stdout?.on('data', (data) => { stdout += data.toString(); });
-        child.stderr?.on('data', (data) => { stderr += data.toString(); });
+          child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+          });
+          child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+          });
 
-        child.on('close', (code) => {
-          resolve({ stdout, stderr, exitCode: code ?? 0 });
-        });
-      });
+          child.on('close', (code) => {
+            resolve({ stdout, stderr, exitCode: code ?? 0 });
+          });
+        },
+      );
 
       expect(result.exitCode).toBe(0);
 
       let parsed;
-      expect(() => { parsed = JSON.parse(result.stdout); }).not.toThrow();
+      expect(() => {
+        parsed = JSON.parse(result.stdout);
+      }).not.toThrow();
       expect(parsed).toHaveProperty('title');
       expect(parsed).toHaveProperty('sections');
     });
@@ -183,23 +221,39 @@ CMD ["node", "src/index.js"]`,
     it('should accept --format option', async () => {
       const outputPath = join(testDir, 'generated-runbook.html');
 
-      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
-        const child = spawn(
-          'node',
-          [cliPath, 'generate', testRepoPath, '-o', outputPath, '--format', 'html', '--provider', 'mock'],
-          { cwd: process.cwd() },
-        );
+      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>(
+        (resolve) => {
+          const child = spawn(
+            'node',
+            [
+              cliPath,
+              'generate',
+              testRepoPath,
+              '-o',
+              outputPath,
+              '--format',
+              'html',
+              '--provider',
+              'mock',
+            ],
+            { cwd: process.cwd() },
+          );
 
-        let stdout = '';
-        let stderr = '';
+          let stdout = '';
+          let stderr = '';
 
-        child.stdout?.on('data', (data) => { stdout += data.toString(); });
-        child.stderr?.on('data', (data) => { stderr += data.toString(); });
+          child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+          });
+          child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+          });
 
-        child.on('close', (code) => {
-          resolve({ stdout, stderr, exitCode: code ?? 0 });
-        });
-      });
+          child.on('close', (code) => {
+            resolve({ stdout, stderr, exitCode: code ?? 0 });
+          });
+        },
+      );
 
       expect(result.exitCode).toBe(0);
 
@@ -211,7 +265,11 @@ CMD ["node", "src/index.js"]`,
     it('should generate markdown that validates successfully in CI mode', async () => {
       const outputPath = join(testDir, 'validated-runbook.md');
 
-      const generateResult = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
+      const generateResult = await new Promise<{
+        stdout: string;
+        stderr: string;
+        exitCode: number;
+      }>((resolve) => {
         const child = spawn(
           'node',
           [cliPath, 'generate', testRepoPath, '-o', outputPath, '--provider', 'mock'],
@@ -221,8 +279,12 @@ CMD ["node", "src/index.js"]`,
         let stdout = '';
         let stderr = '';
 
-        child.stdout?.on('data', (data) => { stdout += data.toString(); });
-        child.stderr?.on('data', (data) => { stderr += data.toString(); });
+        child.stdout?.on('data', (data) => {
+          stdout += data.toString();
+        });
+        child.stderr?.on('data', (data) => {
+          stderr += data.toString();
+        });
 
         child.on('close', (code) => {
           resolve({ stdout, stderr, exitCode: code ?? 0 });
@@ -231,7 +293,11 @@ CMD ["node", "src/index.js"]`,
 
       expect(generateResult.exitCode).toBe(0);
 
-      const validateResult = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
+      const validateResult = await new Promise<{
+        stdout: string;
+        stderr: string;
+        exitCode: number;
+      }>((resolve) => {
         const child = spawn('node', [cliPath, 'validate', outputPath, '--ci'], {
           cwd: process.cwd(),
         });
@@ -239,8 +305,12 @@ CMD ["node", "src/index.js"]`,
         let stdout = '';
         let stderr = '';
 
-        child.stdout?.on('data', (data) => { stdout += data.toString(); });
-        child.stderr?.on('data', (data) => { stderr += data.toString(); });
+        child.stdout?.on('data', (data) => {
+          stdout += data.toString();
+        });
+        child.stderr?.on('data', (data) => {
+          stderr += data.toString();
+        });
 
         child.on('close', (code) => {
           resolve({ stdout, stderr, exitCode: code ?? 0 });
@@ -260,31 +330,61 @@ CMD ["node", "src/index.js"]`,
         JSON.stringify({
           title: 'Test Runbook',
           sections: [
-            { title: 'Service Overview', content: 'This is a test service overview with substantial content that is longer than 100 characters to pass validation.' },
-            { title: 'Alerts', content: 'This section defines all the alert rules and thresholds for monitoring the service, including CPU usage, memory consumption, and error rates.' },
-            { title: 'Dashboards', content: 'This section contains Grafana dashboard configurations for visualizing service metrics, including request rates, latency percentiles, and error distributions.' },
-            { title: 'Failure Modes', content: 'This section documents potential failure modes including database connection failures, external API timeouts, and downstream service unavailability scenarios.' },
-            { title: 'Rollback Procedures', content: 'This section provides step-by-step instructions for rolling back deployments, including database migrations, configuration changes, and service restarts.' },
-            { title: 'Health Checks', content: 'This section defines liveness and readiness probe configurations for Kubernetes deployments, including HTTP endpoints and TCP socket checks.' },
+            {
+              title: 'Service Overview',
+              content:
+                'This is a test service overview with substantial content that is longer than 100 characters to pass validation.',
+            },
+            {
+              title: 'Alerts',
+              content:
+                'This section defines all the alert rules and thresholds for monitoring the service, including CPU usage, memory consumption, and error rates.',
+            },
+            {
+              title: 'Dashboards',
+              content:
+                'This section contains Grafana dashboard configurations for visualizing service metrics, including request rates, latency percentiles, and error distributions.',
+            },
+            {
+              title: 'Failure Modes',
+              content:
+                'This section documents potential failure modes including database connection failures, external API timeouts, and downstream service unavailability scenarios.',
+            },
+            {
+              title: 'Rollback Procedures',
+              content:
+                'This section provides step-by-step instructions for rolling back deployments, including database migrations, configuration changes, and service restarts.',
+            },
+            {
+              title: 'Health Checks',
+              content:
+                'This section defines liveness and readiness probe configurations for Kubernetes deployments, including HTTP endpoints and TCP socket checks.',
+            },
           ],
         }),
       );
 
-      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
-        const child = spawn('node', [cliPath, 'validate', runbookPath, '--ci'], {
-          cwd: process.cwd(),
-        });
+      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>(
+        (resolve) => {
+          const child = spawn('node', [cliPath, 'validate', runbookPath, '--ci'], {
+            cwd: process.cwd(),
+          });
 
-        let stdout = '';
-        let stderr = '';
+          let stdout = '';
+          let stderr = '';
 
-        child.stdout?.on('data', (data) => { stdout += data.toString(); });
-        child.stderr?.on('data', (data) => { stderr += data.toString(); });
+          child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+          });
+          child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+          });
 
-        child.on('close', (code) => {
-          resolve({ stdout, stderr, exitCode: code ?? 0 });
-        });
-      });
+          child.on('close', (code) => {
+            resolve({ stdout, stderr, exitCode: code ?? 0 });
+          });
+        },
+      );
 
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain('PASSED');
@@ -296,27 +396,31 @@ CMD ["node", "src/index.js"]`,
         runbookPath,
         JSON.stringify({
           title: 'Incomplete Runbook',
-          sections: [
-            { title: 'Service Overview', content: 'Overview' },
-          ],
+          sections: [{ title: 'Service Overview', content: 'Overview' }],
         }),
       );
 
-      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
-        const child = spawn('node', [cliPath, 'validate', runbookPath, '--ci'], {
-          cwd: process.cwd(),
-        });
+      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>(
+        (resolve) => {
+          const child = spawn('node', [cliPath, 'validate', runbookPath, '--ci'], {
+            cwd: process.cwd(),
+          });
 
-        let stdout = '';
-        let stderr = '';
+          let stdout = '';
+          let stderr = '';
 
-        child.stdout?.on('data', (data) => { stdout += data.toString(); });
-        child.stderr?.on('data', (data) => { stderr += data.toString(); });
+          child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+          });
+          child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+          });
 
-        child.on('close', (code) => {
-          resolve({ stdout, stderr, exitCode: code ?? 0 });
-        });
-      });
+          child.on('close', (code) => {
+            resolve({ stdout, stderr, exitCode: code ?? 0 });
+          });
+        },
+      );
 
       expect(result.exitCode).toBe(3);
       expect(result.stdout).toContain('FAILED');
@@ -329,7 +433,10 @@ CMD ["node", "src/index.js"]`,
         JSON.stringify({
           title: 'Test Runbook',
           sections: [
-            { title: 'Service Overview', content: 'This is a test service overview with substantial content.' },
+            {
+              title: 'Service Overview',
+              content: 'This is a test service overview with substantial content.',
+            },
             { title: 'Alerts', content: 'Alert definitions.' },
             { title: 'Dashboards', content: 'Dashboard configurations.' },
             { title: 'Failure Modes', content: 'Failure mode analysis.' },
@@ -339,46 +446,60 @@ CMD ["node", "src/index.js"]`,
         }),
       );
 
-      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
-        const child = spawn('node', [cliPath, 'validate', runbookPath, '--json'], {
-          cwd: process.cwd(),
-        });
+      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>(
+        (resolve) => {
+          const child = spawn('node', [cliPath, 'validate', runbookPath, '--json'], {
+            cwd: process.cwd(),
+          });
 
-        let stdout = '';
-        let stderr = '';
+          let stdout = '';
+          let stderr = '';
 
-        child.stdout?.on('data', (data) => { stdout += data.toString(); });
-        child.stderr?.on('data', (data) => { stderr += data.toString(); });
+          child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+          });
+          child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+          });
 
-        child.on('close', (code) => {
-          resolve({ stdout, stderr, exitCode: code ?? 0 });
-        });
-      });
+          child.on('close', (code) => {
+            resolve({ stdout, stderr, exitCode: code ?? 0 });
+          });
+        },
+      );
 
       expect(result.exitCode).toBe(0);
 
       let parsed;
-      expect(() => { parsed = JSON.parse(result.stdout); }).not.toThrow();
+      expect(() => {
+        parsed = JSON.parse(result.stdout);
+      }).not.toThrow();
       expect(parsed).toHaveProperty('passed');
       expect(parsed).toHaveProperty('completeness');
     });
 
     it('should handle missing runbook file', async () => {
-      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
-        const child = spawn('node', [cliPath, 'validate', '/nonexistent/runbook.json'], {
-          cwd: process.cwd(),
-        });
+      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>(
+        (resolve) => {
+          const child = spawn('node', [cliPath, 'validate', '/nonexistent/runbook.json'], {
+            cwd: process.cwd(),
+          });
 
-        let stdout = '';
-        let stderr = '';
+          let stdout = '';
+          let stderr = '';
 
-        child.stdout?.on('data', (data) => { stdout += data.toString(); });
-        child.stderr?.on('data', (data) => { stderr += data.toString(); });
+          child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+          });
+          child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+          });
 
-        child.on('close', (code) => {
-          resolve({ stdout, stderr, exitCode: code ?? 0 });
-        });
-      });
+          child.on('close', (code) => {
+            resolve({ stdout, stderr, exitCode: code ?? 0 });
+          });
+        },
+      );
 
       expect(result.exitCode).toBe(1);
     });
@@ -386,25 +507,31 @@ CMD ["node", "src/index.js"]`,
 
   describe('serve command', () => {
     it('should start MCP server and list available tools', async () => {
-      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
-        const child = spawn('node', [cliPath, 'serve', '--port', '39999'], {
-          cwd: process.cwd(),
-        });
+      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>(
+        (resolve) => {
+          const child = spawn('node', [cliPath, 'serve', '--port', '39999'], {
+            cwd: process.cwd(),
+          });
 
-        let stdout = '';
-        let stderr = '';
+          let stdout = '';
+          let stderr = '';
 
-        child.stdout?.on('data', (data) => { stdout += data.toString(); });
-        child.stderr?.on('data', (data) => { stderr += data.toString(); });
+          child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+          });
+          child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+          });
 
-        setTimeout(() => {
-          child.kill('SIGTERM');
-        }, 2000);
+          setTimeout(() => {
+            child.kill('SIGTERM');
+          }, 2000);
 
-        child.on('close', (code) => {
-          resolve({ stdout, stderr, exitCode: code ?? 0 });
-        });
-      });
+          child.on('close', (code) => {
+            resolve({ stdout, stderr, exitCode: code ?? 0 });
+          });
+        },
+      );
 
       expect(result.stdout).toContain('MCP server started');
       expect(result.stdout).toContain('runbook.analyze.repository');
@@ -415,19 +542,25 @@ CMD ["node", "src/index.js"]`,
 
   describe('--help flag', () => {
     it('should display help for analyze command', async () => {
-      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
-        const child = spawn('node', [cliPath, 'analyze', '--help']);
+      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>(
+        (resolve) => {
+          const child = spawn('node', [cliPath, 'analyze', '--help']);
 
-        let stdout = '';
-        let stderr = '';
+          let stdout = '';
+          let stderr = '';
 
-        child.stdout?.on('data', (data) => { stdout += data.toString(); });
-        child.stderr?.on('data', (data) => { stderr += data.toString(); });
+          child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+          });
+          child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+          });
 
-        child.on('close', (code) => {
-          resolve({ stdout, stderr, exitCode: code ?? 0 });
-        });
-      });
+          child.on('close', (code) => {
+            resolve({ stdout, stderr, exitCode: code ?? 0 });
+          });
+        },
+      );
 
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain('analyze');
@@ -436,19 +569,25 @@ CMD ["node", "src/index.js"]`,
     });
 
     it('should display help for generate command', async () => {
-      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
-        const child = spawn('node', [cliPath, 'generate', '--help']);
+      const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>(
+        (resolve) => {
+          const child = spawn('node', [cliPath, 'generate', '--help']);
 
-        let stdout = '';
-        let stderr = '';
+          let stdout = '';
+          let stderr = '';
 
-        child.stdout?.on('data', (data) => { stdout += data.toString(); });
-        child.stderr?.on('data', (data) => { stderr += data.toString(); });
+          child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+          });
+          child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+          });
 
-        child.on('close', (code) => {
-          resolve({ stdout, stderr, exitCode: code ?? 0 });
-        });
-      });
+          child.on('close', (code) => {
+            resolve({ stdout, stderr, exitCode: code ?? 0 });
+          });
+        },
+      );
 
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain('generate');

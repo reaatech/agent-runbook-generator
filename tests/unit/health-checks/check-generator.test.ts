@@ -44,9 +44,30 @@ function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext 
 }
 
 const k8sChecks: HealthCheck[] = [
-  { type: 'liveness', endpoint: '/health', interval: '10s', timeout: '5s', name: 'liveness', successCriteria: 'HTTP 200' },
-  { type: 'readiness', endpoint: '/health/ready', interval: '5s', timeout: '3s', name: 'readiness', successCriteria: 'HTTP 200' },
-  { type: 'startup', endpoint: '/health/startup', interval: '10s', timeout: '5s', name: 'startup', successCriteria: 'HTTP 200' },
+  {
+    type: 'liveness',
+    endpoint: '/health',
+    interval: '10s',
+    timeout: '5s',
+    name: 'liveness',
+    successCriteria: 'HTTP 200',
+  },
+  {
+    type: 'readiness',
+    endpoint: '/health/ready',
+    interval: '5s',
+    timeout: '3s',
+    name: 'readiness',
+    successCriteria: 'HTTP 200',
+  },
+  {
+    type: 'startup',
+    endpoint: '/health/startup',
+    interval: '10s',
+    timeout: '5s',
+    name: 'startup',
+    successCriteria: 'HTTP 200',
+  },
 ];
 
 describe('generateKubernetesProbeYaml', () => {
@@ -96,7 +117,7 @@ describe('generateLoadBalancerConfig', () => {
   });
 
   it('returns empty string when no liveness check', () => {
-    const noLiveness = k8sChecks.filter(c => c.type !== 'liveness');
+    const noLiveness = k8sChecks.filter((c) => c.type !== 'liveness');
     const config = generateLoadBalancerConfig(noLiveness);
     expect(config).toBe('');
   });
@@ -141,7 +162,7 @@ describe('generateHealthChecks', () => {
       serviceName: 'test-service',
     });
     expect(checks.length).toBeGreaterThan(0);
-    const types = checks.map(c => c.type);
+    const types = checks.map((c) => c.type);
     expect(types).toContain('liveness');
     expect(types).toContain('readiness');
     fs.rmSync(tmpDir, { recursive: true });
@@ -166,7 +187,7 @@ describe('generateHealthChecks', () => {
       makeContext({ externalServices: [{ type: 'database', name: 'postgres' }] }),
       { platform: 'kubernetes', serviceName: 'test-service' },
     );
-    const dbCheck = checks.find(c => c.endpoint === '/health/database');
+    const dbCheck = checks.find((c) => c.endpoint === '/health/database');
     expect(dbCheck).toBeDefined();
     expect(dbCheck!.type).toBe('deep');
     fs.rmSync(tmpDir, { recursive: true });

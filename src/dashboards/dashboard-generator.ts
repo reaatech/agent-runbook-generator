@@ -266,27 +266,31 @@ export function formatDashboardForGrafana(dashboard: DashboardConfig): string {
     title: dashboard.title,
     refresh: dashboard.refreshInterval,
     time: { from: `now-${dashboard.timeRange}`, to: 'now' },
-    panels: dashboard.panels.map(panel => ({
+    panels: dashboard.panels.map((panel) => ({
       id: panel.id,
       title: panel.title,
       type: panel.type,
       gridPos: panel.gridPos,
-      targets: [{
-        expr: panel.query,
-        legendFormat: panel.legend,
-      }],
+      targets: [
+        {
+          expr: panel.query,
+          legendFormat: panel.legend,
+        },
+      ],
       fieldConfig: {
         defaults: {
           unit: panel.unit,
-          thresholds: panel.thresholds ? {
-            mode: 'absolute',
-            steps: panel.thresholds.map(t => ({ value: t.value, color: t.color })),
-          } : undefined,
+          thresholds: panel.thresholds
+            ? {
+                mode: 'absolute',
+                steps: panel.thresholds.map((t) => ({ value: t.value, color: t.color })),
+              }
+            : undefined,
         },
       },
     })),
     templating: {
-      list: dashboard.variables?.map(v => ({
+      list: dashboard.variables?.map((v) => ({
         name: v.name,
         type: v.type,
         query: v.query,
@@ -303,7 +307,7 @@ export function formatDashboardForGrafana(dashboard: DashboardConfig): string {
  */
 export function formatDashboardForCloudWatch(dashboard: DashboardConfig): string {
   const cloudwatchDashboard = {
-    widgets: dashboard.panels.map(panel => ({
+    widgets: dashboard.panels.map((panel) => ({
       type: panel.type === 'graph' ? 'metric' : 'text',
       width: panel.gridPos?.w ?? 6,
       height: panel.gridPos?.h ?? 6,

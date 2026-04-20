@@ -13,7 +13,11 @@ export function registerValidateTools(): Tool[] {
         type: 'object',
         properties: {
           runbook: { type: 'object', description: 'The runbook to validate' },
-          required_sections: { type: 'array', items: { type: 'string' }, description: 'List of required sections' },
+          required_sections: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'List of required sections',
+          },
         },
         required: ['runbook'],
       },
@@ -25,7 +29,10 @@ export function registerValidateTools(): Tool[] {
         type: 'object',
         properties: {
           runbook: { type: 'object', description: 'The runbook to validate' },
-          analysis_context: { type: 'object', description: 'Current analysis context for comparison' },
+          analysis_context: {
+            type: 'object',
+            description: 'Current analysis context for comparison',
+          },
         },
         required: ['runbook', 'analysis_context'],
       },
@@ -48,11 +55,18 @@ export function registerValidateTools(): Tool[] {
         type: 'object',
         properties: {
           runbook: { type: 'object', description: 'The runbook to validate' },
-          analysis_context: { type: 'object', description: 'Current analysis context for accuracy validation' },
+          analysis_context: {
+            type: 'object',
+            description: 'Current analysis context for accuracy validation',
+          },
           thresholds: {
             type: 'object',
             properties: {
-              completeness_min: { type: 'number', description: 'Minimum completeness score', default: 0.8 },
+              completeness_min: {
+                type: 'number',
+                description: 'Minimum completeness score',
+                default: 0.8,
+              },
               accuracy_min: { type: 'number', description: 'Minimum accuracy score', default: 0.7 },
             },
           },

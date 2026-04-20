@@ -2,7 +2,10 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { identifyHealthChecks, suggestHealthChecks } from '../../../src/health-checks/check-identifier.js';
+import {
+  identifyHealthChecks,
+  suggestHealthChecks,
+} from '../../../src/health-checks/check-identifier.js';
 import type { AnalysisContext } from '../../../src/types/domain.js';
 
 function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext {
@@ -60,21 +63,21 @@ describe('identifyHealthChecks', () => {
 
   it('finds health check endpoints from Express routes', () => {
     const checks = identifyHealthChecks(fixtureDir, makeContext());
-    const healthCheck = checks.find(c => c.endpoint === '/health');
+    const healthCheck = checks.find((c) => c.endpoint === '/health');
     expect(healthCheck).toBeDefined();
     expect(healthCheck!.type).toBe('liveness');
   });
 
   it('finds readiness endpoints', () => {
     const checks = identifyHealthChecks(fixtureDir, makeContext());
-    const readyCheck = checks.find(c => c.endpoint === '/ready');
+    const readyCheck = checks.find((c) => c.endpoint === '/ready');
     expect(readyCheck).toBeDefined();
     expect(readyCheck!.type).toBe('readiness');
   });
 
   it('adds recommended deep check', () => {
     const checks = identifyHealthChecks(fixtureDir, makeContext());
-    const deep = checks.find(c => c.endpoint === '/health/deep');
+    const deep = checks.find((c) => c.endpoint === '/health/deep');
     expect(deep).toBeDefined();
     expect(deep!.type).toBe('deep');
   });
@@ -84,7 +87,7 @@ describe('identifyHealthChecks', () => {
       fixtureDir,
       makeContext({ externalServices: [{ type: 'database', name: 'postgres' }] }),
     );
-    const dbCheck = checks.find(c => c.endpoint === '/health/database');
+    const dbCheck = checks.find((c) => c.endpoint === '/health/database');
     expect(dbCheck).toBeDefined();
   });
 
@@ -93,13 +96,13 @@ describe('identifyHealthChecks', () => {
       fixtureDir,
       makeContext({ externalServices: [{ type: 'cache', name: 'redis' }] }),
     );
-    const cacheCheck = checks.find(c => c.endpoint === '/health/cache');
+    const cacheCheck = checks.find((c) => c.endpoint === '/health/cache');
     expect(cacheCheck).toBeDefined();
   });
 
   it('does not add database check without database dependency', () => {
     const checks = identifyHealthChecks(fixtureDir, makeContext());
-    const dbCheck = checks.find(c => c.endpoint === '/health/database');
+    const dbCheck = checks.find((c) => c.endpoint === '/health/database');
     expect(dbCheck).toBeUndefined();
   });
 });
@@ -107,7 +110,7 @@ describe('identifyHealthChecks', () => {
 describe('suggestHealthChecks', () => {
   it('suggests liveness and readiness for all service types', () => {
     const checks = suggestHealthChecks('generic');
-    const types = checks.map(c => c.type);
+    const types = checks.map((c) => c.type);
     expect(types).toContain('liveness');
     expect(types).toContain('readiness');
     expect(checks.length).toBeGreaterThanOrEqual(2);
@@ -115,25 +118,25 @@ describe('suggestHealthChecks', () => {
 
   it('suggests deep check for api services', () => {
     const checks = suggestHealthChecks('api');
-    const endpoints = checks.map(c => c.endpoint);
+    const endpoints = checks.map((c) => c.endpoint);
     expect(endpoints).toContain('/health/deep');
   });
 
   it('suggests deep check for web services', () => {
     const checks = suggestHealthChecks('web-api');
-    const endpoints = checks.map(c => c.endpoint);
+    const endpoints = checks.map((c) => c.endpoint);
     expect(endpoints).toContain('/health/deep');
   });
 
   it('suggests queue check for worker services', () => {
     const checks = suggestHealthChecks('worker');
-    const endpoints = checks.map(c => c.endpoint);
+    const endpoints = checks.map((c) => c.endpoint);
     expect(endpoints).toContain('/health/queue');
   });
 
   it('suggests queue check for queue services', () => {
     const checks = suggestHealthChecks('queue-processor');
-    const endpoints = checks.map(c => c.endpoint);
+    const endpoints = checks.map((c) => c.endpoint);
     expect(endpoints).toContain('/health/queue');
   });
 });

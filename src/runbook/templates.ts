@@ -403,26 +403,24 @@ export function getTemplateById(id: string): RunbookTemplate | undefined {
     HANDOFF_TEMPLATE,
     POSTMORTEM_TEMPLATE,
   ];
-  return templates.find(t => t.id === id);
+  return templates.find((t) => t.id === id);
 }
 
 /**
  * Get all templates
  */
 export function getAllTemplates(): RunbookTemplate[] {
-  return [
-    STANDARD_SRE_TEMPLATE,
-    INCIDENT_RESPONSE_TEMPLATE,
-    HANDOFF_TEMPLATE,
-    POSTMORTEM_TEMPLATE,
-  ];
+  return [STANDARD_SRE_TEMPLATE, INCIDENT_RESPONSE_TEMPLATE, HANDOFF_TEMPLATE, POSTMORTEM_TEMPLATE];
 }
 
 /**
  * Apply template with variable substitution
  */
-export function applyTemplate(template: RunbookTemplate, variables: Record<string, string>): RunbookTemplate {
-  const substitutedSections = template.sections.map(section => ({
+export function applyTemplate(
+  template: RunbookTemplate,
+  variables: Record<string, string>,
+): RunbookTemplate {
+  const substitutedSections = template.sections.map((section) => ({
     ...section,
     content: section.content.replace(/{(\w+)}/g, (match, key) => variables[key] ?? match),
   }));

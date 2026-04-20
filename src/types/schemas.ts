@@ -4,13 +4,7 @@
 
 import { z } from 'zod';
 
-export const ServiceTypeSchema = z.enum([
-  'web-api',
-  'worker',
-  'lambda',
-  'function',
-  'unknown',
-]);
+export const ServiceTypeSchema = z.enum(['web-api', 'worker', 'lambda', 'function', 'unknown']);
 
 export const ProgrammingLanguageSchema = z.enum([
   'typescript',
@@ -61,12 +55,7 @@ export const MonitoringPlatformSchema = z.enum([
 
 export const AlertSeveritySchema = z.enum(['critical', 'warning', 'info']);
 
-export const AlertTypeSchema = z.enum([
-  'slo_burn_rate',
-  'resource',
-  'application',
-  'synthetic',
-]);
+export const AlertTypeSchema = z.enum(['slo_burn_rate', 'resource', 'application', 'synthetic']);
 
 export const FailureCategorySchema = z.enum([
   'dependency',
@@ -81,20 +70,21 @@ export const FailureCategorySchema = z.enum([
   'external',
 ]);
 
-export const FailureSeveritySchema = z.enum([
-  'critical',
-  'high',
-  'medium',
-  'low',
-]);
+export const FailureSeveritySchema = z.enum(['critical', 'high', 'medium', 'low']);
 
 export const AnalysisDepthSchema = z.enum(['shallow', 'medium', 'deep']);
 
 export const ExportFormatSchema = z.enum(['markdown', 'html', 'pdf', 'json']);
 
 export const IncidentSeveritySchema = z.enum([
-  'sev1', 'sev2', 'sev3', 'sev4',
-  'critical', 'high', 'medium', 'low',
+  'sev1',
+  'sev2',
+  'sev3',
+  'sev4',
+  'critical',
+  'high',
+  'medium',
+  'low',
 ]);
 
 export const ServiceDefinitionSchema = z.object({
@@ -144,15 +134,7 @@ export const DependencySchema = z.object({
   name: z.string(),
   version: z.string().optional(),
   purpose: z.string(),
-  category: z.enum([
-    'framework',
-    'database',
-    'cache',
-    'queue',
-    'storage',
-    'monitoring',
-    'utility',
-  ]),
+  category: z.enum(['framework', 'database', 'cache', 'queue', 'storage', 'monitoring', 'utility']),
 });
 
 export const DependencyNodeSchema = z.object({
@@ -494,7 +476,14 @@ export const RunbookSectionSchema: z.ZodType<{
   title: string;
   order: number;
   content: string;
-  subsections: { id: string; title: string; order: number; content: string; subsections: unknown[]; crossRefs?: string[] }[];
+  subsections: {
+    id: string;
+    title: string;
+    order: number;
+    content: string;
+    subsections: unknown[];
+    crossRefs?: string[];
+  }[];
   crossRefs?: string[];
 }> = z.object({
   id: z.string(),
@@ -621,9 +610,11 @@ export const GenerateDashboardInputSchema = z.object({
 });
 
 export const GenerateRollbackInputSchema = z.object({
-  deployment_config: z.object({
-    platform: DeploymentPlatformSchema,
-  }).optional(),
+  deployment_config: z
+    .object({
+      platform: DeploymentPlatformSchema,
+    })
+    .optional(),
   failure_scenarios: z.array(z.string()).optional(),
 });
 
@@ -631,9 +622,11 @@ export const GenerateIncidentWorkflowInputSchema = z.object({
   service_context: z.object({
     serviceDefinition: ServiceDefinitionSchema,
   }),
-  team_config: z.object({
-    teamName: z.string().optional(),
-  }).optional(),
+  team_config: z
+    .object({
+      teamName: z.string().optional(),
+    })
+    .optional(),
 });
 
 export const ValidateCompletenessInputSchema = z.object({
@@ -643,10 +636,12 @@ export const ValidateCompletenessInputSchema = z.object({
 
 export const ValidateAccuracyInputSchema = z.object({
   runbook: z.record(z.unknown()),
-  analysis_context: z.object({
-    serviceDefinition: ServiceDefinitionSchema,
-    repositoryAnalysis: RepositoryAnalysisSchema,
-  }).optional(),
+  analysis_context: z
+    .object({
+      serviceDefinition: ServiceDefinitionSchema,
+      repositoryAnalysis: RepositoryAnalysisSchema,
+    })
+    .optional(),
 });
 
 export const ValidateLinksInputSchema = z.object({
@@ -655,8 +650,10 @@ export const ValidateLinksInputSchema = z.object({
 
 export const ValidateCIInputSchema = z.object({
   runbook: z.record(z.unknown()),
-  thresholds: z.object({
-    completeness_min: z.number().min(0).max(1).optional().default(0.8),
-    accuracy_min: z.number().min(0).max(1).optional().default(0.7),
-  }).optional(),
+  thresholds: z
+    .object({
+      completeness_min: z.number().min(0).max(1).optional().default(0.8),
+      accuracy_min: z.number().min(0).max(1).optional().default(0.7),
+    })
+    .optional(),
 });

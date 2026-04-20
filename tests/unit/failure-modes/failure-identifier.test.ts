@@ -50,7 +50,7 @@ describe('identifyFailureModes', () => {
 
   it('always includes resource failure modes', () => {
     const result = identifyFailureModes(process.cwd(), makeContext());
-    const names = result.failureModes.map(f => f.name);
+    const names = result.failureModes.map((f) => f.name);
     expect(names).toContain('Memory Exhaustion');
     expect(names).toContain('CPU Exhaustion');
     expect(names).toContain('Disk Space Exhaustion');
@@ -58,37 +58,49 @@ describe('identifyFailureModes', () => {
   });
 
   it('includes database failure when external database present', () => {
-    const result = identifyFailureModes(process.cwd(), makeContext({
-      externalServices: [{ type: 'database', name: 'postgres' }],
-    }));
-    const names = result.failureModes.map(f => f.name);
+    const result = identifyFailureModes(
+      process.cwd(),
+      makeContext({
+        externalServices: [{ type: 'database', name: 'postgres' }],
+      }),
+    );
+    const names = result.failureModes.map((f) => f.name);
     expect(names).toContain('Database Connection Failure');
   });
 
   it('includes cache failure when external cache present', () => {
-    const result = identifyFailureModes(process.cwd(), makeContext({
-      externalServices: [{ type: 'cache', name: 'redis' }],
-    }));
-    const names = result.failureModes.map(f => f.name);
+    const result = identifyFailureModes(
+      process.cwd(),
+      makeContext({
+        externalServices: [{ type: 'cache', name: 'redis' }],
+      }),
+    );
+    const names = result.failureModes.map((f) => f.name);
     expect(names).toContain('Cache Failure');
   });
 
   it('includes queue failure when external queue present', () => {
-    const result = identifyFailureModes(process.cwd(), makeContext({
-      externalServices: [{ type: 'queue', name: 'kafka' }],
-    }));
-    const names = result.failureModes.map(f => f.name);
+    const result = identifyFailureModes(
+      process.cwd(),
+      makeContext({
+        externalServices: [{ type: 'queue', name: 'kafka' }],
+      }),
+    );
+    const names = result.failureModes.map((f) => f.name);
     expect(names).toContain('Message Queue Failure');
   });
 
   it('caps riskScore at 100', () => {
-    const result = identifyFailureModes(process.cwd(), makeContext({
-      externalServices: [
-        { type: 'database', name: 'pg' },
-        { type: 'cache', name: 'redis' },
-        { type: 'queue', name: 'kafka' },
-      ],
-    }));
+    const result = identifyFailureModes(
+      process.cwd(),
+      makeContext({
+        externalServices: [
+          { type: 'database', name: 'pg' },
+          { type: 'cache', name: 'redis' },
+          { type: 'queue', name: 'kafka' },
+        ],
+      }),
+    );
     expect(result.riskScore).toBeLessThanOrEqual(100);
   });
 
@@ -108,7 +120,7 @@ describe('getCommonFailureModes', () => {
   it('returns web-api failure modes', () => {
     const modes = getCommonFailureModes('web-api');
     expect(modes.length).toBeGreaterThan(0);
-    const names = modes.map(m => m.name);
+    const names = modes.map((m) => m.name);
     expect(names).toContain('API Rate Limit Exceeded');
     expect(names).toContain('Request Timeout');
   });
@@ -116,20 +128,20 @@ describe('getCommonFailureModes', () => {
   it('returns worker failure modes', () => {
     const modes = getCommonFailureModes('worker');
     expect(modes.length).toBeGreaterThan(0);
-    expect(modes.some(m => m.name.includes('Job'))).toBe(true);
+    expect(modes.some((m) => m.name.includes('Job'))).toBe(true);
   });
 
   it('returns lambda failure modes', () => {
     const modes = getCommonFailureModes('lambda');
     expect(modes.length).toBeGreaterThan(0);
-    const names = modes.map(m => m.name);
+    const names = modes.map((m) => m.name);
     expect(names).toContain('Function Timeout');
     expect(names).toContain('Cold Start Latency');
   });
 
   it('returns function failure modes (same as lambda)', () => {
     const modes = getCommonFailureModes('function');
-    expect(modes.some(m => m.name === 'Function Timeout')).toBe(true);
+    expect(modes.some((m) => m.name === 'Function Timeout')).toBe(true);
   });
 
   it('returns empty for unknown type', () => {

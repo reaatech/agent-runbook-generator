@@ -1,8 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  generateAlerts,
-  formatAlertsForPlatform,
-} from '../../../src/alerts/alert-generator.js';
+import { generateAlerts, formatAlertsForPlatform } from '../../../src/alerts/alert-generator.js';
 import type { AnalysisContext } from '../../../src/types/domain.js';
 
 function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext {
@@ -42,18 +39,17 @@ describe('generateAlerts', () => {
   it('generates alerts with no sloTargets', () => {
     const alerts = generateAlerts(makeContext(), {});
     expect(alerts.length).toBeGreaterThan(0);
-    expect(alerts.every(a => a.name)).toBe(true);
+    expect(alerts.every((a) => a.name)).toBe(true);
   });
 
   it('includes SLO alerts when sloTargets provided', () => {
-    const alerts = generateAlerts(
-      makeContext(),
-      { sloTargets: { availability: 99.9, latencyP99: 200 } },
-    );
-    const sloAlerts = alerts.filter(a => a.type === 'slo_burn_rate');
+    const alerts = generateAlerts(makeContext(), {
+      sloTargets: { availability: 99.9, latencyP99: 200 },
+    });
+    const sloAlerts = alerts.filter((a) => a.type === 'slo_burn_rate');
     expect(sloAlerts.length).toBeGreaterThan(0);
-    expect(sloAlerts.some(a => a.name.includes('availability'))).toBe(true);
-    expect(sloAlerts.some(a => a.name.includes('latency'))).toBe(true);
+    expect(sloAlerts.some((a) => a.name.includes('availability'))).toBe(true);
+    expect(sloAlerts.some((a) => a.name.includes('latency'))).toBe(true);
   });
 
   it('includes database alerts when has database', () => {
@@ -63,7 +59,7 @@ describe('generateAlerts', () => {
       }),
       {},
     );
-    expect(alerts.some(a => a.name.includes('database'))).toBe(true);
+    expect(alerts.some((a) => a.name.includes('database'))).toBe(true);
   });
 
   it('includes cache alerts when has cache', () => {
@@ -73,17 +69,17 @@ describe('generateAlerts', () => {
       }),
       {},
     );
-    expect(alerts.some(a => a.name.includes('cache'))).toBe(true);
+    expect(alerts.some((a) => a.name.includes('cache'))).toBe(true);
   });
 
   it('uses serviceName from config when provided', () => {
     const alerts = generateAlerts(makeContext(), { serviceName: 'custom-svc' });
-    expect(alerts.every(a => a.name.startsWith('custom-svc'))).toBe(true);
+    expect(alerts.every((a) => a.name.startsWith('custom-svc'))).toBe(true);
   });
 
   it('generates resource alerts', () => {
     const alerts = generateAlerts(makeContext(), {});
-    const resource = alerts.filter(a => a.type === 'resource');
+    const resource = alerts.filter((a) => a.type === 'resource');
     expect(resource.length).toBeGreaterThan(0);
   });
 });

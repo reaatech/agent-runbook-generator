@@ -17,9 +17,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 function main(): void {
-  const packageJson = JSON.parse(
-    readFileSync(join(__dirname, '..', 'package.json'), 'utf-8'),
-  );
+  const packageJson = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf-8'));
 
   const program = new Command();
 

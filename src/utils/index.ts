@@ -182,10 +182,7 @@ export function redactSecrets(text: string): string {
 
   let sanitized = text;
   for (const key of secretKeys) {
-    const pattern = new RegExp(
-      `(${key}\\s*[=:]\\s*)([^\\s,;}"']+|[A-Za-z0-9+/=]+)`,
-      'gi',
-    );
+    const pattern = new RegExp(`(${key}\\s*[=:]\\s*)([^\\s,;}"']+|[A-Za-z0-9+/=]+)`, 'gi');
     sanitized = sanitized.replace(pattern, '$1[REDACTED]');
   }
 
@@ -252,7 +249,7 @@ export function simpleHash(str: string): number {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32bit integer
   }
   return Math.abs(hash);
@@ -261,10 +258,7 @@ export function simpleHash(str: string): number {
 /**
  * Group items by a key
  */
-export function groupBy<T, K extends string>(
-  items: T[],
-  keyFn: (item: T) => K,
-): Record<K, T[]> {
+export function groupBy<T, K extends string>(items: T[], keyFn: (item: T) => K): Record<K, T[]> {
   return items.reduce(
     (acc, item) => {
       const key = keyFn(item);
@@ -298,8 +292,7 @@ export function unique<T>(arr: T[]): T[] {
 export function isPathWithinBase(targetPath: string, basePath: string): boolean {
   const resolvedTarget = path.resolve(targetPath);
   const resolvedBase = path.resolve(basePath);
-  return resolvedTarget.startsWith(resolvedBase + path.sep) ||
-    resolvedTarget === resolvedBase;
+  return resolvedTarget.startsWith(resolvedBase + path.sep) || resolvedTarget === resolvedBase;
 }
 
 /**

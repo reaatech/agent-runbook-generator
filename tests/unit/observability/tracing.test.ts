@@ -114,11 +114,7 @@ describe('startCodeAnalysisSpan', () => {
   });
 
   it('starts a span with entry points, endpoints, and external services', () => {
-    const span = startCodeAnalysisSpan(
-      ['src/index.ts'],
-      ['/api/health'],
-      ['postgres'],
-    );
+    const span = startCodeAnalysisSpan(['src/index.ts'], ['/api/health'], ['postgres']);
     expect(mockTracer.startSpan).toHaveBeenCalledWith('code.analyze', {
       attributes: {
         entry_points: ['src/index.ts'],

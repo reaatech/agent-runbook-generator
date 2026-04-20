@@ -3,7 +3,11 @@
  */
 
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
-import { BatchSpanProcessor, SimpleSpanProcessor, ConsoleSpanExporter } from '@opentelemetry/sdk-trace-base';
+import {
+  BatchSpanProcessor,
+  SimpleSpanProcessor,
+  ConsoleSpanExporter,
+} from '@opentelemetry/sdk-trace-base';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { trace, Span, SpanStatusCode } from '@opentelemetry/api';
 
@@ -49,15 +53,12 @@ export function getTracer(): ReturnType<typeof trace.getTracer> {
 /**
  * Start a span for runbook generation
  */
-export function startGenerationSpan(
-  serviceName: string,
-  repoPath: string,
-): Span {
+export function startGenerationSpan(serviceName: string, repoPath: string): Span {
   const tracer = getTracer();
   return tracer.startSpan('runbook.generate', {
     attributes: {
-      'service_name': serviceName,
-      'repo_path': repoPath,
+      service_name: serviceName,
+      repo_path: repoPath,
     },
   });
 }
@@ -101,11 +102,7 @@ export function startCodeAnalysisSpan(
 /**
  * Start a span for agent analysis
  */
-export function startAgentSpan(
-  provider: string,
-  model: string,
-  tokens: number,
-): Span {
+export function startAgentSpan(provider: string, model: string, tokens: number): Span {
   const tracer = getTracer();
   return tracer.startSpan('agent.analyze', {
     attributes: {
@@ -131,10 +128,7 @@ export function startSectionSpan(sectionType: string): Span {
 /**
  * Start a span for runbook validation
  */
-export function startValidationSpan(
-  completenessScore: number,
-  accuracyScore: number,
-): Span {
+export function startValidationSpan(completenessScore: number, accuracyScore: number): Span {
   const tracer = getTracer();
   return tracer.startSpan('runbook.validate', {
     attributes: {

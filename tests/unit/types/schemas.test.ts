@@ -304,7 +304,13 @@ describe('RollbackStepSchema', () => {
   });
 
   it('rejects order less than 1', () => {
-    const result = RollbackStepSchema.safeParse({ order: 0, description: 'step', title: 'step', commands: [], estimatedDuration: '1m' });
+    const result = RollbackStepSchema.safeParse({
+      order: 0,
+      description: 'step',
+      title: 'step',
+      commands: [],
+      estimatedDuration: '1m',
+    });
     expect(result.success).toBe(false);
   });
 

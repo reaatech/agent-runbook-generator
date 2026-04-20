@@ -68,7 +68,7 @@ export function analyzeDependencies(
     // Check for HTTP API calls
     const apiCalls = extractApiCalls(content);
     for (const api of apiCalls) {
-      if (!dependencies.find(d => d.name === api)) {
+      if (!dependencies.find((d) => d.name === api)) {
         dependencies.push({
           name: api,
           type: 'api',
@@ -83,7 +83,7 @@ export function analyzeDependencies(
     // Check for message queue usage
     const queueCalls = extractQueueCalls(content);
     for (const queue of queueCalls) {
-      if (!dependencies.find(d => d.name === queue)) {
+      if (!dependencies.find((d) => d.name === queue)) {
         dependencies.push({
           name: queue,
           type: 'queue',
@@ -137,7 +137,9 @@ function extractApiCalls(content: string): string[] {
   }
 
   // Match axios calls
-  const axiosMatches = content.matchAll(/axios\.(get|post|put|delete|patch)\(['"`]https?:\/\/([^'"]+)['"`]/g);
+  const axiosMatches = content.matchAll(
+    /axios\.(get|post|put|delete|patch)\(['"`]https?:\/\/([^'"]+)['"`]/g,
+  );
   for (const match of axiosMatches) {
     if (match[2]) {
       const host = match[2].split('/')[0];
@@ -264,7 +266,7 @@ function identifyCriticalPaths(
   const paths: CriticalPath[] = [];
 
   // Find paths through critical dependencies
-  const criticalDeps = nodes.filter(n => n.critical && n.id !== serviceName);
+  const criticalDeps = nodes.filter((n) => n.critical && n.id !== serviceName);
 
   for (const dep of criticalDeps) {
     paths.push({

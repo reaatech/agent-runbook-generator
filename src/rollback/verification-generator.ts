@@ -133,10 +133,7 @@ function generateSmokeTests(
       order: 3,
       title: 'Test cache connectivity',
       description: 'Verify cache connections are working',
-      commands: [
-        `curl -s http://${serviceName}/api/health/cache`,
-        `Test cache get/set operations`,
-      ],
+      commands: [`curl -s http://${serviceName}/api/health/cache`, `Test cache get/set operations`],
       automated: true,
       estimatedDuration: '2m',
     },
@@ -164,7 +161,7 @@ function generateDataValidation(
   _serviceName: string,
   context: AnalysisContext,
 ): VerificationStep[] {
-  const hasDatabase = context.externalServices.some(s => s.type === 'database');
+  const hasDatabase = context.externalServices.some((s) => s.type === 'database');
 
   if (!hasDatabase) {
     return [];

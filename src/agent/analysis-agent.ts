@@ -39,7 +39,11 @@ export class AnalysisAgent {
       language: context.repositoryAnalysis.language,
       framework: context.repositoryAnalysis.framework,
       serviceType: context.repositoryAnalysis.serviceType,
-      dependencies: context.dependencyAnalysis.directDeps.map(d => ({ name: d.name, version: d.version, type: d.category })),
+      dependencies: context.dependencyAnalysis.directDeps.map((d) => ({
+        name: d.name,
+        version: d.version,
+        type: d.category,
+      })),
       externalServices: context.externalServices,
     });
 
@@ -52,9 +56,13 @@ export class AnalysisAgent {
       serviceName: context.serviceDefinition.name,
       language: context.repositoryAnalysis.language,
       framework: context.repositoryAnalysis.framework,
-      dependencies: context.dependencyAnalysis.directDeps.map(d => ({ name: d.name, version: d.version, type: d.category })),
+      dependencies: context.dependencyAnalysis.directDeps.map((d) => ({
+        name: d.name,
+        version: d.version,
+        type: d.category,
+      })),
       externalServices: context.externalServices,
-      entryPoints: context.repositoryAnalysis.entryPoints.map(ep => ep.file),
+      entryPoints: context.repositoryAnalysis.entryPoints.map((ep) => ep.file),
     });
 
     const response = await this.callLLM(getSystemPrompt('failure-mode-identification'), prompt);
@@ -62,7 +70,13 @@ export class AnalysisAgent {
   }
 
   async generateRunbookSection(
-    sectionType: 'alerts' | 'dashboards' | 'failure-modes' | 'rollback' | 'incident-response' | 'health-checks',
+    sectionType:
+      | 'alerts'
+      | 'dashboards'
+      | 'failure-modes'
+      | 'rollback'
+      | 'incident-response'
+      | 'health-checks',
     context: AnalysisContext,
   ): Promise<string> {
     const prompt = generatePrompt(`runbook-${sectionType}` as PromptType, {
@@ -70,11 +84,18 @@ export class AnalysisAgent {
       language: context.repositoryAnalysis.language,
       framework: context.repositoryAnalysis.framework,
       serviceType: context.repositoryAnalysis.serviceType,
-      dependencies: context.dependencyAnalysis.directDeps.map(d => ({ name: d.name, version: d.version, type: d.category })),
+      dependencies: context.dependencyAnalysis.directDeps.map((d) => ({
+        name: d.name,
+        version: d.version,
+        type: d.category,
+      })),
       externalServices: context.externalServices,
     });
 
-    const response = await this.callLLM(getSystemPrompt(`runbook-${sectionType}` as PromptType), prompt);
+    const response = await this.callLLM(
+      getSystemPrompt(`runbook-${sectionType}` as PromptType),
+      prompt,
+    );
     return response.content;
   }
 
@@ -123,7 +144,12 @@ export class AnalysisAgent {
     }
   }
 
-  private async callClaude(systemPrompt: string, userPrompt: string, apiKey: string, model: string): Promise<AgentResponse> {
+  private async callClaude(
+    systemPrompt: string,
+    userPrompt: string,
+    apiKey: string,
+    model: string,
+  ): Promise<AgentResponse> {
     const { Anthropic } = await import('@anthropic-ai/sdk');
     const client = new Anthropic({ apiKey });
 
@@ -144,7 +170,12 @@ export class AnalysisAgent {
     };
   }
 
-  private async callOpenAI(systemPrompt: string, userPrompt: string, apiKey: string, model: string): Promise<AgentResponse> {
+  private async callOpenAI(
+    systemPrompt: string,
+    userPrompt: string,
+    apiKey: string,
+    model: string,
+  ): Promise<AgentResponse> {
     const OpenAI = (await import('openai')).default;
     const client = new OpenAI({ apiKey });
 
@@ -167,15 +198,17 @@ export class AnalysisAgent {
     };
   }
 
-  private async callGemini(systemPrompt: string, userPrompt: string, apiKey: string, model: string): Promise<AgentResponse> {
+  private async callGemini(
+    systemPrompt: string,
+    userPrompt: string,
+    apiKey: string,
+    model: string,
+  ): Promise<AgentResponse> {
     const { GoogleGenerativeAI } = await import('@google/generative-ai');
     const client = new GoogleGenerativeAI(apiKey);
     const genModel = client.getGenerativeModel({ model });
 
-    const result = await genModel.generateContent([
-      { text: systemPrompt },
-      { text: userPrompt },
-    ]);
+    const result = await genModel.generateContent([{ text: systemPrompt }, { text: userPrompt }]);
 
     const response = await result.response;
     return {
@@ -187,7 +220,7 @@ export class AnalysisAgent {
   }
 
   private async callMock(_systemPrompt: string, userPrompt: string): Promise<AgentResponse> {
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     if (userPrompt.includes('failure')) {
       return {
@@ -292,7 +325,10 @@ This service is a critical component of the platform, handling core business log
 
     for (const line of lines) {
       if (line.match(/^\d+\.\s+\*\*/)) {
-        const mode = line.replace(/^\d+\.\s+\*\*/, '').replace(/\*\*.*/, '').trim();
+        const mode = line
+          .replace(/^\d+\.\s+\*\*/, '')
+          .replace(/\*\*.*/, '')
+          .trim();
         modes.push(mode);
       }
     }
@@ -306,7 +342,7 @@ This service is a critical component of the platform, handling core business log
  */
 export function createAnalysisAgent(config?: Partial<AgentConfig>): AnalysisAgent {
   const defaultConfig: AgentConfig = {
-    provider: process.env.LLM_PROVIDER as AgentConfig['provider'] ?? 'mock',
+    provider: (process.env.LLM_PROVIDER as AgentConfig['provider']) ?? 'mock',
     model: process.env.LLM_MODEL,
     apiKey: process.env.LLM_API_KEY,
     temperature: 0.1,

@@ -44,10 +44,38 @@ function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext 
 }
 
 const deps: ServiceDependency[] = [
-  { name: 'postgres', type: 'database', direction: 'upstream', protocol: 'tcp', critical: true, description: 'Primary database' },
-  { name: 'redis', type: 'cache', direction: 'upstream', protocol: 'tcp', critical: false, description: 'Cache layer' },
-  { name: 'kafka', type: 'queue', direction: 'upstream', protocol: 'async', critical: true, description: 'Message broker' },
-  { name: 'auth-service', type: 'api', direction: 'upstream', protocol: 'http', critical: false, description: 'Auth API' },
+  {
+    name: 'postgres',
+    type: 'database',
+    direction: 'upstream',
+    protocol: 'tcp',
+    critical: true,
+    description: 'Primary database',
+  },
+  {
+    name: 'redis',
+    type: 'cache',
+    direction: 'upstream',
+    protocol: 'tcp',
+    critical: false,
+    description: 'Cache layer',
+  },
+  {
+    name: 'kafka',
+    type: 'queue',
+    direction: 'upstream',
+    protocol: 'async',
+    critical: true,
+    description: 'Message broker',
+  },
+  {
+    name: 'auth-service',
+    type: 'api',
+    direction: 'upstream',
+    protocol: 'http',
+    critical: false,
+    description: 'Auth API',
+  },
 ];
 
 describe('generateServiceMap', () => {
@@ -61,7 +89,7 @@ describe('generateServiceMap', () => {
   it('includes service node and dependency nodes', () => {
     const graph = generateServiceMap(deps, 'my-service', makeContext());
     expect(graph.nodes.length).toBe(5);
-    const ids = graph.nodes.map(n => n.id);
+    const ids = graph.nodes.map((n) => n.id);
     expect(ids).toContain('my-service');
     expect(ids).toContain('postgres');
     expect(ids).toContain('redis');
@@ -70,8 +98,8 @@ describe('generateServiceMap', () => {
   it('creates edges from service to upstream deps', () => {
     const graph = generateServiceMap(deps, 'my-service', makeContext());
     expect(graph.edges.length).toBe(4);
-    const sources = graph.edges.map(e => e.source);
-    expect(sources.every(s => s === 'my-service')).toBe(true);
+    const sources = graph.edges.map((e) => e.source);
+    expect(sources.every((s) => s === 'my-service')).toBe(true);
   });
 
   it('identifies critical paths', () => {

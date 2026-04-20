@@ -12,7 +12,10 @@ export function registerGenerateTools(): Tool[] {
       inputSchema: {
         type: 'object',
         properties: {
-          analysis_context: { type: 'object', description: 'Analysis context from repository analysis' },
+          analysis_context: {
+            type: 'object',
+            description: 'Analysis context from repository analysis',
+          },
           config: { type: 'object', description: 'Generation configuration' },
         },
         required: ['analysis_context'],
@@ -26,7 +29,11 @@ export function registerGenerateTools(): Tool[] {
         properties: {
           analysis_context: { type: 'object', description: 'Analysis context' },
           slo_targets: { type: 'object', description: 'SLO targets for alert thresholds' },
-          platform: { type: 'string', enum: ['prometheus', 'datadog', 'cloudwatch'], description: 'Target monitoring platform' },
+          platform: {
+            type: 'string',
+            enum: ['prometheus', 'datadog', 'cloudwatch'],
+            description: 'Target monitoring platform',
+          },
         },
         required: ['analysis_context', 'platform'],
       },
@@ -38,7 +45,11 @@ export function registerGenerateTools(): Tool[] {
         type: 'object',
         properties: {
           service_context: { type: 'object', description: 'Service analysis context' },
-          platform: { type: 'string', enum: ['grafana', 'looker', 'cloudwatch'], description: 'Target dashboard platform' },
+          platform: {
+            type: 'string',
+            enum: ['grafana', 'looker', 'cloudwatch'],
+            description: 'Target dashboard platform',
+          },
         },
         required: ['service_context', 'platform'],
       },
@@ -50,7 +61,11 @@ export function registerGenerateTools(): Tool[] {
         type: 'object',
         properties: {
           deployment_config: { type: 'object', description: 'Deployment configuration' },
-          failure_scenarios: { type: 'array', items: { type: 'string' }, description: 'Specific failure scenarios to handle' },
+          failure_scenarios: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Specific failure scenarios to handle',
+          },
         },
         required: ['deployment_config'],
       },
@@ -74,7 +89,12 @@ export function registerGenerateTools(): Tool[] {
         type: 'object',
         properties: {
           analysis_context: { type: 'object', description: 'Analysis context' },
-          format: { type: 'string', enum: ['mermaid', 'dot', 'json', 'yaml'], description: 'Output format', default: 'mermaid' },
+          format: {
+            type: 'string',
+            enum: ['mermaid', 'dot', 'json', 'yaml'],
+            description: 'Output format',
+            default: 'mermaid',
+          },
         },
         required: ['analysis_context'],
       },
@@ -86,7 +106,11 @@ export function registerGenerateTools(): Tool[] {
         type: 'object',
         properties: {
           service_context: { type: 'object', description: 'Service analysis context' },
-          platform: { type: 'string', enum: ['kubernetes', 'load-balancer', 'prometheus', 'datadog'], description: 'Target platform' },
+          platform: {
+            type: 'string',
+            enum: ['kubernetes', 'load-balancer', 'prometheus', 'datadog'],
+            description: 'Target platform',
+          },
         },
         required: ['service_context', 'platform'],
       },

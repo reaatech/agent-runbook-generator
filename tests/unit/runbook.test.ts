@@ -1,7 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { formatAsMarkdown, formatAsHTML, exportRunbook } from '../../src/runbook/formatter.js';
 import { generateTOC, validateCompleteness } from '../../src/runbook/runbook-builder.js';
-import { STANDARD_SRE_TEMPLATE, getTemplateById, getAllTemplates } from '../../src/runbook/templates.js';
+import {
+  STANDARD_SRE_TEMPLATE,
+  getTemplateById,
+  getAllTemplates,
+} from '../../src/runbook/templates.js';
 import type { Runbook, RunbookSection } from '../../src/types/domain.js';
 
 function makeSection(title: string, content: string, order: number): RunbookSection {
@@ -57,9 +61,7 @@ describe('Runbook Formatter', () => {
 
   describe('formatAsHTML', () => {
     it('should format runbook to HTML', () => {
-      const runbook = makeRunbook([
-        makeSection('Overview', 'Service overview', 1),
-      ]);
+      const runbook = makeRunbook([makeSection('Overview', 'Service overview', 1)]);
 
       const result = formatAsHTML(runbook);
       expect(result).toContain('<!DOCTYPE html>');
@@ -115,9 +117,7 @@ describe('Runbook Builder', () => {
     });
 
     it('should create proper markdown links', () => {
-      const runbook = makeRunbook([
-        makeSection('Service Overview', 'Content', 1),
-      ]);
+      const runbook = makeRunbook([makeSection('Service Overview', 'Content', 1)]);
 
       const toc = generateTOC(runbook);
       expect(toc).toContain('# Table of Contents');
@@ -141,12 +141,36 @@ describe('Runbook Builder', () => {
     it('should give full score for complete runbook with substantial content', () => {
       const runbook = {
         sections: [
-          { title: 'Service Overview', content: 'This is a comprehensive service overview that exceeds the 100 character minimum requirement for validation purposes.' },
-          { title: 'Alerts', content: 'This section defines all the alert rules and thresholds for monitoring the service, including CPU usage, memory consumption, and error rates that could impact the system.' },
-          { title: 'Dashboards', content: 'This section contains Grafana dashboard configurations for visualizing service metrics, including request rates, latency percentiles, and error distributions that help monitor the service health.' },
-          { title: 'Failure Modes', content: 'This section documents potential failure modes including database connection failures, external API timeouts, and downstream service unavailability scenarios that may affect the service.' },
-          { title: 'Rollback Procedures', content: 'This section provides step-by-step instructions for rolling back deployments, including database migrations, configuration changes, and service restarts that may be necessary during incident response.' },
-          { title: 'Health Checks', content: 'This section defines liveness and readiness probe configurations for Kubernetes deployments, including HTTP endpoints and TCP socket checks that ensure the service remains healthy.' },
+          {
+            title: 'Service Overview',
+            content:
+              'This is a comprehensive service overview that exceeds the 100 character minimum requirement for validation purposes.',
+          },
+          {
+            title: 'Alerts',
+            content:
+              'This section defines all the alert rules and thresholds for monitoring the service, including CPU usage, memory consumption, and error rates that could impact the system.',
+          },
+          {
+            title: 'Dashboards',
+            content:
+              'This section contains Grafana dashboard configurations for visualizing service metrics, including request rates, latency percentiles, and error distributions that help monitor the service health.',
+          },
+          {
+            title: 'Failure Modes',
+            content:
+              'This section documents potential failure modes including database connection failures, external API timeouts, and downstream service unavailability scenarios that may affect the service.',
+          },
+          {
+            title: 'Rollback Procedures',
+            content:
+              'This section provides step-by-step instructions for rolling back deployments, including database migrations, configuration changes, and service restarts that may be necessary during incident response.',
+          },
+          {
+            title: 'Health Checks',
+            content:
+              'This section defines liveness and readiness probe configurations for Kubernetes deployments, including HTTP endpoints and TCP socket checks that ensure the service remains healthy.',
+          },
         ],
       };
       const result = validateCompleteness(runbook);
@@ -185,12 +209,35 @@ describe('Runbook Builder', () => {
     it('should match section titles case-insensitively', () => {
       const runbook = {
         sections: [
-          { title: 'SERVICE OVERVIEW', content: 'This is a comprehensive service overview that exceeds the 100 character minimum requirement for validation purposes.' },
-          { title: 'ALERTS', content: 'This section defines all the alert rules and thresholds for monitoring the service, including CPU usage, memory consumption, and error rates.' },
-          { title: 'DASHBOARDS', content: 'This section contains Grafana dashboard configurations for visualizing service metrics.' },
-          { title: 'FAILURE MODES', content: 'This section documents potential failure modes including database connection failures.' },
-          { title: 'ROLLBACK PROCEDURES', content: 'This section provides step-by-step instructions for rolling back deployments.' },
-          { title: 'HEALTH CHECKS', content: 'This section defines liveness and readiness probe configurations.' },
+          {
+            title: 'SERVICE OVERVIEW',
+            content:
+              'This is a comprehensive service overview that exceeds the 100 character minimum requirement for validation purposes.',
+          },
+          {
+            title: 'ALERTS',
+            content:
+              'This section defines all the alert rules and thresholds for monitoring the service, including CPU usage, memory consumption, and error rates.',
+          },
+          {
+            title: 'DASHBOARDS',
+            content:
+              'This section contains Grafana dashboard configurations for visualizing service metrics.',
+          },
+          {
+            title: 'FAILURE MODES',
+            content:
+              'This section documents potential failure modes including database connection failures.',
+          },
+          {
+            title: 'ROLLBACK PROCEDURES',
+            content:
+              'This section provides step-by-step instructions for rolling back deployments.',
+          },
+          {
+            title: 'HEALTH CHECKS',
+            content: 'This section defines liveness and readiness probe configurations.',
+          },
         ],
       };
       const result = validateCompleteness(runbook);

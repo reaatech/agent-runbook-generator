@@ -16,10 +16,7 @@ export interface IdentifiedMetric {
 /**
  * Identify metrics from repository code
  */
-export function identifyMetrics(
-  repoPath: string,
-  context: AnalysisContext,
-): IdentifiedMetric[] {
+export function identifyMetrics(repoPath: string, context: AnalysisContext): IdentifiedMetric[] {
   const metrics: IdentifiedMetric[] = [];
   const files = listFiles(repoPath, true);
 
@@ -45,7 +42,7 @@ export function identifyMetrics(
   // Check for existing metrics in code
   const existingMetrics = findExistingMetrics(files, repoPath, language);
   for (const metric of existingMetrics) {
-    if (!metrics.find(m => m.name === metric.name)) {
+    if (!metrics.find((m) => m.name === metric.name)) {
       metrics.push(metric);
     }
   }
@@ -224,8 +221,14 @@ function findExistingMetrics(
     if (!content) continue;
 
     // Look for Prometheus metrics definitions
-    if (content.includes('new Counter') || content.includes('new Histogram') || content.includes('new Gauge')) {
-      const counterMatch = content.match(/new (Counter|Histogram|Gauge)\(['"]([^'"]+)['"]\s*,\s*{[^}]*description:\s*['"]([^'"]*)['"]/g);
+    if (
+      content.includes('new Counter') ||
+      content.includes('new Histogram') ||
+      content.includes('new Gauge')
+    ) {
+      const counterMatch = content.match(
+        /new (Counter|Histogram|Gauge)\(['"]([^'"]+)['"]\s*,\s*{[^}]*description:\s*['"]([^'"]*)['"]/g,
+      );
       if (counterMatch) {
         for (const match of counterMatch) {
           const typeMatch = match.match(/new (Counter|Histogram|Gauge)/);
@@ -257,10 +260,7 @@ export function suggestMetricsForService(
 
   switch (serviceType) {
     case 'web-api':
-      metrics.push(
-        ...getRedMetrics(serviceName),
-        ...getUseMetrics(serviceName),
-      );
+      metrics.push(...getRedMetrics(serviceName), ...getUseMetrics(serviceName));
       break;
     case 'worker':
       metrics.push(

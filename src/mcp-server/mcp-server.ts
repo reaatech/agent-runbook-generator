@@ -4,10 +4,7 @@
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
+import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { registerAnalyzeTools } from './tools/analyze/index.js';
 import { registerGenerateTools } from './tools/generate/index.js';
 import { registerValidateTools } from './tools/validate/index.js';
@@ -168,8 +165,14 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error(`Operation timed out after ${ms}ms`)), ms);
     promise.then(
-      (result) => { clearTimeout(timer); resolve(result); },
-      (error) => { clearTimeout(timer); reject(error); },
+      (result) => {
+        clearTimeout(timer);
+        resolve(result);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      },
     );
   });
 }
@@ -274,10 +277,7 @@ export class RunbookMCPServer {
     });
   }
 
-  private async handleAnalyzeTool(
-    name: string,
-    args: ToolArgs,
-  ) {
+  private async handleAnalyzeTool(name: string, args: ToolArgs) {
     switch (name) {
       case 'runbook.analyze.repository': {
         const repoPath = getRepoPath(args);
@@ -318,10 +318,7 @@ export class RunbookMCPServer {
     }
   }
 
-  private async handleGenerateTool(
-    name: string,
-    args: ToolArgs,
-  ) {
+  private async handleGenerateTool(name: string, args: ToolArgs) {
     switch (name) {
       case 'runbook.generate.full': {
         const runbookPath = getRepoPath(args);
@@ -338,7 +335,10 @@ export class RunbookMCPServer {
         const serviceName = getServiceName(args);
         const sloTargets = args.slo_targets;
         const alerts = generateAlerts(context, {
-          sloTargets: sloTargets?.availability !== undefined ? sloTargets as { availability: number; latencyP99: number } : undefined,
+          sloTargets:
+            sloTargets?.availability !== undefined
+              ? (sloTargets as { availability: number; latencyP99: number })
+              : undefined,
           serviceName,
           platform: args.platform as 'prometheus' | 'datadog' | 'cloudwatch' | undefined,
         });
@@ -372,7 +372,7 @@ export class RunbookMCPServer {
         const context = await buildAnalysisContext(args);
         const serviceName = getServiceName(args);
         const deps = mapDependencies(getRepoPath(args));
-        const dependencies: ServiceDependency[] = deps.externalServices.map(es => ({
+        const dependencies: ServiceDependency[] = deps.externalServices.map((es) => ({
           name: es.name,
           type: es.type,
           direction: 'downstream' as const,
@@ -401,10 +401,7 @@ export class RunbookMCPServer {
     }
   }
 
-  private async handleValidateTool(
-    name: string,
-    args: ToolArgs,
-  ) {
+  private async handleValidateTool(name: string, args: ToolArgs) {
     switch (name) {
       case 'runbook.validate.completeness': {
         const runbook = args.runbook as unknown as Record<string, unknown>;
@@ -448,7 +445,9 @@ export class RunbookMCPServer {
         if (!runbook) {
           throw new Error('runbook is required');
         }
-        const completenessResult = validateCompleteness(runbook, { requiredSections: args.required_sections });
+        const completenessResult = validateCompleteness(runbook, {
+          requiredSections: args.required_sections,
+        });
         const context = args.analysis_context ? await buildAnalysisContext(args) : null;
         const accuracyResult = context
           ? validateRunbookAccuracy(runbook, context)
@@ -502,7 +501,9 @@ export class RunbookMCPServer {
   }
 }
 
-export async function createMCPServer(config?: Partial<MCPServerConfig>): Promise<RunbookMCPServer> {
+export async function createMCPServer(
+  config?: Partial<MCPServerConfig>,
+): Promise<RunbookMCPServer> {
   const serverConfig: MCPServerConfig = {
     name: 'agent-runbook-generator',
     version: '1.0.0',

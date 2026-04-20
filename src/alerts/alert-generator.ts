@@ -2,11 +2,7 @@
  * Alert Generator - Generates alert definitions based on service patterns
  */
 
-import {
-  type AlertDefinition,
-  type AnalysisContext,
-  type SLOTargets,
-} from '../types/domain.js';
+import { type AlertDefinition, type AnalysisContext, type SLOTargets } from '../types/domain.js';
 
 export interface AlertGenerationConfig {
   sloTargets?: SLOTargets;
@@ -106,10 +102,7 @@ function generateSloAlerts(
 /**
  * Generate resource utilization alerts
  */
-function generateResourceAlerts(
-  service: string,
-  _platform: string,
-): AlertDefinition[] {
+function generateResourceAlerts(service: string, _platform: string): AlertDefinition[] {
   return [
     {
       name: `${service}_high_cpu`,
@@ -231,7 +224,7 @@ function generateApplicationAlerts(
   });
 
   // Database connection errors
-  const hasDatabase = context.externalServices.some(s => s.type === 'database');
+  const hasDatabase = context.externalServices.some((s) => s.type === 'database');
   if (hasDatabase) {
     alerts.push({
       name: `${service}_database_errors`,
@@ -248,7 +241,7 @@ function generateApplicationAlerts(
   }
 
   // Cache errors
-  const hasCache = context.externalServices.some(s => s.type === 'cache');
+  const hasCache = context.externalServices.some((s) => s.type === 'cache');
   if (hasCache) {
     alerts.push({
       name: `${service}_cache_errors`,
@@ -270,10 +263,7 @@ function generateApplicationAlerts(
 /**
  * Generate saturation alerts
  */
-function generateSaturationAlerts(
-  service: string,
-  _platform: string,
-): AlertDefinition[] {
+function generateSaturationAlerts(service: string, _platform: string): AlertDefinition[] {
   return [
     {
       name: `${service}_connection_pool_saturation`,
@@ -404,7 +394,7 @@ function formatDatadogAlerts(alerts: AlertDefinition[]): string {
  * Format alerts as CloudWatch alarms
  */
 function formatCloudWatchAlerts(alerts: AlertDefinition[]): string {
-  const alarms = alerts.map(alert => ({
+  const alarms = alerts.map((alert) => ({
     AlarmName: alert.name,
     AlarmDescription: alert.annotations.description,
     MetricName: alert.name.replace(/_/g, '_'),

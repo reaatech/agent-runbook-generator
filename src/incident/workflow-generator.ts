@@ -144,9 +144,7 @@ export function generateIncidentWorkflows(
     severity: 'low',
     responseTime: 'Next business day',
     triggers: ['ticket_creation', 'monitoring_info'],
-    escalationPath: [
-      'Development team (ticket assignment)',
-    ],
+    escalationPath: ['Development team (ticket assignment)'],
     escalationMatrix: createEscalationMatrix(),
     communicationTemplates: generateCommunicationTemplates(config, 'low'),
     steps: [
@@ -225,9 +223,7 @@ Service has been restored. A post-mortem will be conducted.`,
 /**
  * Generate escalation policy
  */
-export function generateEscalationPolicy(
-  config: WorkflowConfig,
-): EscalationPolicy {
+export function generateEscalationPolicy(config: WorkflowConfig): EscalationPolicy {
   return {
     name: `${config.serviceName} Escalation Policy`,
     levels: [

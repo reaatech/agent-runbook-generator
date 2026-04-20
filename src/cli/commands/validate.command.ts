@@ -7,7 +7,11 @@ import { validateCompleteness } from '../../runbook/runbook-builder.js';
 import { info, initLogger } from '../../observability/logger.js';
 import { startValidationSpan, endSpanSuccess, endSpanError } from '../../observability/tracing.js';
 import { readFileSync } from 'fs';
-import { generateRunbookArtifacts, parseRunbookDocument, validateRunbookAccuracy } from '../../runbook/pipeline.js';
+import {
+  generateRunbookArtifacts,
+  parseRunbookDocument,
+  validateRunbookAccuracy,
+} from '../../runbook/pipeline.js';
 
 export function validateCommand(program: Command): void {
   program
@@ -34,11 +38,11 @@ export interface ValidateOptions {
 
 async function executeValidate(path: string, options: Record<string, unknown>): Promise<void> {
   const validateOptions: ValidateOptions = {
-    ci: options.ci as boolean ?? false,
+    ci: (options.ci as boolean) ?? false,
     completenessThreshold: parseFloat(options.completenessThreshold as string) || 0.8,
     accuracyThreshold: parseFloat(options.accuracyThreshold as string) || 0.7,
-    requiredSections: (options.requiredSections as string)?.split(',').map(s => s.trim()),
-    json: options.json as boolean ?? false,
+    requiredSections: (options.requiredSections as string)?.split(',').map((s) => s.trim()),
+    json: (options.json as boolean) ?? false,
   };
 
   // Initialize logger
@@ -77,7 +81,9 @@ async function executeValidate(path: string, options: Record<string, unknown>): 
         accuracyScore: 1,
         discrepancies: [],
       };
-      warnings.push('Accuracy validation skipped because the runbook does not include a repository path.');
+      warnings.push(
+        'Accuracy validation skipped because the runbook does not include a repository path.',
+      );
     }
 
     info('Completeness validation complete', {
@@ -134,7 +140,7 @@ async function executeValidate(path: string, options: Record<string, unknown>): 
       if (warnings.length > 0) {
         // eslint-disable-next-line no-console
         console.log('\nWarnings:');
-        warnings.forEach(w => {
+        warnings.forEach((w) => {
           // eslint-disable-next-line no-console
           console.log(`  - ${w}`);
         });
@@ -143,7 +149,7 @@ async function executeValidate(path: string, options: Record<string, unknown>): 
       if (completenessResult.suggestions.length > 0) {
         // eslint-disable-next-line no-console
         console.log('\nSuggestions:');
-        completenessResult.suggestions.forEach(s => {
+        completenessResult.suggestions.forEach((s) => {
           // eslint-disable-next-line no-console
           console.log(`  - ${s}`);
         });
