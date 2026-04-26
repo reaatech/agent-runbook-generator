@@ -66,6 +66,9 @@ async function executeServe(options: Record<string, unknown>): Promise<void> {
       version: '1.0.0',
     });
 
+    await server.start();
+    info('MCP Server started', { transport: 'stdio' });
+
     /* eslint-disable no-console */
     console.log('MCP server started over stdio transport');
     console.log(

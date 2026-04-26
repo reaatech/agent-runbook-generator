@@ -195,12 +195,10 @@ function getToolLayer(name: string): 'analyze' | 'generate' | 'validate' {
  */
 export class RunbookMCPServer {
   private server: Server;
-  private config: MCPServerConfig;
   private rateLimiters: Map<string, RateLimiter>;
   private timeouts: Map<string, number>;
 
   constructor(config: MCPServerConfig) {
-    this.config = config;
     this.server = new Server(
       {
         name: config.name,
@@ -492,12 +490,10 @@ export class RunbookMCPServer {
   async start(): Promise<void> {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error(`MCP Server ${this.config.name} v${this.config.version} started`);
   }
 
   async stop(): Promise<void> {
     await this.server.close();
-    console.error('MCP Server stopped');
   }
 }
 
@@ -510,7 +506,5 @@ export async function createMCPServer(
     ...config,
   };
 
-  const server = new RunbookMCPServer(serverConfig);
-  await server.start();
-  return server;
+  return new RunbookMCPServer(serverConfig);
 }

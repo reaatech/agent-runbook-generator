@@ -1,6 +1,26 @@
 # CHANGELOG.md
 
-## [1.0.0] - 2026-04-16
+## [1.0.0] - 2026-04-26
+
+### Fixed (pre-release)
+- Fixed Docker healthcheck to not require package.json at runtime (inlined VERSION)
+- Fixed LLM API key resolution to check provider-specific env vars (ANTHROPIC_API_KEY, OPENAI_API_KEY, GOOGLE_API_KEY) before falling back to LLM_API_KEY
+- Separated MCPServer creation from transport start (createMCPServer no longer auto-starts)
+- Replaced console.error in MCP server start/stop with structured logger
+- Fixed Kubernetes probe YAML generator to accept configurable port instead of hardcoded 8080
+- Implemented extractDownstreamServices to detect API gateway and client dependencies
+- Replaced module-level completeness tracking with OTel ObservableGauge
+- Stopped merging devDependencies into production dependency analysis (respects includeDev param)
+- Removed duplicate parseInterval function; uses shared parseDuration from utils
+- Clarified --format/--json behavior in CLI generate command
+- Optimized validate command to use lightweight analysis instead of full generation pipeline
+- Integrated ProviderAdapter into AnalysisAgent for response parsing and fallback logic
+- Fixed Mermaid node shapes in dependency-analyzer
+- Aligned MCP tools depth default with ScanRepositoryInputSchema (5 not 3)
+- Added subpath exports for all modules in package.json
+
+### Changed
+- Upgraded ESLint from 8.57.1 to 9.x
 
 ### Added
 - Initial release of agent-runbook-generator

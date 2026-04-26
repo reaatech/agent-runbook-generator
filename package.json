@@ -12,6 +12,54 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./analyzer": {
+      "types": "./dist/analyzer/index.d.ts",
+      "import": "./dist/analyzer/index.js"
+    },
+    "./alerts": {
+      "types": "./dist/alerts/index.d.ts",
+      "import": "./dist/alerts/index.js"
+    },
+    "./dashboards": {
+      "types": "./dist/dashboards/index.d.ts",
+      "import": "./dist/dashboards/index.js"
+    },
+    "./failure-modes": {
+      "types": "./dist/failure-modes/index.d.ts",
+      "import": "./dist/failure-modes/index.js"
+    },
+    "./health-checks": {
+      "types": "./dist/health-checks/index.d.ts",
+      "import": "./dist/health-checks/index.js"
+    },
+    "./incident": {
+      "types": "./dist/incident/index.d.ts",
+      "import": "./dist/incident/index.js"
+    },
+    "./rollback": {
+      "types": "./dist/rollback/index.d.ts",
+      "import": "./dist/rollback/index.js"
+    },
+    "./runbook": {
+      "types": "./dist/runbook/index.d.ts",
+      "import": "./dist/runbook/index.js"
+    },
+    "./service-map": {
+      "types": "./dist/service-map/index.d.ts",
+      "import": "./dist/service-map/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js"
+    },
+    "./observability": {
+      "types": "./dist/observability/index.d.ts",
+      "import": "./dist/observability/index.js"
     }
   },
   "files": [
@@ -79,7 +127,7 @@
     "@typescript-eslint/eslint-plugin": "^8.58.2",
     "@typescript-eslint/parser": "^8.58.2",
     "@vitest/coverage-v8": "^3.2.4",
-    "eslint": "^8.57.1",
+    "eslint": "^9.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
     "prettier": "^3.2.4",

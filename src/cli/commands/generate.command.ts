@@ -15,12 +15,16 @@ export function generateCommand(program: Command): void {
     .command('generate')
     .description('Generate a complete runbook from a service repository')
     .argument('<path>', 'Path to the repository')
-    .option('-o, --output <file>', 'Output file for the runbook', 'runbook.md')
-    .option('--format <format>', 'Output format (markdown, html, json)', 'markdown')
+    .option(
+      '-o, --output <file>',
+      'Output file for the runbook (ignored when --json)',
+      'runbook.md',
+    )
+    .option('--format <format>', 'Output format for file output (markdown, html)', 'markdown')
     .option('--sections <sections>', 'Comma-separated list of sections to generate')
     .option('--provider <provider>', 'LLM provider (claude, openai, gemini, mock)', 'mock')
     .option('--model <model>', 'LLM model to use')
-    .option('--json', 'Output results as JSON', false)
+    .option('--json', 'Output runbook as JSON to stdout instead of writing a file', false)
     .action(async (path: string, options: Record<string, unknown>) => {
       await executeGenerate(path, options);
     });
@@ -28,7 +32,7 @@ export function generateCommand(program: Command): void {
 
 export interface GenerateOptions {
   output: string;
-  format: 'markdown' | 'html' | 'json';
+  format: 'markdown' | 'html';
   sections?: string[];
   provider: 'claude' | 'openai' | 'gemini' | 'mock';
   model?: string;
@@ -38,12 +42,16 @@ export interface GenerateOptions {
 async function executeGenerate(path: string, options: Record<string, unknown>): Promise<void> {
   const generateOptions: GenerateOptions = {
     output: (options.output as string) ?? 'runbook.md',
-    format: (options.format as 'markdown' | 'html' | 'json') ?? 'markdown',
+    format: (options.format as 'markdown' | 'html') ?? 'markdown',
     sections: (options.sections as string)?.split(',').map((s) => s.trim()),
     provider: (options.provider as 'claude' | 'openai' | 'gemini' | 'mock') ?? 'mock',
     model: options.model as string,
     json: (options.json as boolean) ?? false,
   };
+
+  if (generateOptions.json && generateOptions.format === 'markdown') {
+    generateOptions.format = 'markdown';
+  }
 
   // Initialize logger
   initLogger({

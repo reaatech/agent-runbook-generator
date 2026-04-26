@@ -4,6 +4,7 @@
 
 import { type AnalysisContext, type AnalysisInsight } from '../types/domain.js';
 import { generatePrompt, getSystemPrompt, type PromptType } from './prompt-templates.js';
+import { ProviderAdapter } from './provider-adapter.js';
 
 export interface AgentConfig {
   provider: 'claude' | 'openai' | 'gemini' | 'mock';
@@ -24,6 +25,7 @@ export interface AgentResponse {
 
 export class AnalysisAgent {
   private config: AgentConfig;
+  private providerAdapter: ProviderAdapter;
 
   constructor(config: AgentConfig) {
     this.config = {
@@ -31,6 +33,7 @@ export class AnalysisAgent {
       maxTokens: 4096,
       ...config,
     };
+    this.providerAdapter = new ProviderAdapter(this.config);
   }
 
   async analyzeRepository(context: AnalysisContext): Promise<AnalysisInsight[]> {
@@ -99,8 +102,18 @@ export class AnalysisAgent {
     return response.content;
   }
 
+  private resolveApiKey(provider: string): string | undefined {
+    if (this.config.apiKey) return this.config.apiKey;
+    const envKeys: Record<string, string> = {
+      claude: 'ANTHROPIC_API_KEY',
+      openai: 'OPENAI_API_KEY',
+      gemini: 'GOOGLE_API_KEY',
+    };
+    return process.env[envKeys[provider] ?? 'LLM_API_KEY'] || process.env.LLM_API_KEY;
+  }
+
   private async callLLM(systemPrompt: string, userPrompt: string): Promise<AgentResponse> {
-    const apiKey = this.config.apiKey || process.env.LLM_API_KEY;
+    const apiKey = this.resolveApiKey(this.config.provider);
     const model = this.config.model || this.getDefaultModel();
 
     if (this.config.provider === 'mock' || !apiKey) {
@@ -120,9 +133,22 @@ export class AnalysisAgent {
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      if (this.config.provider === 'claude') {
+      const fallbackProvider = this.providerAdapter.getFallbackProvider();
+      if (fallbackProvider && apiKey) {
         try {
-          return await this.callOpenAI(systemPrompt, userPrompt, apiKey, 'gpt-4-turbo');
+          switch (fallbackProvider) {
+            case 'claude':
+              return await this.callClaude(
+                systemPrompt,
+                userPrompt,
+                apiKey,
+                'claude-opus-4-5-20260506',
+              );
+            case 'openai':
+              return await this.callOpenAI(systemPrompt, userPrompt, apiKey, 'gpt-4-turbo');
+            case 'gemini':
+              return await this.callGemini(systemPrompt, userPrompt, apiKey, 'gemini-2.0-flash');
+          }
         } catch {
           return { content: '', tokensUsed: 0, model: 'unknown', error: errorMessage };
         }
@@ -161,13 +187,7 @@ export class AnalysisAgent {
       messages: [{ role: 'user', content: userPrompt }],
     });
 
-    const content = response.content[0];
-    return {
-      content: content?.type === 'text' ? content.text : '',
-      tokensUsed: response.usage.input_tokens + response.usage.output_tokens,
-      model: response.model,
-      finishReason: response.stop_reason || undefined,
-    };
+    return this.providerAdapter.parseResponse('claude', response);
   }
 
   private async callOpenAI(
@@ -189,13 +209,7 @@ export class AnalysisAgent {
       ],
     });
 
-    const choice = response.choices[0];
-    return {
-      content: choice?.message?.content || '',
-      tokensUsed: (response.usage?.prompt_tokens || 0) + (response.usage?.completion_tokens || 0),
-      model: response.model,
-      finishReason: choice?.finish_reason || undefined,
-    };
+    return this.providerAdapter.parseResponse('openai', response);
   }
 
   private async callGemini(
@@ -210,13 +224,7 @@ export class AnalysisAgent {
 
     const result = await genModel.generateContent([{ text: systemPrompt }, { text: userPrompt }]);
 
-    const response = await result.response;
-    return {
-      content: response.text(),
-      tokensUsed: 0,
-      model,
-      finishReason: 'stop',
-    };
+    return this.providerAdapter.parseResponse('gemini', await result.response);
   }
 
   private async callMock(_systemPrompt: string, userPrompt: string): Promise<AgentResponse> {

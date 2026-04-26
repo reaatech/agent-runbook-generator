@@ -4,6 +4,7 @@
 
 import { type AnalysisContext, type HealthCheck } from '../types/domain.js';
 import { identifyHealthChecks } from './check-identifier.js';
+import { parseDuration } from '../utils/index.js';
 
 export interface HealthCheckConfig {
   platform: 'kubernetes' | 'load-balancer' | 'prometheus' | 'datadog';
@@ -165,6 +166,7 @@ function generateDatadogChecks(_config: HealthCheckConfig): HealthCheck[] {
 export function generateKubernetesProbeYaml(
   checks: HealthCheck[],
   containerName: string = 'app',
+  port: number = 8080,
 ): string {
   const liveness = checks.find((c) => c.type === 'liveness');
   const readiness = checks.find((c) => c.type === 'readiness');
@@ -176,10 +178,10 @@ export function generateKubernetesProbeYaml(
     yaml += `    livenessProbe:\n`;
     yaml += `      httpGet:\n`;
     yaml += `        path: ${liveness.endpoint}\n`;
-    yaml += `        port: 8080\n`;
+    yaml += `        port: ${port}\n`;
     yaml += `      initialDelaySeconds: 15\n`;
-    yaml += `      periodSeconds: ${parseInterval(liveness.interval)}\n`;
-    yaml += `      timeoutSeconds: ${parseInterval(liveness.timeout)}\n`;
+    yaml += `      periodSeconds: ${Math.round(parseDuration(liveness.interval))}\n`;
+    yaml += `      timeoutSeconds: ${Math.round(parseDuration(liveness.timeout))}\n`;
     yaml += `      successThreshold: 1\n`;
     yaml += `      failureThreshold: 3\n`;
   }
@@ -188,10 +190,10 @@ export function generateKubernetesProbeYaml(
     yaml += `    readinessProbe:\n`;
     yaml += `      httpGet:\n`;
     yaml += `        path: ${readiness.endpoint}\n`;
-    yaml += `        port: 8080\n`;
+    yaml += `        port: ${port}\n`;
     yaml += `      initialDelaySeconds: 5\n`;
-    yaml += `      periodSeconds: ${parseInterval(readiness.interval)}\n`;
-    yaml += `      timeoutSeconds: ${parseInterval(readiness.timeout)}\n`;
+    yaml += `      periodSeconds: ${Math.round(parseDuration(readiness.interval))}\n`;
+    yaml += `      timeoutSeconds: ${Math.round(parseDuration(readiness.timeout))}\n`;
     yaml += `      successThreshold: 1\n`;
     yaml += `      failureThreshold: 3\n`;
   }
@@ -200,10 +202,10 @@ export function generateKubernetesProbeYaml(
     yaml += `    startupProbe:\n`;
     yaml += `      httpGet:\n`;
     yaml += `        path: ${startup.endpoint}\n`;
-    yaml += `        port: 8080\n`;
+    yaml += `        port: ${port}\n`;
     yaml += `      initialDelaySeconds: 0\n`;
-    yaml += `      periodSeconds: ${parseInterval(startup.interval)}\n`;
-    yaml += `      timeoutSeconds: ${parseInterval(startup.timeout)}\n`;
+    yaml += `      periodSeconds: ${Math.round(parseDuration(startup.interval))}\n`;
+    yaml += `      timeoutSeconds: ${Math.round(parseDuration(startup.timeout))}\n`;
     yaml += `      successThreshold: 1\n`;
     yaml += `      failureThreshold: 30\n`;
   }
@@ -221,25 +223,12 @@ export function generateLoadBalancerConfig(checks: HealthCheck[]): string {
   return `health_check {
   path     = "${check.endpoint}"
   port     = 8080
-  interval = ${parseInterval(check.interval)}
-  timeout  = ${parseInterval(check.timeout)}
+  interval = ${Math.round(parseDuration(check.interval))}
+  timeout  = ${Math.round(parseDuration(check.timeout))}
   
   healthy_threshold   = 2
   unhealthy_threshold = 3
 }`;
-}
-
-/**
- * Parse interval string to seconds
- */
-function parseInterval(interval: string): number {
-  const match = interval.match(/^(\d+)(s|m)?$/);
-  if (!match) return 30;
-
-  const value = parseInt(match[1]!, 10);
-  const unit = match[2] ?? 's';
-
-  return unit === 'm' ? value * 60 : value;
 }
 
 /**

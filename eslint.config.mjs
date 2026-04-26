@@ -1,5 +1,5 @@
-import typescript from '@typescript-eslint/eslint-plugin';
-import typescriptParser from '@typescript-eslint/parser';
+import tseslint from '@typescript-eslint/eslint-plugin';
+import tsparser from '@typescript-eslint/parser';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -19,7 +19,7 @@ export default [
   {
     files: ['**/*.ts'],
     languageOptions: {
-      parser: typescriptParser,
+      parser: tsparser,
       ecmaVersion: 2022,
       sourceType: 'module',
       parserOptions: {
@@ -28,10 +28,10 @@ export default [
       },
     },
     plugins: {
-      '@typescript-eslint': typescript,
+      '@typescript-eslint': tseslint,
     },
     rules: {
-      ...typescript.configs.recommended.rules,
+      ...tseslint.configs.recommended.rules,
       'no-console': ['error', { allow: ['warn', 'error'] }],
       '@typescript-eslint/no-unused-vars': [
         'error',
