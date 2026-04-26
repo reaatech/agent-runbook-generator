@@ -64,7 +64,10 @@ const PACKAGE_CATEGORIES: Record<string, Dependency['category']> = {
 /**
  * Map dependencies for a repository
  */
-export function mapDependencies(repoPath: string): DependencyAnalysis {
+export function mapDependencies(
+  repoPath: string,
+  includeDev: boolean = false,
+): DependencyAnalysis {
   const files = listFiles(repoPath, true);
 
   const directDeps: Dependency[] = [];
@@ -82,10 +85,13 @@ export function mapDependencies(repoPath: string): DependencyAnalysis {
     }>(packageJsonPath);
 
     if (packageJson) {
-      const allDeps = {
+      const allDeps: Record<string, string> = {
         ...packageJson.dependencies,
-        ...packageJson.devDependencies,
       };
+
+      if (includeDev) {
+        Object.assign(allDeps, packageJson.devDependencies);
+      }
 
       for (const [name, version] of Object.entries(allDeps)) {
         const dep: Dependency = {
