@@ -7,10 +7,7 @@ import { validateCompleteness } from '../../runbook/runbook-builder.js';
 import { info, initLogger } from '../../observability/logger.js';
 import { startValidationSpan, endSpanSuccess, endSpanError } from '../../observability/tracing.js';
 import { readFileSync } from 'fs';
-import {
-  parseRunbookDocument,
-  validateRunbookAccuracy,
-} from '../../runbook/pipeline.js';
+import { parseRunbookDocument, validateRunbookAccuracy } from '../../runbook/pipeline.js';
 import { scanRepository } from '../../analyzer/repository-scanner.js';
 import { mapDependencies } from '../../analyzer/dependency-mapper.js';
 import { parseConfigs } from '../../analyzer/config-parser.js';

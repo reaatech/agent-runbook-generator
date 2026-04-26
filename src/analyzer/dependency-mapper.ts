@@ -64,10 +64,7 @@ const PACKAGE_CATEGORIES: Record<string, Dependency['category']> = {
 /**
  * Map dependencies for a repository
  */
-export function mapDependencies(
-  repoPath: string,
-  includeDev: boolean = false,
-): DependencyAnalysis {
+export function mapDependencies(repoPath: string, includeDev: boolean = false): DependencyAnalysis {
   const files = listFiles(repoPath, true);
 
   const directDeps: Dependency[] = [];

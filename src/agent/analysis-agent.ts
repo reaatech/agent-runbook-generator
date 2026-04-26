@@ -138,7 +138,12 @@ export class AnalysisAgent {
         try {
           switch (fallbackProvider) {
             case 'claude':
-              return await this.callClaude(systemPrompt, userPrompt, apiKey, 'claude-opus-4-5-20260506');
+              return await this.callClaude(
+                systemPrompt,
+                userPrompt,
+                apiKey,
+                'claude-opus-4-5-20260506',
+              );
             case 'openai':
               return await this.callOpenAI(systemPrompt, userPrompt, apiKey, 'gpt-4-turbo');
             case 'gemini':

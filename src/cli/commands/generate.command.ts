@@ -15,7 +15,11 @@ export function generateCommand(program: Command): void {
     .command('generate')
     .description('Generate a complete runbook from a service repository')
     .argument('<path>', 'Path to the repository')
-    .option('-o, --output <file>', 'Output file for the runbook (ignored when --json)', 'runbook.md')
+    .option(
+      '-o, --output <file>',
+      'Output file for the runbook (ignored when --json)',
+      'runbook.md',
+    )
     .option('--format <format>', 'Output format for file output (markdown, html)', 'markdown')
     .option('--sections <sections>', 'Comma-separated list of sections to generate')
     .option('--provider <provider>', 'LLM provider (claude, openai, gemini, mock)', 'mock')
