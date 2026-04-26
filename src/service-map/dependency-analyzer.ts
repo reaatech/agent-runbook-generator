@@ -188,10 +188,30 @@ function extractQueueCalls(content: string): string[] {
 /**
  * Extract downstream services from context
  */
-function extractDownstreamServices(_context: AnalysisContext): string[] {
-  // This would typically come from service discovery or configuration
-  // For now, return empty array - in production this would query service registry
-  return [];
+function extractDownstreamServices(context: AnalysisContext): string[] {
+  const services: string[] = [];
+
+  if (context.repositoryAnalysis.configFiles) {
+    for (const configFile of context.repositoryAnalysis.configFiles) {
+      if (
+        configFile.includes('nginx') ||
+        configFile.includes('ingress') ||
+        configFile.includes('route')
+      ) {
+        services.push('api-gateway');
+      }
+    }
+  }
+
+  for (const ep of context.repositoryAnalysis.entryPoints) {
+    if (ep.type === 'http_server') {
+      services.push('frontend-client');
+      services.push('mobile-client');
+      break;
+    }
+  }
+
+  return [...new Set(services)];
 }
 
 /**
@@ -309,13 +329,13 @@ export function generateMermaidDiagram(graph: DependencyGraph): string {
 function getNodeShape(type: DependencyNode['type']): string {
   switch (type) {
     case 'database':
-      return '[("Database")';
+      return '[("")]';
     case 'cache':
-      return '[(Cache)]';
+      return '[( )]';
     case 'queue':
-      return '>Queue]';
+      return '>]';
     case 'external':
-      return '{{External}}';
+      return '{{}}';
     default:
       return '';
   }
