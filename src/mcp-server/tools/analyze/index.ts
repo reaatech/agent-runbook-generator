@@ -13,7 +13,7 @@ export function registerAnalyzeTools(): Tool[] {
         type: 'object',
         properties: {
           path: { type: 'string', description: 'Path to the repository' },
-          depth: { type: 'number', description: 'Analysis depth (default: 3)', default: 3 },
+          depth: { type: 'number', description: 'Analysis depth (default: 5)', default: 5 },
           include_patterns: {
             type: 'array',
             items: { type: 'string' },
