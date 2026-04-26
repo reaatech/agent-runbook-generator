@@ -8,10 +8,13 @@ import { info, initLogger } from '../../observability/logger.js';
 import { startValidationSpan, endSpanSuccess, endSpanError } from '../../observability/tracing.js';
 import { readFileSync } from 'fs';
 import {
-  generateRunbookArtifacts,
   parseRunbookDocument,
   validateRunbookAccuracy,
 } from '../../runbook/pipeline.js';
+import { scanRepository } from '../../analyzer/repository-scanner.js';
+import { mapDependencies } from '../../analyzer/dependency-mapper.js';
+import { parseConfigs } from '../../analyzer/config-parser.js';
+import type { AnalysisContext } from '../../types/domain.js';
 
 export function validateCommand(program: Command): void {
   program
@@ -74,7 +77,21 @@ async function executeValidate(path: string, options: Record<string, unknown>): 
     };
     if (typeof runbook.repository === 'string' && runbook.repository.length > 0) {
       info('Validating accuracy...');
-      const { analysisContext } = await generateRunbookArtifacts({ path: runbook.repository });
+      const repoAnalysis = await scanRepository(runbook.repository);
+      const depAnalysis = mapDependencies(runbook.repository);
+      const parsedCfg = parseConfigs(runbook.repository);
+
+      const analysisContext: AnalysisContext = {
+        serviceDefinition: {
+          name: (runbook.serviceName as string) ?? repoAnalysis.serviceName ?? 'unknown',
+          description: repoAnalysis.description,
+        },
+        repositoryAnalysis: repoAnalysis,
+        dependencyAnalysis: depAnalysis,
+        deploymentPlatform: parsedCfg.deployment.platform,
+        monitoringPlatform: parsedCfg.monitoring.platform,
+        externalServices: depAnalysis.externalServices,
+      };
       accuracyResult = validateRunbookAccuracy(runbook, analysisContext);
     } else {
       accuracyResult = {
