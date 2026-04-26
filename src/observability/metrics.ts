@@ -2,7 +2,7 @@
  * Metrics - OpenTelemetry metrics configuration
  */
 
-import { metrics, Counter, Histogram } from '@opentelemetry/api';
+import { metrics, Counter, Histogram, ObservableGauge } from '@opentelemetry/api';
 
 export interface MetricsConfig {
   serviceName: string;
@@ -17,9 +17,9 @@ let sectionCounter: Counter;
 let agentCallCounter: Counter;
 let analysisDurationHistogram: Histogram;
 let agentCostCounter: Counter;
-
-let completenessScore = 0;
-let completenessService = '';
+let completenessGauge: ObservableGauge;
+let lastCompletenessScore = 0;
+let lastCompletenessService = '';
 
 function ensureInitialized(): void {
   if (metricsInitialized) return;
@@ -45,6 +45,14 @@ function ensureInitialized(): void {
 
   agentCostCounter = meter.createCounter('agent_cost_total', {
     description: 'Total agent API cost',
+  });
+
+  completenessGauge = meter.createObservableGauge('runbook_completeness_score', {
+    description: 'Latest runbook completeness score',
+  });
+
+  completenessGauge.addCallback((result) => {
+    result.observe(lastCompletenessScore, { service: lastCompletenessService });
   });
 
   metricsInitialized = true;
@@ -101,15 +109,12 @@ export function recordAgentCost(provider: string, cost: number): void {
  * Record completeness score
  */
 export function recordCompleteness(service: string, score: number): void {
-  completenessScore = score;
-  completenessService = service;
+  lastCompletenessScore = score;
+  lastCompletenessService = service;
 }
 
-/**
- * Get current completeness score (for debugging)
- */
 export function getCompletenessScore(): { score: number; service: string } {
-  return { score: completenessScore, service: completenessService };
+  return { score: lastCompletenessScore, service: lastCompletenessService };
 }
 
 /**
