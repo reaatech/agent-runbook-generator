@@ -16,7 +16,7 @@ export function validateInput<T>(schema: ZodSchema<T>, data: unknown): InputVali
     return { success: true, data: result };
   } catch (error) {
     if (error instanceof ZodError) {
-      const errors = error.errors.map((e) => `${e.path.join('.')}: ${e.message}`);
+      const errors = error.issues.map((e) => `${e.path.join('.')}: ${e.message}`);
       return { success: false, errors };
     }
     return { success: false, errors: ['Unknown validation error'] };

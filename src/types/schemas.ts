@@ -185,7 +185,7 @@ export const AlertDefinitionSchema = z.object({
   threshold: z.string().optional(),
   for: z.string().optional(),
   annotations: AlertAnnotationsSchema,
-  labels: z.record(z.string()).optional(),
+  labels: z.record(z.string(), z.string()).optional(),
   runbookLink: z.string().optional(),
   escalationPolicy: z.string().optional(),
   description: z.string().optional(),
@@ -283,7 +283,7 @@ export const RollbackStepSchema = z.object({
   description: z.string(),
   commands: z.array(z.string()),
   command: z.string().optional(),
-  parameters: z.record(z.string()).optional(),
+  parameters: z.record(z.string(), z.string()).optional(),
   timeout: z.number().int().min(1).optional(),
   estimatedDuration: z.string(),
   automated: z.boolean().optional(),
@@ -543,7 +543,7 @@ export const CompletenessResultSchema = z.object({
   score: z.number().min(0).max(1),
   missingSections: z.array(z.string()),
   suggestions: z.array(z.string()),
-  sectionScores: z.record(z.number().min(0).max(1)),
+  sectionScores: z.record(z.string(), z.number().min(0).max(1)),
 });
 
 export const AccuracyDiscrepancySchema = z.object({
@@ -630,12 +630,12 @@ export const GenerateIncidentWorkflowInputSchema = z.object({
 });
 
 export const ValidateCompletenessInputSchema = z.object({
-  runbook: z.record(z.unknown()),
+  runbook: z.record(z.string(), z.unknown()),
   required_sections: z.array(z.string()).optional(),
 });
 
 export const ValidateAccuracyInputSchema = z.object({
-  runbook: z.record(z.unknown()),
+  runbook: z.record(z.string(), z.unknown()),
   analysis_context: z
     .object({
       serviceDefinition: ServiceDefinitionSchema,
@@ -645,11 +645,11 @@ export const ValidateAccuracyInputSchema = z.object({
 });
 
 export const ValidateLinksInputSchema = z.object({
-  runbook: z.record(z.unknown()),
+  runbook: z.record(z.string(), z.unknown()),
 });
 
 export const ValidateCIInputSchema = z.object({
-  runbook: z.record(z.unknown()),
+  runbook: z.record(z.string(), z.unknown()),
   thresholds: z
     .object({
       completeness_min: z.number().min(0).max(1).optional().default(0.8),
