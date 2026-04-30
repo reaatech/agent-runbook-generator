@@ -7,7 +7,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 describe('CLI Integration Tests', () => {
   const testDir = mkdtempSync(join(tmpdir(), 'runbook-cli-test-'));
   const testRepoPath = join(testDir, 'test-repo');
-  const cliPath = join(process.cwd(), 'dist', 'cli.js');
+  const cliPath = join(process.cwd(), 'packages', 'cli', 'dist', 'cli.js');
 
   beforeAll(() => {
     mkdirSync(testRepoPath, { recursive: true });
