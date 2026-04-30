@@ -2,9 +2,9 @@
  * Check Identifier - Identifies health check endpoints from code
  */
 
-import { type AnalysisContext, type HealthCheck } from '@reaatech/agent-runbook';
+import * as path from 'node:path';
+import type { AnalysisContext, HealthCheck } from '@reaatech/agent-runbook';
 import { listFiles, readFile } from '@reaatech/agent-runbook';
-import * as path from 'path';
 
 export interface HealthCheckCandidate {
   endpoint: string;
@@ -63,6 +63,7 @@ function extractHealthCheckPatterns(content: string): Omit<HealthCheckCandidate,
   // Match Express.js health check routes
   const expressMatches = content.matchAll(/app\.get\(['"`]\/(health|ready|live|startup)['"`]/g);
   for (const match of expressMatches) {
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
     const endpoint = match[1]!;
     patterns.push({
       endpoint: `/${endpoint}`,
@@ -76,6 +77,7 @@ function extractHealthCheckPatterns(content: string): Omit<HealthCheckCandidate,
     /@(app|router)\.get\(['"`]\/(health|ready|live|startup)['"`]/g,
   );
   for (const match of pythonMatches) {
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
     const endpoint = match[2]!;
     patterns.push({
       endpoint: `/${endpoint}`,
@@ -89,6 +91,7 @@ function extractHealthCheckPatterns(content: string): Omit<HealthCheckCandidate,
     /@(GetMapping|RequestMapping)\(['"`]\/(health|ready|live)['"`]/g,
   );
   for (const match of springMatches) {
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
     const endpoint = match[2]!;
     patterns.push({
       endpoint: `/actuator/${endpoint}`,
@@ -100,6 +103,7 @@ function extractHealthCheckPatterns(content: string): Omit<HealthCheckCandidate,
   // Match Go HTTP handlers
   const goMatches = content.matchAll(/http\.HandleFunc\(['"`]\/(health|ready|live|startup)['"`]/g);
   for (const match of goMatches) {
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
     const endpoint = match[1]!;
     patterns.push({
       endpoint: `/${endpoint}`,

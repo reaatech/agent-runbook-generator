@@ -1,9 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import {
-  identifyFailureModes,
-  getCommonFailureModes,
-} from '@reaatech/agent-runbook-failure-modes';
 import type { AnalysisContext } from '@reaatech/agent-runbook';
+import { getCommonFailureModes, identifyFailureModes } from '@reaatech/agent-runbook-failure-modes';
+import { describe, expect, it } from 'vitest';
 
 function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext {
   return {

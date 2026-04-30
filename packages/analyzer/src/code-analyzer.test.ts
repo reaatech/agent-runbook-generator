@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as os from 'os';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import { analyzeCode } from '@reaatech/agent-runbook-analyzer';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 describe('analyzeCode', () => {
   it('returns a CodeAnalysis object with all required fields', () => {
@@ -77,7 +77,7 @@ describe('analyzeCode', () => {
       expect(result.entryPoints.length).toBeGreaterThan(0);
       const listenEntry = result.entryPoints.find((e) => e.file.includes('server.ts'));
       expect(listenEntry).toBeDefined();
-      expect(listenEntry!.type).toBe('main');
+      expect(listenEntry?.type).toBe('main');
     });
 
     it('finds API endpoints from Express route definitions', () => {
@@ -99,28 +99,28 @@ describe('analyzeCode', () => {
       const result = analyzeCode(fixtureDir, 'typescript', 'express');
       const dbConn = result.externalConnections.find((c) => c.name === 'postgresql');
       expect(dbConn).toBeDefined();
-      expect(dbConn!.type).toBe('database');
+      expect(dbConn?.type).toBe('database');
     });
 
     it('finds background queue jobs', () => {
       const result = analyzeCode(fixtureDir, 'typescript', 'express');
       const queueJob = result.backgroundJobs.find((j) => j.name === 'send-email');
       expect(queueJob).toBeDefined();
-      expect(queueJob!.type).toBe('queue');
+      expect(queueJob?.type).toBe('queue');
     });
 
     it('finds scheduled cron jobs', () => {
       const result = analyzeCode(fixtureDir, 'typescript', 'express');
       const cronJob = result.backgroundJobs.find((j) => j.name === 'daily-cleanup');
       expect(cronJob).toBeDefined();
-      expect(cronJob!.type).toBe('cron');
+      expect(cronJob?.type).toBe('cron');
     });
 
     it('finds worker classes', () => {
       const result = analyzeCode(fixtureDir, 'typescript', 'express');
       const worker = result.backgroundJobs.find((j) => j.name === 'EmailWorker');
       expect(worker).toBeDefined();
-      expect(worker!.type).toBe('worker');
+      expect(worker?.type).toBe('worker');
     });
 
     it('filters files by language', () => {

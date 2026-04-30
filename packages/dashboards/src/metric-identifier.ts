@@ -2,7 +2,7 @@
  * Metric Identifier - Identifies key metrics from code instrumentation
  */
 
-import { type AnalysisContext } from '@reaatech/agent-runbook';
+import type { AnalysisContext } from '@reaatech/agent-runbook';
 import { listFiles, readFile } from '@reaatech/agent-runbook';
 
 export interface IdentifiedMetric {
@@ -236,8 +236,9 @@ function findExistingMetrics(
           const descMatch = match.match(/description:\s*['"]([^'"]*)['"]/);
           if (typeMatch && nameMatch) {
             metrics.push({
+              // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
               name: nameMatch[1]!,
-              type: typeMatch[1]!.toLowerCase() as IdentifiedMetric['type'],
+              type: typeMatch[1]?.toLowerCase() as IdentifiedMetric['type'],
               description: descMatch?.[1] ?? '',
             });
           }

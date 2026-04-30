@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
 import { Command } from 'commander';
+import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('@reaatech/agent-runbook-analyzer', () => ({
   analyzeRepository: vi.fn(() => ({
@@ -99,9 +99,9 @@ describe('analyzeCommand', () => {
     analyzeCommand(program);
     const cmd = program.commands.find((c) => c.name() === 'analyze');
     expect(cmd).toBeDefined();
-    expect(cmd!.options.map((o) => o.long)).toContain('--depth');
-    expect(cmd!.options.map((o) => o.long)).toContain('--output');
-    expect(cmd!.options.map((o) => o.long)).toContain('--json');
+    expect(cmd?.options.map((o) => o.long)).toContain('--depth');
+    expect(cmd?.options.map((o) => o.long)).toContain('--output');
+    expect(cmd?.options.map((o) => o.long)).toContain('--json');
   });
 });
 
@@ -120,9 +120,9 @@ describe('generateCommand', () => {
     generateCommand(program);
     const cmd = program.commands.find((c) => c.name() === 'generate');
     expect(cmd).toBeDefined();
-    expect(cmd!.options.map((o) => o.long)).toContain('--output');
-    expect(cmd!.options.map((o) => o.long)).toContain('--format');
-    expect(cmd!.options.map((o) => o.long)).toContain('--provider');
+    expect(cmd?.options.map((o) => o.long)).toContain('--output');
+    expect(cmd?.options.map((o) => o.long)).toContain('--format');
+    expect(cmd?.options.map((o) => o.long)).toContain('--provider');
   });
 });
 
@@ -141,10 +141,10 @@ describe('validateCommand', () => {
     validateCommand(program);
     const cmd = program.commands.find((c) => c.name() === 'validate');
     expect(cmd).toBeDefined();
-    expect(cmd!.options.map((o) => o.long)).toContain('--ci');
-    expect(cmd!.options.map((o) => o.long)).toContain('--completeness-threshold');
-    expect(cmd!.options.map((o) => o.long)).toContain('--accuracy-threshold');
-    expect(cmd!.options.map((o) => o.long)).toContain('--json');
+    expect(cmd?.options.map((o) => o.long)).toContain('--ci');
+    expect(cmd?.options.map((o) => o.long)).toContain('--completeness-threshold');
+    expect(cmd?.options.map((o) => o.long)).toContain('--accuracy-threshold');
+    expect(cmd?.options.map((o) => o.long)).toContain('--json');
   });
 });
 
@@ -163,9 +163,9 @@ describe('exportCommand', () => {
     exportCommand(program);
     const cmd = program.commands.find((c) => c.name() === 'export');
     expect(cmd).toBeDefined();
-    expect(cmd!.options.map((o) => o.long)).toContain('--output');
-    expect(cmd!.options.map((o) => o.long)).toContain('--format');
-    expect(cmd!.options.map((o) => o.long)).toContain('--include-toc');
+    expect(cmd?.options.map((o) => o.long)).toContain('--output');
+    expect(cmd?.options.map((o) => o.long)).toContain('--format');
+    expect(cmd?.options.map((o) => o.long)).toContain('--include-toc');
   });
 });
 
@@ -184,9 +184,9 @@ describe('serveCommand', () => {
     serveCommand(program);
     const cmd = program.commands.find((c) => c.name() === 'serve');
     expect(cmd).toBeDefined();
-    expect(cmd!.options.map((o) => o.long)).toContain('--port');
-    expect(cmd!.options.map((o) => o.long)).toContain('--host');
-    expect(cmd!.options.map((o) => o.long)).toContain('--otel-endpoint');
-    expect(cmd!.options.map((o) => o.long)).toContain('--log-level');
+    expect(cmd?.options.map((o) => o.long)).toContain('--port');
+    expect(cmd?.options.map((o) => o.long)).toContain('--host');
+    expect(cmd?.options.map((o) => o.long)).toContain('--otel-endpoint');
+    expect(cmd?.options.map((o) => o.long)).toContain('--log-level');
   });
 });

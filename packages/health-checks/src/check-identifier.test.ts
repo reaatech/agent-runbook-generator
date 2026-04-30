@@ -1,12 +1,9 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as os from 'os';
-import {
-  identifyHealthChecks,
-  suggestHealthChecks,
-} from '@reaatech/agent-runbook-health-checks';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import type { AnalysisContext } from '@reaatech/agent-runbook';
+import { identifyHealthChecks, suggestHealthChecks } from '@reaatech/agent-runbook-health-checks';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext {
   return {
@@ -65,21 +62,21 @@ describe('identifyHealthChecks', () => {
     const checks = identifyHealthChecks(fixtureDir, makeContext());
     const healthCheck = checks.find((c) => c.endpoint === '/health');
     expect(healthCheck).toBeDefined();
-    expect(healthCheck!.type).toBe('liveness');
+    expect(healthCheck?.type).toBe('liveness');
   });
 
   it('finds readiness endpoints', () => {
     const checks = identifyHealthChecks(fixtureDir, makeContext());
     const readyCheck = checks.find((c) => c.endpoint === '/ready');
     expect(readyCheck).toBeDefined();
-    expect(readyCheck!.type).toBe('readiness');
+    expect(readyCheck?.type).toBe('readiness');
   });
 
   it('adds recommended deep check', () => {
     const checks = identifyHealthChecks(fixtureDir, makeContext());
     const deep = checks.find((c) => c.endpoint === '/health/deep');
     expect(deep).toBeDefined();
-    expect(deep!.type).toBe('deep');
+    expect(deep?.type).toBe('deep');
   });
 
   it('adds database check when database is a dependency', () => {

@@ -1,15 +1,15 @@
-import { describe, it, expect, beforeEach } from 'vitest';
 import {
+  getCompletenessScore,
   initMetrics,
+  recordAgentCall,
+  recordAgentCost,
+  recordAnalysisDuration,
+  recordCompleteness,
   recordGeneration,
   recordSectionGenerated,
-  recordAgentCall,
-  recordAnalysisDuration,
-  recordAgentCost,
-  recordCompleteness,
-  getCompletenessScore,
   shutdownMetrics,
 } from '@reaatech/agent-runbook-observability';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('initMetrics', () => {
   it('initializes when enabled (stub - no-op)', () => {

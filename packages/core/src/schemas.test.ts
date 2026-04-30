@@ -1,20 +1,20 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
-  ServiceDefinitionSchema,
-  RepositoryStructureSchema,
+  AlertDefinitionSchema,
+  AlertSeveritySchema,
+  AnalysisContextSchema,
+  DashboardPanelSchema,
+  DependencySchema,
   EntryPointSchema,
   ExternalServiceSchema,
-  DependencySchema,
-  AlertSeveritySchema,
-  AlertDefinitionSchema,
-  DashboardPanelSchema,
   FailureModeSchema,
-  RollbackStepSchema,
   HealthCheckSchema,
-  ServiceDependencySchema,
+  RepositoryStructureSchema,
+  RollbackStepSchema,
   SLOTargetsSchema,
+  ServiceDefinitionSchema,
+  ServiceDependencySchema,
   ValidationResultSchema,
-  AnalysisContextSchema,
 } from './schemas.js';
 
 describe('ServiceDefinitionSchema', () => {

@@ -2,7 +2,7 @@
  * Communication Templates - Templates for incident communication
  */
 
-import { type CommunicationTemplate } from '@reaatech/agent-runbook';
+import type { CommunicationTemplate } from '@reaatech/agent-runbook';
 import { generateId } from '@reaatech/agent-runbook';
 
 export interface TemplateCategory {

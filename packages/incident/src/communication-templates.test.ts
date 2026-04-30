@@ -1,11 +1,11 @@
-import { describe, it, expect } from 'vitest';
 import {
   COMMUNICATION_TEMPLATES,
-  getTemplatesByCategory,
-  getTemplateByName,
   applyTemplateVariables,
   createTemplate,
+  getTemplateByName,
+  getTemplatesByCategory,
 } from '@reaatech/agent-runbook-incident';
+import { describe, expect, it } from 'vitest';
 
 describe('COMMUNICATION_TEMPLATES', () => {
   it('has five categories', () => {
@@ -67,7 +67,7 @@ describe('getTemplateByName', () => {
   it('finds Initial Slack Notification', () => {
     const t = getTemplateByName('Initial Slack Notification');
     expect(t).toBeDefined();
-    expect(t!.name).toBe('Initial Slack Notification');
+    expect(t?.name).toBe('Initial Slack Notification');
   });
 
   it('finds Status Page Update', () => {
@@ -88,6 +88,7 @@ describe('getTemplateByName', () => {
 
 describe('applyTemplateVariables', () => {
   it('replaces {service} in subject and body', () => {
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
     const template = getTemplateByName('Initial Slack Notification')!;
     const result = applyTemplateVariables(template, {
       service: 'my-api',
@@ -98,6 +99,7 @@ describe('applyTemplateVariables', () => {
   });
 
   it('replaces multiple variables', () => {
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
     const template = getTemplateByName('Initial Slack Notification')!;
     const result = applyTemplateVariables(template, {
       service: 'payment-svc',
@@ -116,6 +118,7 @@ describe('applyTemplateVariables', () => {
   });
 
   it('leaves unmatched variables as-is', () => {
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
     const template = getTemplateByName('Initial Slack Notification')!;
     const result = applyTemplateVariables(template, {});
     expect(result.body).toContain('{service}');
@@ -123,6 +126,7 @@ describe('applyTemplateVariables', () => {
   });
 
   it('does not modify original template', () => {
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
     const template = getTemplateByName('Initial Slack Notification')!;
     const originalBody = template.body;
     applyTemplateVariables(template, { service: 'my-svc' });

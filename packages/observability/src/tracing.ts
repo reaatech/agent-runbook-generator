@@ -2,15 +2,15 @@
  * Tracing - OpenTelemetry tracing configuration
  */
 
-import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
+import { SpanStatusCode, trace } from '@opentelemetry/api';
+import type { Span } from '@opentelemetry/api';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import {
   BatchSpanProcessor,
-  SimpleSpanProcessor,
   ConsoleSpanExporter,
+  SimpleSpanProcessor,
 } from '@opentelemetry/sdk-trace-base';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-import type { Span } from '@opentelemetry/api';
+import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 
 export interface TracingConfig {
   serviceName: string;

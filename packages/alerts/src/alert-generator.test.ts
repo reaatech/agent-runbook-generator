@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { generateAlerts, formatAlertsForPlatform } from '@reaatech/agent-runbook-alerts';
 import type { AnalysisContext } from '@reaatech/agent-runbook';
+import { formatAlertsForPlatform, generateAlerts } from '@reaatech/agent-runbook-alerts';
+import { describe, expect, it } from 'vitest';
 
 function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext {
   return {

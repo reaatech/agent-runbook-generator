@@ -1,14 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import type { AnalysisContext, EscalationPolicy, IncidentWorkflow } from '@reaatech/agent-runbook';
 import {
-  generateIncidentWorkflows,
   generateEscalationPolicy,
+  generateIncidentWorkflows,
   generateStandardWorkflow,
 } from '@reaatech/agent-runbook-incident';
-import type {
-  AnalysisContext,
-  IncidentWorkflow,
-  EscalationPolicy,
-} from '@reaatech/agent-runbook';
+import { describe, expect, it } from 'vitest';
 
 function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext {
   return {
@@ -56,6 +52,7 @@ describe('generateIncidentWorkflows', () => {
 
   it('includes P1 critical workflow', () => {
     const workflows = generateIncidentWorkflows(makeContext(), config);
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
     const p1 = workflows.find((w) => w.name.includes('P1'))!;
     expect(p1).toBeDefined();
     expect(p1.severity).toBe('critical');
@@ -64,6 +61,7 @@ describe('generateIncidentWorkflows', () => {
 
   it('includes P2 high severity workflow', () => {
     const workflows = generateIncidentWorkflows(makeContext(), config);
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
     const p2 = workflows.find((w) => w.name.includes('P2'))!;
     expect(p2).toBeDefined();
     expect(p2.severity).toBe('high');
@@ -72,6 +70,7 @@ describe('generateIncidentWorkflows', () => {
 
   it('includes P3 medium severity workflow', () => {
     const workflows = generateIncidentWorkflows(makeContext(), config);
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
     const p3 = workflows.find((w) => w.name.includes('P3'))!;
     expect(p3).toBeDefined();
     expect(p3.severity).toBe('medium');
@@ -79,6 +78,7 @@ describe('generateIncidentWorkflows', () => {
 
   it('includes P4 low severity workflow', () => {
     const workflows = generateIncidentWorkflows(makeContext(), config);
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
     const p4 = workflows.find((w) => w.name.includes('P4'))!;
     expect(p4).toBeDefined();
     expect(p4.severity).toBe('low');
@@ -135,9 +135,9 @@ describe('generateEscalationPolicy', () => {
   it('includes repeat policy', () => {
     const policy = generateEscalationPolicy(config) as EscalationPolicy;
     expect(policy.repeatPolicy).toBeDefined();
-    expect(policy.repeatPolicy!.enabled).toBe(true);
-    expect(policy.repeatPolicy!.repeatAfterMinutes).toBe(30);
-    expect(policy.repeatPolicy!.maxRepeats).toBe(3);
+    expect(policy.repeatPolicy?.enabled).toBe(true);
+    expect(policy.repeatPolicy?.repeatAfterMinutes).toBe(30);
+    expect(policy.repeatPolicy?.maxRepeats).toBe(3);
   });
 
   it('uses service name in policy name', () => {

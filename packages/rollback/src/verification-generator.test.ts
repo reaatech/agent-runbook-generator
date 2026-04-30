@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'vitest';
-import {
-  generateVerificationSteps,
-  generateVerificationChecklist,
-} from '@reaatech/agent-runbook-rollback';
 import type { AnalysisContext, VerificationStep } from '@reaatech/agent-runbook';
+import {
+  generateVerificationChecklist,
+  generateVerificationSteps,
+} from '@reaatech/agent-runbook-rollback';
+import { describe, expect, it } from 'vitest';
 
 function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext {
   return {

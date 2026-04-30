@@ -2,12 +2,16 @@
  * Analyze Command - Analyze a service repository
  */
 
-import { Command } from 'commander';
+import { parseIntOptional } from '@reaatech/agent-runbook';
 import { scanRepository } from '@reaatech/agent-runbook-analyzer';
 import { analyzeDependencies } from '@reaatech/agent-runbook-analyzer';
 import { info, initLogger } from '@reaatech/agent-runbook-observability';
-import { startAnalysisSpan, endSpanSuccess, endSpanError } from '@reaatech/agent-runbook-observability';
-import { parseIntOptional } from '@reaatech/agent-runbook';
+import {
+  endSpanError,
+  endSpanSuccess,
+  startAnalysisSpan,
+} from '@reaatech/agent-runbook-observability';
+import type { Command } from 'commander';
 
 export function analyzeCommand(program: Command): void {
   program
@@ -83,7 +87,7 @@ async function executeAnalyze(path: string, options: Record<string, unknown>): P
     };
 
     if (analyzeOptions.json || !analyzeOptions.output) {
-      process.stdout.write(JSON.stringify(results, null, 2) + '\n');
+      process.stdout.write(`${JSON.stringify(results, null, 2)}\n`);
     }
 
     if (analyzeOptions.output) {

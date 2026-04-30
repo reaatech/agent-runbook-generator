@@ -2,11 +2,11 @@
  * Dashboard Generator - Generates dashboard configurations for Grafana, Looker, CloudWatch
  */
 
-import {
-  type DashboardConfig,
-  type DashboardPanel,
-  type AnalysisContext,
-  type MonitoringPlatform,
+import type {
+  AnalysisContext,
+  DashboardConfig,
+  DashboardPanel,
+  MonitoringPlatform,
 } from '@reaatech/agent-runbook';
 import { generateId } from '@reaatech/agent-runbook';
 

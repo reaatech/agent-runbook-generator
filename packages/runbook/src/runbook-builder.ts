@@ -2,17 +2,17 @@
  * Runbook Builder - Assembles all sections into complete runbook
  */
 
-import {
-  type Runbook,
-  type RunbookSection,
-  type AnalysisContext,
-  type AlertDefinition,
-  type FailureMode,
-  type RollbackProcedure,
-  type IncidentWorkflow,
-  type DashboardConfig,
-  type HealthCheck,
-  type ServiceDependency,
+import type {
+  AlertDefinition,
+  AnalysisContext,
+  DashboardConfig,
+  FailureMode,
+  HealthCheck,
+  IncidentWorkflow,
+  RollbackProcedure,
+  Runbook,
+  RunbookSection,
+  ServiceDependency,
 } from '@reaatech/agent-runbook';
 import { generateId } from '@reaatech/agent-runbook';
 
@@ -252,6 +252,7 @@ function generateAlertsSection(alerts: AlertDefinition[]): string {
     content += '### Critical Alerts\n\n';
     content += '| Alert | Condition | Threshold | Escalation |\n';
     content += '|-------|-----------|-----------|------------|\n';
+    // biome-ignore lint/complexity/noForEach: suppressed for existing code
     criticalAlerts.forEach((a) => {
       content += `| ${a.name} | ${a.condition} | ${a.threshold} | ${a.escalationPolicy} |\n`;
     });
@@ -262,6 +263,7 @@ function generateAlertsSection(alerts: AlertDefinition[]): string {
     content += '### Warning Alerts\n\n';
     content += '| Alert | Condition | Threshold | Escalation |\n';
     content += '|-------|-----------|-----------|------------|\n';
+    // biome-ignore lint/complexity/noForEach: suppressed for existing code
     warningAlerts.forEach((a) => {
       content += `| ${a.name} | ${a.condition} | ${a.threshold} | ${a.escalationPolicy} |\n`;
     });
@@ -272,6 +274,7 @@ function generateAlertsSection(alerts: AlertDefinition[]): string {
     content += '### Info Alerts\n\n';
     content += '| Alert | Condition | Threshold |\n';
     content += '|-------|-----------|-----------|\n';
+    // biome-ignore lint/complexity/noForEach: suppressed for existing code
     infoAlerts.forEach((a) => {
       content += `| ${a.name} | ${a.condition} | ${a.threshold} |\n`;
     });
@@ -294,6 +297,7 @@ function generateAlertSubsections(alerts: AlertDefinition[]): RunbookSection[] {
 function generateDashboardsSection(dashboards: DashboardConfig[]): string {
   let content = '## Dashboard Configurations\n\n';
 
+  // biome-ignore lint/complexity/noForEach: suppressed for existing code
   dashboards.forEach((d) => {
     content += `### ${d.title}\n\n`;
     content += `- **Platform:** ${d.platform}\n`;
@@ -304,6 +308,7 @@ function generateDashboardsSection(dashboards: DashboardConfig[]): string {
     if (d.panels.length > 0) {
       content += '| Panel | Type | Query |\n';
       content += '|-------|------|-------|\n';
+      // biome-ignore lint/complexity/noForEach: suppressed for existing code
       d.panels.forEach((p) => {
         content += `| ${p.title} | ${p.type} | \`${p.query}\` |\n`;
       });
@@ -322,6 +327,7 @@ function getDetectionStrings(detection: FailureMode['detection']): string[] {
 function generateFailureModesSection(failureModes: FailureMode[]): string {
   let content = '## Failure Modes\n\n';
 
+  // biome-ignore lint/complexity/noForEach: suppressed for existing code
   failureModes.forEach((fm) => {
     content += `### ${fm.name}\n\n`;
     content += `**Description:** ${fm.description}\n\n`;
@@ -355,14 +361,16 @@ function generateFailureModeSubsections(failureModes: FailureMode[]): RunbookSec
 function generateRollbackSection(procedures: RollbackProcedure[]): string {
   let content = '## Rollback Procedures\n\n';
 
+  // biome-ignore lint/complexity/noForEach: suppressed for existing code
   procedures.forEach((proc) => {
     content += `### ${proc.name}\n\n`;
     content += `**Description:** ${proc.description}\n\n`;
     content += `**Trigger Conditions:**\n${proc.triggerConditions.map((t) => `- ${t}`).join('\n')}\n\n`;
     content += `**Estimated Duration:** ${proc.estimatedTotalDuration}\n\n`;
     content += `**Requires Approval:** ${proc.requiresApproval ? 'Yes' : 'No'}\n\n`;
-    content += `**Steps:**\n\n`;
+    content += '**Steps:**\n\n';
 
+    // biome-ignore lint/complexity/noForEach: suppressed for existing code
     proc.steps.forEach((step) => {
       content += `${step.order}. **${step.title}**\n`;
       content += `   ${step.description}\n`;
@@ -389,6 +397,7 @@ function generateRollbackSubsections(procedures: RollbackProcedure[]): RunbookSe
 function generateIncidentResponseSection(workflows: IncidentWorkflow[]): string {
   let content = '## Incident Response\n\n';
 
+  // biome-ignore lint/complexity/noForEach: suppressed for existing code
   workflows.forEach((wf) => {
     content += `### ${wf.name}\n\n`;
     content += `**Description:** ${wf.description}\n\n`;
@@ -403,6 +412,7 @@ function generateIncidentResponseSection(workflows: IncidentWorkflow[]): string 
 function generateHealthChecksSection(checks: HealthCheck[]): string {
   let content = '## Health Checks\n\n';
 
+  // biome-ignore lint/complexity/noForEach: suppressed for existing code
   checks.forEach((check) => {
     content += `### ${check.name}\n\n`;
     content += `**Type:** ${check.type}\n\n`;
@@ -425,6 +435,7 @@ function generateDependenciesSection(deps: ServiceDependency[]): string {
     content += '### Upstream Dependencies\n\n';
     content += '| Service | Type | Critical | Description |\n';
     content += '|---------|------|----------|-------------|\n';
+    // biome-ignore lint/complexity/noForEach: suppressed for existing code
     upstream.forEach((d) => {
       content += `| ${d.name} | ${d.type} | ${d.critical ? 'Yes' : 'No'} | ${d.description ?? '-'} |\n`;
     });
@@ -435,6 +446,7 @@ function generateDependenciesSection(deps: ServiceDependency[]): string {
     content += '### Downstream Dependencies\n\n';
     content += '| Service | Type | Description |\n';
     content += '|---------|------|-------------|\n';
+    // biome-ignore lint/complexity/noForEach: suppressed for existing code
     downstream.forEach((d) => {
       content += `| ${d.name} | ${d.type} | ${d.description ?? '-'} |\n`;
     });
@@ -450,9 +462,11 @@ function generateDependenciesSection(deps: ServiceDependency[]): string {
 export function generateTOC(runbook: Runbook): string {
   let toc = '# Table of Contents\n\n';
 
+  // biome-ignore lint/complexity/noForEach: suppressed for existing code
   runbook.sections.forEach((section) => {
     toc += `${section.order}. [${section.title}](#${section.title.toLowerCase().replace(/\s+/g, '-')})\n`;
 
+    // biome-ignore lint/complexity/noForEach: suppressed for existing code
     section.subsections.forEach((sub) => {
       toc += `   - [${sub.title}](#${sub.title.toLowerCase().replace(/\s+/g, '-')})\n`;
     });

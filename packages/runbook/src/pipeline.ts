@@ -1,12 +1,3 @@
-import { scanRepository } from '@reaatech/agent-runbook-analyzer';
-import { mapDependencies } from '@reaatech/agent-runbook-analyzer';
-import { parseConfigs } from '@reaatech/agent-runbook-analyzer';
-import { generateAlerts } from '@reaatech/agent-runbook-alerts';
-import { generateDashboard } from '@reaatech/agent-runbook-dashboards';
-import { identifyFailureModes } from '@reaatech/agent-runbook-failure-modes';
-import { generateRollbackProcedures } from '@reaatech/agent-runbook-rollback';
-import { generateIncidentWorkflows } from '@reaatech/agent-runbook-incident';
-import { generateHealthChecks } from '@reaatech/agent-runbook-health-checks';
 import type {
   AccuracyDiscrepancy,
   AccuracyResult,
@@ -20,6 +11,15 @@ import type {
   RunbookSection,
   ServiceDependency,
 } from '@reaatech/agent-runbook';
+import { generateAlerts } from '@reaatech/agent-runbook-alerts';
+import { scanRepository } from '@reaatech/agent-runbook-analyzer';
+import { mapDependencies } from '@reaatech/agent-runbook-analyzer';
+import { parseConfigs } from '@reaatech/agent-runbook-analyzer';
+import { generateDashboard } from '@reaatech/agent-runbook-dashboards';
+import { identifyFailureModes } from '@reaatech/agent-runbook-failure-modes';
+import { generateHealthChecks } from '@reaatech/agent-runbook-health-checks';
+import { generateIncidentWorkflows } from '@reaatech/agent-runbook-incident';
+import { generateRollbackProcedures } from '@reaatech/agent-runbook-rollback';
 
 export interface GeneratePipelineOptions {
   path: string;
@@ -144,12 +144,12 @@ export function parseMarkdownRunbook(
     if (!match) {
       const repositoryMatch = line.match(/^\*\*Repository:\*\*\s+(.+)$/);
       if (repositoryMatch) {
-        repository = repositoryMatch[1]!.trim();
+        repository = repositoryMatch[1]?.trim();
       }
 
       const serviceMatch = line.match(/^\*\*Service:\*\*\s+(.+)$/);
       if (serviceMatch) {
-        serviceName = serviceMatch[1]!.trim();
+        serviceName = serviceMatch[1]?.trim();
       }
 
       buffer.push(line);
@@ -158,8 +158,8 @@ export function parseMarkdownRunbook(
 
     flushBuffer();
 
-    const level = match[1]!.length;
-    const headingTitle = match[2]!.trim();
+    const level = match[1]?.length;
+    const headingTitle = match[2]?.trim();
     headings.push({ level, title: headingTitle });
 
     if (level === 1) {
@@ -265,8 +265,11 @@ export function validateRunbookLinks(runbook: Record<string, unknown>): LinkVali
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
   let match: RegExpExecArray | null;
 
+  // biome-ignore lint/suspicious/noAssignInExpressions: suppressed for existing code
   while ((match = linkRegex.exec(markdown)) !== null) {
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
     const label = match[1]!;
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
     const target = match[2]!;
 
     if (target.startsWith('http://') || target.startsWith('https://')) {
@@ -387,6 +390,7 @@ function extractHeadingAnchors(markdown: string, runbook: Record<string, unknown
   for (const line of markdown.split('\n')) {
     const match = line.match(/^#{1,6}\s+(.+)$/);
     if (match) {
+      // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
       anchors.add(toAnchor(match[1]!));
     }
   }

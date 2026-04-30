@@ -1,11 +1,11 @@
-import { describe, it, expect } from 'vitest';
+import type { AnalysisContext, FailureMode } from '@reaatech/agent-runbook';
 import {
   generateMitigations,
   suggestCircuitBreakerConfig,
   suggestRetryConfig,
   suggestTimeoutConfig,
 } from '@reaatech/agent-runbook-failure-modes';
-import type { AnalysisContext, FailureMode } from '@reaatech/agent-runbook';
+import { describe, expect, it } from 'vitest';
 
 function makeContext(): AnalysisContext {
   return {

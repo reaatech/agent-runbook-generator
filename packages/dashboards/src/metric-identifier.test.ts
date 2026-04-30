@@ -1,9 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import {
-  identifyMetrics,
-  suggestMetricsForService,
-} from '@reaatech/agent-runbook-dashboards';
 import type { AnalysisContext } from '@reaatech/agent-runbook';
+import { identifyMetrics, suggestMetricsForService } from '@reaatech/agent-runbook-dashboards';
+import { describe, expect, it } from 'vitest';
 
 function makeContext(): AnalysisContext {
   return {

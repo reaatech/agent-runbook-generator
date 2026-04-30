@@ -1,14 +1,14 @@
-import { describe, it, expect } from 'vitest';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as os from 'os';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
+import type { AnalysisContext, HealthCheck } from '@reaatech/agent-runbook';
 import {
+  generateHealthCheckEndpoint,
   generateHealthChecks,
   generateKubernetesProbeYaml,
   generateLoadBalancerConfig,
-  generateHealthCheckEndpoint,
 } from '@reaatech/agent-runbook-health-checks';
-import type { AnalysisContext, HealthCheck } from '@reaatech/agent-runbook';
+import { describe, expect, it } from 'vitest';
 
 function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext {
   return {
@@ -189,7 +189,7 @@ describe('generateHealthChecks', () => {
     );
     const dbCheck = checks.find((c) => c.endpoint === '/health/database');
     expect(dbCheck).toBeDefined();
-    expect(dbCheck!.type).toBe('deep');
+    expect(dbCheck?.type).toBe('deep');
     fs.rmSync(tmpDir, { recursive: true });
   });
 });

@@ -7,6 +7,10 @@ configurations and generates new alert definitions based on service patterns, SL
 targets, and best practices. Supports Prometheus, Datadog, CloudWatch, and other
 monitoring platforms.
 
+## Package
+
+**[@reaatech/agent-runbook-alerts](../packages/alerts)** — provides `extractAlerts()`, `generateAlerts()`, `calculateSloThresholds()`, and `formatAlertsForPlatform()`.
+
 ## MCP Tools
 
 | Tool | Input Schema | Output | Rate Limit |

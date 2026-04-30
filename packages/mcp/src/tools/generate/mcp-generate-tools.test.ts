@@ -1,6 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
-import { execute as executeServiceMap } from './service_map.js';
+import { describe, expect, it, vi } from 'vitest';
 import { execute as executeHealthChecks } from './health_checks.js';
+import { execute as executeServiceMap } from './service_map.js';
 
 vi.mock('@reaatech/agent-runbook-analyzer', () => ({
   scanRepository: vi.fn().mockResolvedValue({

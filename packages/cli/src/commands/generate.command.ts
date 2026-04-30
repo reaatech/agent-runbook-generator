@@ -2,13 +2,17 @@
  * Generate Command - Generate a complete runbook
  */
 
-import { Command } from 'commander';
-import { formatRunbook } from '@reaatech/agent-runbook-runbook';
+import { writeFileSync } from 'node:fs';
 import { info, initLogger } from '@reaatech/agent-runbook-observability';
-import { startGenerationSpan, endSpanSuccess, endSpanError } from '@reaatech/agent-runbook-observability';
+import {
+  endSpanError,
+  endSpanSuccess,
+  startGenerationSpan,
+} from '@reaatech/agent-runbook-observability';
 import { recordGeneration, recordSectionGenerated } from '@reaatech/agent-runbook-observability';
-import { writeFileSync } from 'fs';
+import { formatRunbook } from '@reaatech/agent-runbook-runbook';
 import { generateRunbookArtifacts } from '@reaatech/agent-runbook-runbook';
+import type { Command } from 'commander';
 
 export function generateCommand(program: Command): void {
   program
@@ -90,7 +94,7 @@ async function executeGenerate(path: string, options: Record<string, unknown>): 
 
     // Step 6: Output results
     if (generateOptions.json) {
-      process.stdout.write(JSON.stringify(runbook, null, 2) + '\n');
+      process.stdout.write(`${JSON.stringify(runbook, null, 2)}\n`);
     } else {
       writeFileSync(generateOptions.output, formattedContent);
       info('Runbook generated successfully', {

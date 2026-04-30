@@ -2,12 +2,12 @@
  * Workflow Generator - Generates incident response workflows
  */
 
-import {
-  type AnalysisContext,
-  type IncidentWorkflow,
-  type EscalationPolicy,
-  type CommunicationTemplate,
-  type EscalationMatrix,
+import type {
+  AnalysisContext,
+  CommunicationTemplate,
+  EscalationMatrix,
+  EscalationPolicy,
+  IncidentWorkflow,
 } from '@reaatech/agent-runbook';
 import { generateId } from '@reaatech/agent-runbook';
 

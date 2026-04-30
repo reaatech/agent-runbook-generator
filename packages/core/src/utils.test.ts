@@ -1,30 +1,30 @@
-import { describe, it, expect } from 'vitest';
-import * as path from 'path';
-import * as fs from 'fs';
-import * as os from 'os';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
+import { describe, expect, it } from 'vitest';
 import {
-  fileExists,
   directoryExists,
+  ensureDirectory,
+  escapeMarkdown,
+  fileExists,
+  flatten,
+  formatDuration,
+  generateId,
+  getRelativePath,
+  groupBy,
+  isPathWithinBase,
+  listFiles,
+  looksLikeSecret,
+  parseDuration,
   readFile,
   readJsonFile,
-  listFiles,
-  generateId,
-  sanitizeAnchor,
-  escapeMarkdown,
-  truncate,
-  sleep,
-  retry,
-  looksLikeSecret,
   redactSecrets,
-  parseDuration,
-  formatDuration,
+  retry,
+  sanitizeAnchor,
   simpleHash,
-  groupBy,
-  flatten,
+  sleep,
+  truncate,
   unique,
-  isPathWithinBase,
-  getRelativePath,
-  ensureDirectory,
   writeFile,
   writeJsonFile,
 } from './utils.js';
@@ -73,7 +73,7 @@ describe('readJsonFile', () => {
   it('parses a valid JSON file', () => {
     const result = readJsonFile<Record<string, unknown>>(path.join(process.cwd(), 'package.json'));
     expect(result).toBeDefined();
-    expect(result!.name).toBeDefined();
+    expect(result?.name).toBeDefined();
   });
 
   it('returns undefined for non-existent file', () => {

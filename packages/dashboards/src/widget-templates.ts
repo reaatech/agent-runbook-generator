@@ -2,7 +2,7 @@
  * Widget Templates - Pre-built templates for common service patterns
  */
 
-import { type DashboardPanel, type ThresholdConfig } from '@reaatech/agent-runbook';
+import type { DashboardPanel, ThresholdConfig } from '@reaatech/agent-runbook';
 
 let panelIdCounter = 0;
 

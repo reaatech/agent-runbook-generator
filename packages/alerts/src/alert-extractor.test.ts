@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
 import { extractAlerts, generateDefaultAlerts } from '@reaatech/agent-runbook-alerts';
+import { describe, expect, it } from 'vitest';
 
 describe('extractAlerts', () => {
   it('returns structured result with alerts, sloAlerts, resourceAlerts', () => {

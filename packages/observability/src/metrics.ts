@@ -2,7 +2,7 @@
  * Metrics - OpenTelemetry metrics configuration
  */
 
-import { metrics, type Counter, type Histogram, type ObservableGauge } from '@opentelemetry/api';
+import { type Counter, type Histogram, type ObservableGauge, metrics } from '@opentelemetry/api';
 
 export interface MetricsConfig {
   serviceName: string;

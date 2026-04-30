@@ -2,10 +2,10 @@
  * Config Parser - Parses YAML/JSON configs, IaC, Dockerfiles
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
+import type { DeploymentPlatform, MonitoringPlatform } from '@reaatech/agent-runbook';
+import { listFiles, readFile } from '@reaatech/agent-runbook';
 import YAML from 'yaml';
-import { type DeploymentPlatform, type MonitoringPlatform } from '@reaatech/agent-runbook';
-import { readFile, listFiles } from '@reaatech/agent-runbook';
 
 export interface ParsedConfig {
   environmentVariables: EnvironmentVariable[];
@@ -91,7 +91,7 @@ function extractEnvironmentVariables(repoPath: string, files: string[]): Environ
         if (trimmed && !trimmed.startsWith('#')) {
           const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
           if (match) {
-            const name = match[1]!;
+            const name = match[1];
             const value = match[2]?.replace(/^["']|["']$/g, '');
             const isSecret = secretPatterns.some((p) => p.test(name));
             envVars.push({
@@ -127,9 +127,9 @@ function parseInfrastructureConfig(repoPath: string, files: string[]): Infrastru
       const resourceMatches = content.matchAll(/resource\s+"([^"]+)"\s+"([^"]+)"/g);
       for (const match of resourceMatches) {
         resources.push({
-          type: match[1]!,
-          name: match[2]!,
-          provider: match[1]!.split('_')[0] ?? 'unknown',
+          type: match[1],
+          name: match[2],
+          provider: match[1]?.split('_')[0] ?? 'unknown',
         });
       }
     }
@@ -188,6 +188,7 @@ function parseDeploymentConfig(repoPath: string, files: string[]): DeploymentCon
   return {
     platform,
     containerized: dockerfiles.length > 0,
+    // biome-ignore lint/style/noNonNullAssertion: guarded by length check
     dockerfile: dockerfiles.length > 0 ? path.relative(repoPath, dockerfiles[0]!) : undefined,
     kubernetesManifests: k8sManifests.map((f) => path.relative(repoPath, f)),
   };

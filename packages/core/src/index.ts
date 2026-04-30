@@ -45,7 +45,12 @@ export type {
   DashboardVariable,
 } from './domain.js';
 
-export type { RollbackStep, VerificationStep, RollbackCheck, RollbackCapability } from './domain.js';
+export type {
+  RollbackStep,
+  VerificationStep,
+  RollbackCheck,
+  RollbackCapability,
+} from './domain.js';
 
 export type {
   WorkflowStep,

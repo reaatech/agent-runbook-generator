@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
 import { registerGenerateTools } from '@reaatech/agent-runbook-mcp';
+import { describe, expect, it } from 'vitest';
 
 describe('registerGenerateTools', () => {
   it('returns an array of 7 tools', () => {
@@ -25,58 +25,58 @@ describe('registerGenerateTools', () => {
     const tools = registerGenerateTools();
     const fullTool = tools.find((t) => t.name === 'runbook.generate.full');
     expect(fullTool).toBeDefined();
-    expect(fullTool!.inputSchema.required).toContain('analysis_context');
-    expect(fullTool!.inputSchema.properties).toHaveProperty('analysis_context');
-    expect(fullTool!.inputSchema.properties).toHaveProperty('config');
+    expect(fullTool?.inputSchema.required).toContain('analysis_context');
+    expect(fullTool?.inputSchema.properties).toHaveProperty('analysis_context');
+    expect(fullTool?.inputSchema.properties).toHaveProperty('config');
   });
 
   it('registers runbook.generate.alerts tool', () => {
     const tools = registerGenerateTools();
     const alertTool = tools.find((t) => t.name === 'runbook.generate.alerts');
     expect(alertTool).toBeDefined();
-    expect(alertTool!.inputSchema.required).toContain('analysis_context');
-    expect(alertTool!.inputSchema.required).toContain('platform');
-    expect(alertTool!.inputSchema.properties).toHaveProperty('slo_targets');
+    expect(alertTool?.inputSchema.required).toContain('analysis_context');
+    expect(alertTool?.inputSchema.required).toContain('platform');
+    expect(alertTool?.inputSchema.properties).toHaveProperty('slo_targets');
   });
 
   it('registers runbook.generate.dashboard tool', () => {
     const tools = registerGenerateTools();
     const dashTool = tools.find((t) => t.name === 'runbook.generate.dashboard');
     expect(dashTool).toBeDefined();
-    expect(dashTool!.inputSchema.required).toContain('service_context');
-    expect(dashTool!.inputSchema.required).toContain('platform');
+    expect(dashTool?.inputSchema.required).toContain('service_context');
+    expect(dashTool?.inputSchema.required).toContain('platform');
   });
 
   it('registers runbook.generate.rollback tool', () => {
     const tools = registerGenerateTools();
     const rbTool = tools.find((t) => t.name === 'runbook.generate.rollback');
     expect(rbTool).toBeDefined();
-    expect(rbTool!.inputSchema.required).toContain('deployment_config');
-    expect(rbTool!.inputSchema.properties).toHaveProperty('failure_scenarios');
+    expect(rbTool?.inputSchema.required).toContain('deployment_config');
+    expect(rbTool?.inputSchema.properties).toHaveProperty('failure_scenarios');
   });
 
   it('registers runbook.generate.incident_workflow tool', () => {
     const tools = registerGenerateTools();
     const iwTool = tools.find((t) => t.name === 'runbook.generate.incident_workflow');
     expect(iwTool).toBeDefined();
-    expect(iwTool!.inputSchema.required).toContain('service_context');
-    expect(iwTool!.inputSchema.properties).toHaveProperty('team_config');
+    expect(iwTool?.inputSchema.required).toContain('service_context');
+    expect(iwTool?.inputSchema.properties).toHaveProperty('team_config');
   });
 
   it('registers runbook.generate.service_map tool', () => {
     const tools = registerGenerateTools();
     const smTool = tools.find((t) => t.name === 'runbook.generate.service_map');
     expect(smTool).toBeDefined();
-    expect(smTool!.inputSchema.required).toContain('analysis_context');
-    expect(smTool!.inputSchema.properties).toHaveProperty('format');
+    expect(smTool?.inputSchema.required).toContain('analysis_context');
+    expect(smTool?.inputSchema.properties).toHaveProperty('format');
   });
 
   it('registers runbook.generate.health_checks tool', () => {
     const tools = registerGenerateTools();
     const hcTool = tools.find((t) => t.name === 'runbook.generate.health_checks');
     expect(hcTool).toBeDefined();
-    expect(hcTool!.inputSchema.required).toContain('service_context');
-    expect(hcTool!.inputSchema.required).toContain('platform');
+    expect(hcTool?.inputSchema.required).toContain('service_context');
+    expect(hcTool?.inputSchema.required).toContain('platform');
   });
 
   it('all tool names start with runbook.generate.', () => {

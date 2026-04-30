@@ -2,13 +2,13 @@
  * Deployment Analyzer - Identifies deployment mechanism and rollback capabilities
  */
 
-import {
-  type AnalysisContext,
-  type DeploymentPlatform,
-  type RollbackCapability,
+import * as path from 'node:path';
+import type {
+  AnalysisContext,
+  DeploymentPlatform,
+  RollbackCapability,
 } from '@reaatech/agent-runbook';
 import { listFiles, readFile } from '@reaatech/agent-runbook';
-import * as path from 'path';
 
 export interface DeploymentAnalysis {
   platform: DeploymentPlatform;
@@ -43,7 +43,7 @@ export function analyzeDeployment(repoPath: string, context: AnalysisContext): D
 
   // Analyze based on platform
   switch (platform) {
-    case 'kubernetes':
+    case 'kubernetes': {
       const k8sManifests = files.filter(
         (f) =>
           (f.endsWith('.yaml') || f.endsWith('.yml')) &&
@@ -56,7 +56,8 @@ export function analyzeDeployment(repoPath: string, context: AnalysisContext): D
           // Extract replicas
           const replicasMatch = content.match(/replicas:\s*(\d+)/);
           if (replicasMatch) {
-            deploymentConfig.replicas = parseInt(replicasMatch[1]!, 10);
+            // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
+            deploymentConfig.replicas = Number.parseInt(replicasMatch[1]!, 10);
           }
 
           // Extract strategy
@@ -75,6 +76,7 @@ export function analyzeDeployment(repoPath: string, context: AnalysisContext): D
           // Extract health check
           const healthCheckMatch = content.match(/path:\s*['"]([^'"]+)['"]/);
           if (healthCheckMatch) {
+            // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
             deploymentConfig.healthCheckPath = healthCheckMatch[1]!;
           }
         }
@@ -96,11 +98,12 @@ export function analyzeDeployment(repoPath: string, context: AnalysisContext): D
         {
           type: 'kubectl-delete-pod',
           description: 'Delete specific pods to force recreation',
-          command: `kubectl delete pod <pod-name> --force --grace-period=0`,
+          command: 'kubectl delete pod <pod-name> --force --grace-period=0',
           automated: false,
         },
       );
       break;
+    }
 
     case 'ecs':
       capabilities.push(

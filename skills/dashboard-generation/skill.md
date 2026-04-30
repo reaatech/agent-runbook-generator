@@ -6,6 +6,10 @@ Dashboard generation — automatically creates dashboard configurations for moni
 systems like Grafana, Looker, and CloudWatch. Identifies key metrics from service
 code and generates panels for latency, error rate, throughput, and resource utilization.
 
+## Package
+
+**[@reaatech/agent-runbook-dashboards](../packages/dashboards)** — provides `identifyMetrics()`, `generateDashboard()`, `formatDashboardForGrafana()`, and `formatDashboardForCloudWatch()`.
+
 ## MCP Tools
 
 | Tool | Input Schema | Output | Rate Limit |

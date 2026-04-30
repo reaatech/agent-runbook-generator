@@ -7,6 +7,10 @@ rollback procedures, etc.) into a complete, well-structured operator runbook. Ha
 formatting, table of contents generation, cross-referencing, and export to multiple
 formats (Markdown, HTML, PDF).
 
+## Package
+
+**[@reaatech/agent-runbook-runbook](../packages/runbook)** — provides `buildRunbook()`, `exportRunbook()`, `generateRunbookArtifacts()`, `validateCompleteness()`, and CI validation utilities.
+
 ## MCP Tools
 
 | Tool | Input Schema | Output | Rate Limit |

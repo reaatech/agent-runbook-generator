@@ -6,6 +6,10 @@ Incident response generation — creates incident response workflows, escalation
 procedures, communication templates, and post-incident review processes tailored
 to the service's architecture and team structure.
 
+## Package
+
+**[@reaatech/agent-runbook-incident](../packages/incident)** — provides `generateIncidentWorkflows()`, `generateEscalationPolicy()`, `getTemplatesByCategory()`, and `createTemplate()`.
+
 ## MCP Tools
 
 | Tool | Input Schema | Output | Rate Limit |

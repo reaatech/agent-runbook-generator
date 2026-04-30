@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { spawn } from 'child_process';
-import { join } from 'path';
-import { mkdtempSync, rmSync, writeFileSync, mkdirSync } from 'fs';
-import { tmpdir } from 'os';
+import { spawn } from 'node:child_process';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 describe('CLI Integration Tests', () => {
   const testDir = mkdtempSync(join(tmpdir(), 'runbook-cli-test-'));
@@ -173,7 +173,7 @@ CMD ["node", "src/index.js"]`,
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain('Runbook generated:');
 
-      const { existsSync, readFileSync } = await import('fs');
+      const { existsSync, readFileSync } = await import('node:fs');
       expect(existsSync(outputPath)).toBe(true);
       const content = readFileSync(outputPath, 'utf-8');
       expect(content).toContain('#');
@@ -250,7 +250,7 @@ CMD ["node", "src/index.js"]`,
 
       expect(result.exitCode).toBe(0);
 
-      const { readFileSync } = await import('fs');
+      const { readFileSync } = await import('node:fs');
       const content = readFileSync(outputPath, 'utf-8');
       expect(content).toContain('<!DOCTYPE html>');
     });

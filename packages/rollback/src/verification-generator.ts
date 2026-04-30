@@ -2,10 +2,10 @@
  * Verification Generator - Generates post-rollback verification steps
  */
 
-import {
-  type AnalysisContext,
-  type VerificationStep,
-  type DeploymentPlatform,
+import type {
+  AnalysisContext,
+  DeploymentPlatform,
+  VerificationStep,
 } from '@reaatech/agent-runbook';
 import { generateId } from '@reaatech/agent-runbook';
 
@@ -75,7 +75,7 @@ function generateHealthChecks(
       description: 'Check that service is ready to receive traffic',
       commands: [
         `curl -s http://${serviceName}/ready`,
-        `Check readiness probe status in deployment`,
+        'Check readiness probe status in deployment',
       ],
       automated: true,
       estimatedDuration: '1m',
@@ -123,7 +123,7 @@ function generateSmokeTests(
       description: 'Verify database connections are working',
       commands: [
         `curl -s http://${serviceName}/api/health/db`,
-        `Run a simple database query through the API`,
+        'Run a simple database query through the API',
       ],
       automated: true,
       estimatedDuration: '2m',
@@ -133,7 +133,7 @@ function generateSmokeTests(
       order: 3,
       title: 'Test cache connectivity',
       description: 'Verify cache connections are working',
-      commands: [`curl -s http://${serviceName}/api/health/cache`, `Test cache get/set operations`],
+      commands: [`curl -s http://${serviceName}/api/health/cache`, 'Test cache get/set operations'],
       automated: true,
       estimatedDuration: '2m',
     },

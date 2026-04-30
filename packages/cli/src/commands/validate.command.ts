@@ -2,16 +2,20 @@
  * Validate Command - Validate a runbook
  */
 
-import { Command } from 'commander';
-import { validateCompleteness } from '@reaatech/agent-runbook-runbook';
-import { info, initLogger } from '@reaatech/agent-runbook-observability';
-import { startValidationSpan, endSpanSuccess, endSpanError } from '@reaatech/agent-runbook-observability';
-import { readFileSync } from 'fs';
-import { parseRunbookDocument, validateRunbookAccuracy } from '@reaatech/agent-runbook-runbook';
+import { readFileSync } from 'node:fs';
+import type { AnalysisContext } from '@reaatech/agent-runbook';
 import { scanRepository } from '@reaatech/agent-runbook-analyzer';
 import { mapDependencies } from '@reaatech/agent-runbook-analyzer';
 import { parseConfigs } from '@reaatech/agent-runbook-analyzer';
-import type { AnalysisContext } from '@reaatech/agent-runbook';
+import { info, initLogger } from '@reaatech/agent-runbook-observability';
+import {
+  endSpanError,
+  endSpanSuccess,
+  startValidationSpan,
+} from '@reaatech/agent-runbook-observability';
+import { validateCompleteness } from '@reaatech/agent-runbook-runbook';
+import { parseRunbookDocument, validateRunbookAccuracy } from '@reaatech/agent-runbook-runbook';
+import type { Command } from 'commander';
 
 export function validateCommand(program: Command): void {
   program
@@ -39,8 +43,8 @@ export interface ValidateOptions {
 async function executeValidate(path: string, options: Record<string, unknown>): Promise<void> {
   const validateOptions: ValidateOptions = {
     ci: (options.ci as boolean) ?? false,
-    completenessThreshold: parseFloat(options.completenessThreshold as string) || 0.8,
-    accuracyThreshold: parseFloat(options.accuracyThreshold as string) || 0.7,
+    completenessThreshold: Number.parseFloat(options.completenessThreshold as string) || 0.8,
+    accuracyThreshold: Number.parseFloat(options.accuracyThreshold as string) || 0.7,
     requiredSections: (options.requiredSections as string)?.split(',').map((s) => s.trim()),
     json: (options.json as boolean) ?? false,
   };
@@ -154,6 +158,7 @@ async function executeValidate(path: string, options: Record<string, unknown>): 
       if (warnings.length > 0) {
         // eslint-disable-next-line no-console
         console.log('\nWarnings:');
+        // biome-ignore lint/complexity/noForEach: suppressed for existing code
         warnings.forEach((w) => {
           // eslint-disable-next-line no-console
           console.log(`  - ${w}`);
@@ -163,6 +168,7 @@ async function executeValidate(path: string, options: Record<string, unknown>): 
       if (completenessResult.suggestions.length > 0) {
         // eslint-disable-next-line no-console
         console.log('\nSuggestions:');
+        // biome-ignore lint/complexity/noForEach: suppressed for existing code
         completenessResult.suggestions.forEach((s) => {
           // eslint-disable-next-line no-console
           console.log(`  - ${s}`);

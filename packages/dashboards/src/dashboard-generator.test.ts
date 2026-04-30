@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest';
-import {
-  generateDashboard,
-  formatDashboardForGrafana,
-  formatDashboardForCloudWatch,
-} from '@reaatech/agent-runbook-dashboards';
 import type { AnalysisContext } from '@reaatech/agent-runbook';
+import {
+  formatDashboardForCloudWatch,
+  formatDashboardForGrafana,
+  generateDashboard,
+} from '@reaatech/agent-runbook-dashboards';
+import { describe, expect, it } from 'vitest';
 
 function makeContext(): AnalysisContext {
   return {
@@ -55,8 +55,8 @@ describe('generateDashboard', () => {
       serviceName: 'test-svc',
     });
     expect(dash.variables).toBeDefined();
-    expect(dash.variables!.length).toBeGreaterThan(0);
-    expect(dash.variables!.some((v) => v.name === 'instance')).toBe(true);
+    expect(dash.variables?.length).toBeGreaterThan(0);
+    expect(dash.variables?.some((v) => v.name === 'instance')).toBe(true);
   });
 
   it('uses default refreshInterval and timeRange', () => {

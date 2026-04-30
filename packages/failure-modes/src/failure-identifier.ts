@@ -2,9 +2,9 @@
  * Failure Identifier - Analyzes code for potential failure points
  */
 
-import { type AnalysisContext, type FailureMode } from '@reaatech/agent-runbook';
+import * as path from 'node:path';
+import type { AnalysisContext, FailureMode } from '@reaatech/agent-runbook';
 import { listFiles, readFile } from '@reaatech/agent-runbook';
-import * as path from 'path';
 
 export interface FailureAnalysis {
   failureModes: FailureMode[];

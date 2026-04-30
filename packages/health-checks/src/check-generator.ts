@@ -2,9 +2,9 @@
  * Check Generator - Generates health check definitions
  */
 
-import { type AnalysisContext, type HealthCheck } from '@reaatech/agent-runbook';
-import { identifyHealthChecks } from './check-identifier.js';
+import type { AnalysisContext, HealthCheck } from '@reaatech/agent-runbook';
 import { parseDuration } from '@reaatech/agent-runbook';
+import { identifyHealthChecks } from './check-identifier.js';
 
 export interface HealthCheckConfig {
   platform: 'kubernetes' | 'load-balancer' | 'prometheus' | 'datadog';
@@ -165,8 +165,8 @@ function generateDatadogChecks(_config: HealthCheckConfig): HealthCheck[] {
  */
 export function generateKubernetesProbeYaml(
   checks: HealthCheck[],
-  containerName: string = 'app',
-  port: number = 8080,
+  containerName = 'app',
+  port = 8080,
 ): string {
   const liveness = checks.find((c) => c.type === 'liveness');
   const readiness = checks.find((c) => c.type === 'readiness');
@@ -175,39 +175,39 @@ export function generateKubernetesProbeYaml(
   let yaml = `containers:\n  - name: ${containerName}\n`;
 
   if (liveness) {
-    yaml += `    livenessProbe:\n`;
-    yaml += `      httpGet:\n`;
+    yaml += '    livenessProbe:\n';
+    yaml += '      httpGet:\n';
     yaml += `        path: ${liveness.endpoint}\n`;
     yaml += `        port: ${port}\n`;
-    yaml += `      initialDelaySeconds: 15\n`;
+    yaml += '      initialDelaySeconds: 15\n';
     yaml += `      periodSeconds: ${Math.round(parseDuration(liveness.interval))}\n`;
     yaml += `      timeoutSeconds: ${Math.round(parseDuration(liveness.timeout))}\n`;
-    yaml += `      successThreshold: 1\n`;
-    yaml += `      failureThreshold: 3\n`;
+    yaml += '      successThreshold: 1\n';
+    yaml += '      failureThreshold: 3\n';
   }
 
   if (readiness) {
-    yaml += `    readinessProbe:\n`;
-    yaml += `      httpGet:\n`;
+    yaml += '    readinessProbe:\n';
+    yaml += '      httpGet:\n';
     yaml += `        path: ${readiness.endpoint}\n`;
     yaml += `        port: ${port}\n`;
-    yaml += `      initialDelaySeconds: 5\n`;
+    yaml += '      initialDelaySeconds: 5\n';
     yaml += `      periodSeconds: ${Math.round(parseDuration(readiness.interval))}\n`;
     yaml += `      timeoutSeconds: ${Math.round(parseDuration(readiness.timeout))}\n`;
-    yaml += `      successThreshold: 1\n`;
-    yaml += `      failureThreshold: 3\n`;
+    yaml += '      successThreshold: 1\n';
+    yaml += '      failureThreshold: 3\n';
   }
 
   if (startup) {
-    yaml += `    startupProbe:\n`;
-    yaml += `      httpGet:\n`;
+    yaml += '    startupProbe:\n';
+    yaml += '      httpGet:\n';
     yaml += `        path: ${startup.endpoint}\n`;
     yaml += `        port: ${port}\n`;
-    yaml += `      initialDelaySeconds: 0\n`;
+    yaml += '      initialDelaySeconds: 0\n';
     yaml += `      periodSeconds: ${Math.round(parseDuration(startup.interval))}\n`;
     yaml += `      timeoutSeconds: ${Math.round(parseDuration(startup.timeout))}\n`;
-    yaml += `      successThreshold: 1\n`;
-    yaml += `      failureThreshold: 30\n`;
+    yaml += '      successThreshold: 1\n';
+    yaml += '      failureThreshold: 30\n';
   }
 
   return yaml;

@@ -2,8 +2,8 @@
  * Analysis Agent - LLM-powered repository analysis
  */
 
-import { type AnalysisContext, type AnalysisInsight } from '@reaatech/agent-runbook';
-import { generatePrompt, getSystemPrompt, type PromptType } from './prompt-templates.js';
+import type { AnalysisContext, AnalysisInsight } from '@reaatech/agent-runbook';
+import { type PromptType, generatePrompt, getSystemPrompt } from './prompt-templates.js';
 import { ProviderAdapter } from './provider-adapter.js';
 
 export interface AgentConfig {

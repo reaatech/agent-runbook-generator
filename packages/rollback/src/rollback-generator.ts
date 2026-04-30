@@ -2,11 +2,11 @@
  * Rollback Generator - Generates step-by-step rollback procedures
  */
 
-import {
-  type AnalysisContext,
-  type RollbackProcedure,
-  type RollbackStep,
-  type DeploymentPlatform,
+import type {
+  AnalysisContext,
+  DeploymentPlatform,
+  RollbackProcedure,
+  RollbackStep,
 } from '@reaatech/agent-runbook';
 import { generateId } from '@reaatech/agent-runbook';
 

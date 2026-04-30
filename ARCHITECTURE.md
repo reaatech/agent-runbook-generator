@@ -2,16 +2,21 @@
 
 ## System Overview
 
+The Agent Runbook Generator is a 15-package pnpm monorepo that ingests a service repository and produces a complete operator runbook. It uses a three-layer MCP tool architecture exposed through `@reaatech/agent-runbook-mcp` and orchestrated by `@reaatech/agent-runbook-cli`.
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                              Client Layer                                │
 │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐                  │
-│  │     CLI     │    │   Library   │    │  MCP Client │                  │
-│  │   (npx)     │    │  (import)   │    │  (Agent)    │                  │
+│  │    CLI      │    │   Library   │    │  MCP Client │                  │
+│  │ (agent-     │    │  (import    │    │  (Claude    │                  │
+│  │  runbook-   │    │   agent-    │    │   Code,     │                  │
+│  │  cli)       │    │   runbook-  │    │   Cursor)   │                  │
+│  │             │    │   cli)      │    │             │                  │
 │  └──────┬──────┘    └──────┬──────┘    └──────┬──────┘                  │
 │         │                   │                   │                         │
 │         └───────────────────┼───────────────────┘                         │
-│                             │                                               │
+│                             │                                              │
 └─────────────────────────────┼─────────────────────────────────────────────┘
                               ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -26,47 +31,61 @@
 │  │  └─────────────┘    └─────────────┘    └─────────────┘           │   │
 │  └──────────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────────┘
-                              ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        Analysis Engine                                   │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │
-│  │ Repository  │  │   Config    │  │    Code     │  │ Dependency  │    │
-│  │  Scanner    │  │   Parser    │  │  Analyzer   │  │   Mapper    │    │
-│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘    │
-│         │                 │                │                │           │
-│         └─────────────────┼────────────────┼────────────────┘           │
-│                           ▼                                            │
-│                  ┌─────────────────┐                                    │
-│                  │     LLM Agent   │                                    │
-│                  │  (Analysis &    │                                    │
-│                  │   Generation)   │                                    │
-│                  └─────────────────┘                                    │
-└─────────────────────────────────────────────────────────────────────────┘
-                              ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                       Runbook Generators                                 │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │
-│  │   Alerts    │  │  Dashboards │  │  Failure    │  │  Rollback   │    │
-│  │  Generator  │  │  Generator  │  │   Modes     │  │  Generator  │    │
-│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘    │
-│         │                 │                │                │           │
-│         └─────────────────┼────────────────┼────────────────┘           │
-│                           ▼                                            │
-│                  ┌─────────────────┐                                    │
-│                  │   Runbook       │                                    │
-│                  │   Assembler     │                                    │
-│                  └─────────────────┘                                    │
-└─────────────────────────────────────────────────────────────────────────┘
-                              ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                       Cross-Cutting Concerns                             │
-│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐       │
-│  │   Observability  │  │  Configuration   │  │    Templates     │       │
-│  │  - Tracing (OTel)│  │  - YAML parsing  │  │  - Markdown      │       │
-│  │  - Metrics (OTel)│  │  - Env vars      │  │  - HTML          │       │
-│  │  - Logging (pino)│  │  - Validation    │  │  - PDF           │       │
-│  └──────────────────┘  └──────────────────┘  └──────────────────┘       │
-└─────────────────────────────────────────────────────────────────────────┘
+```
+
+## Monorepo Structure
+
+```
+packages/
+├── core/                       @reaatech/agent-runbook
+│   └── (types, schemas, utils, errors)
+│
+├── observability/              @reaatech/agent-runbook-observability
+│   └── (logging, tracing, metrics)
+│
+├── analyzer/                   @reaatech/agent-runbook-analyzer
+│   └── (scanner, config parser, code analyzer, dependency mapper)
+│
+├── alerts/                     @reaatech/agent-runbook-alerts
+├── dashboards/                 @reaatech/agent-runbook-dashboards
+├── failure-modes/              @reaatech/agent-runbook-failure-modes
+├── health-checks/              @reaatech/agent-runbook-health-checks
+├── incident/                   @reaatech/agent-runbook-incident
+├── rollback/                   @reaatech/agent-runbook-rollback
+├── runbook/                    @reaatech/agent-runbook-runbook
+├── service-map/                @reaatech/agent-runbook-service-map
+│
+├── agent/                      @reaatech/agent-runbook-agent
+│   └── (LLM analysis, prompt templates, provider adapter)
+│
+├── mcp/                        @reaatech/agent-runbook-mcp
+│   └── (MCP server, tool registry)
+│
+├── cli/                        @reaatech/agent-runbook-cli
+│   └── (CLI commands, orchestrator, facade barrel)
+│
+└── e2e/                        @reaatech/agent-runbook-e2e (private)
+    └── (integration tests)
+```
+
+### Dependency Graph
+
+```
+@reaatech/agent-runbook (core)
+    │
+    ├──► @reaatech/agent-runbook-observability
+    │
+    ├──► @reaatech/agent-runbook-analyzer
+    │
+    ├──► 8 generator packages:
+    │       alerts, dashboards, failure-modes, health-checks,
+    │       incident, rollback, runbook, service-map
+    │
+    ├──► @reaatech/agent-runbook-agent
+    │         │
+    │         └──► @reaatech/agent-runbook-mcp
+    │
+    └──► @reaatech/agent-runbook-cli (depends on all)
 ```
 
 ---
@@ -78,22 +97,27 @@
 - **runbook.generate.*** — Orchestrated generation for complete runbooks
 - **runbook.validate.*** — CI-style validation gates for runbook quality
 
-### 2. Provider-Agnostic
-- Any LLM provider can be used for analysis and generation (Claude, GPT-4, Gemini)
-- Unified interface for all providers
-- Provider-specific optimizations are encapsulated
+### 2. Package-Module Alignment
+- Each `src/` module is its own independently publishable package
+- Packages depend on `@reaatech/agent-runbook` (core) for types and utilities
+- The CLI package (`agent-runbook-cli`) serves as the facade, re-exporting all public APIs
 
-### 3. Repository-Agnostic
+### 3. Provider-Agnostic
+- Any LLM provider can be used for analysis and generation (Claude, GPT-4, Gemini)
+- Unified interface via `@reaatech/agent-runbook-agent`
+- Provider-specific optimizations encapsulated in `ProviderAdapter`
+
+### 4. Repository-Agnostic
 - Supports any codebase structure (Node.js, Python, Go, Java, etc.)
-- Extensible analyzer plugins for language-specific parsing
+- Extensible analyzer via `@reaatech/agent-runbook-analyzer`
 - Works with local directories or remote repositories
 
-### 4. No PII in Output
+### 5. No PII in Output
 - Never include secrets, API keys, or PII in generated runbooks
-- Automatic redaction of sensitive information
+- Automatic redaction via `@reaatech/agent-runbook` utilities
 - Safe for sharing and version control
 
-### 5. CI-Native Design
+### 6. CI-Native Design
 - Exit codes suitable for automation
 - Validation gates for CI/CD pipelines
 - Reproducible generation for consistency
@@ -104,11 +128,13 @@
 
 ### Three-Layer MCP Tool Architecture
 
+The MCP server (`@reaatech/agent-runbook-mcp`) exposes 16 tools across three layers:
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │               Layer 1: runbook.analyze.* (Analysis)                  │
 │                                                                      │
-│  Atomic operations for repository and service analysis               │
+│  Atomic operations backed by @reaatech/agent-runbook-analyzer        │
 │                                                                      │
 │  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐  │
 │  │   repository    │    │  dependencies   │    │  failure_modes  │  │
@@ -121,15 +147,15 @@
 │  ┌─────────────────┐    ┌─────────────────┐                         │
 │  │     alerts      │    │  health_checks  │                         │
 │  │                 │    │                 │                         │
-│  │ Extract/generate│    │ Generate health │                         │
-│  │ alert definitions│   │ check definitions│                        │
+│  │ Extract alert   │    │ Analyze health  │                         │
+│  │ definitions     │    │ checks          │                         │
 │  └─────────────────┘    └─────────────────┘                         │
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
 │             Layer 2: runbook.generate.* (Generation)                 │
 │                                                                      │
-│  Orchestrated operations for complete runbook generation             │
+│  Orchestrated operations across generator packages                   │
 │                                                                      │
 │  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐  │
 │  │      full       │    │     alerts      │    │    dashboard    │  │
@@ -146,12 +172,19 @@
 │  │ rollback        │    │ incident        │    │ dependency      │  │
 │  │ procedures      │    │ response        │    │ graphs          │  │
 │  └─────────────────┘    └─────────────────┘    └─────────────────┘  │
+│                                                                      │
+│  ┌─────────────────┐                                                 │
+│  │  health_checks  │                                                 │
+│  │                 │                                                 │
+│  │ Generate health │                                                 │
+│  │ check defs      │                                                 │
+│  └─────────────────┘                                                 │
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
 │                Layer 3: runbook.validate.* (CI Gates)                │
 │                                                                      │
-│  Opinionated validation operations for CI/CD                         │
+│  Opinionated validation through @reaatech/agent-runbook-runbook      │
 │                                                                      │
 │  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐  │
 │  │  completeness   │    │     accuracy    │    │      links      │  │
@@ -170,7 +203,7 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### Repository Analyzer
+### Repository Analyzer (`@reaatech/agent-runbook-analyzer`)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -190,12 +223,22 @@
 │  │                 │    │   CDK, Pulumi)  │    │   services      │  │
 │  └─────────────────┘    └─────────────────┘    └─────────────────┘  │
 │                                                                      │
-│  Output: AnalysisContext { service_type, config_files, entry_points,│
+│  ┌─────────────────┐                                                 │
+│  │ Dependency      │                                                 │
+│  │ Mapper          │                                                 │
+│  │                 │                                                 │
+│  │ - Parse package │                                                 │
+│  │   manifests     │                                                 │
+│  │ - Categorize    │                                                 │
+│  │   dependencies  │                                                 │
+│  └─────────────────┘                                                 │
+│                                                                      │
+│  Output: AnalysisContext { service_type, config_files, entry_points, │
 │                           dependencies, external_services }         │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### Alert Generator
+### Alert Generator (`@reaatech/agent-runbook-alerts`)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -215,12 +258,12 @@
 │  │   rules         │    │   to runbook    │    │                 │  │
 │  └─────────────────┘    └─────────────────┘    └─────────────────┘  │
 │                                                                      │
-│  Output: AlertDefinition[] { name, condition, threshold, severity,  │
-│                              escalation, runbook_link }             │
+│  Output: AlertDefinition[] { name, condition, threshold, severity,   │
+│                              escalation, runbook_link }              │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### Failure Mode Analyzer
+### Failure Mode Analyzer (`@reaatech/agent-runbook-failure-modes`)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -240,20 +283,20 @@
 │  │   handling      │    │                 │    │                 │  │
 │  └─────────────────┘    └─────────────────┘    └─────────────────┘  │
 │                                                                      │
-│  Output: FailureMode[] { name, detection, mitigation, escalation,   │
-│                          runbook_section }                          │
+│  Output: FailureMode[] { name, detection, mitigation, escalation,    │
+│                          runbook_section }                           │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### LLM Agent for Analysis
+### LLM Agent (`@reaatech/agent-runbook-agent`)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                        LLM Analysis Agent                            │
 │                                                                      │
 │  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐  │
-│  │     Analysis    │    │    Prompt       │    │    Provider     │  │
-│  │     Agent       │    │   Templates     │    │    Adapter      │  │
+│  │    Analysis     │    │    Prompt       │    │    Provider     │  │
+│  │    Agent        │    │   Templates     │    │    Adapter      │  │
 │  │                 │    │                 │    │                 │  │
 │  │ - LLM-powered   │    │ - Repository    │    │ - Support       │  │
 │  │   repository    │    │   analysis      │    │   Claude,       │  │
@@ -263,16 +306,16 @@
 │  │   from code     │    │   identification│    │   provider-     │  │
 │  │ - Suggest       │    │ - Rollback      │    │   specific      │  │
 │  │   improvements  │    │   procedure     │    │   formatting    │  │
-│  │   based on      │    │   generation    │    │ - Fallback      │  │
-│  │   best practices│    │                 │    │   between       │  │
+│  │                 │    │   generation    │    │ - Fallback      │  │
+│  │                 │    │                 │    │   between       │  │
 │  │                 │    │                 │    │   providers     │  │
 │  └─────────────────┘    └─────────────────┘    └─────────────────┘  │
 │                                                                      │
-│  Output: AnalysisInsights { findings, suggestions, generated_content}
+│  Output: AnalysisInsights { findings, suggestions, generated_content }│
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### Runbook Assembler
+### Runbook Assembler (`@reaatech/agent-runbook-runbook`)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -283,18 +326,27 @@
 │  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐  │
 │  │     Builder     │    │    Formatter    │    │    Templates    │  │
 │  │                 │    │                 │    │                 │  │
-│  │ - Assemble all  │    │ - Generate      │    │ - Standard SRE  │  │
-│  │   sections into │    │   Markdown      │    │   template      │  │
-│  │   complete      │    │ - Generate HTML │    │ - Incident      │  │
-│  │   runbook       │    │ - Generate PDF  │    │   response      │  │
-│  │ - Generate      │    │ - Support       │    │   template      │  │
-│  │   table of      │    │   custom        │    │ - On-call       │  │
-│  │   contents      │    │   templates     │    │   handoff       │  │
-│  │ - Create cross- │    │                 │    │   template      │  │
+│  │ - Assemble all  │    │ - Generate      │    │ - SRE template  │  │
+│  │   sections into │    │   Markdown      │    │ - Incident      │  │
+│  │   complete      │    │ - Generate HTML │    │   response      │  │
+│  │   runbook       │    │ - Generate PDF  │    │ - On-call       │  │
+│  │ - Generate      │    │ - Support       │    │   handoff       │  │
+│  │   table of      │    │   custom        │    │                 │  │
+│  │   contents      │    │   templates     │    │                 │  │
+│  │ - Create cross- │    │                 │    │                 │  │
 │  │   references    │    │                 │    │                 │  │
 │  └─────────────────┘    └─────────────────┘    └─────────────────┘  │
 │                                                                      │
-│  Output: Runbook { title, sections, toc, cross_references, format } │
+│  ┌─────────────────┐                                                 │
+│  │    Pipeline     │                                                 │
+│  │                 │                                                 │
+│  │ - Orchestrate   │                                                 │
+│  │   end-to-end    │                                                 │
+│  │   generation    │                                                 │
+│  │   flow          │                                                 │
+│  └─────────────────┘                                                 │
+│                                                                      │
+│  Output: Runbook { title, sections, toc, cross_references, format }  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -307,54 +359,45 @@
 ```
 1. Load repository (local path or clone from URL)
         │
-2. Scan repository structure:
-   - Detect language and framework
-   - Identify key configuration files
-   - Map directory structure
+        ▼
+2. @reaatech/agent-runbook-analyzer:
+   - scanRepository() — Detect language, framework, structure
+   - parseConfigs() — Extract env vars, IaC, deployment config
+   - analyzeCode() — Identify entry points, endpoints, connections
+   - mapDependencies() — Parse manifests, categorize dependencies
         │
-3. Parse configurations:
-   - Extract environment variables
-   - Parse infrastructure-as-code
-   - Identify deployment configuration
+        ▼
+3. @reaatech/agent-runbook-agent:
+   - analyzeRepository() — LLM-powered insight generation
+   - identifyFailureModes() — Pattern-based failure detection
         │
-4. Analyze code:
-   - Identify entry points
-   - Extract API endpoints
-   - Detect external service connections
+        ▼
+4. Generator packages (in parallel):
+   - @reaatech/agent-runbook-alerts — generateAlerts()
+   - @reaatech/agent-runbook-dashboards — generateDashboard()
+   - @reaatech/agent-runbook-failure-modes — generateMitigations()
+   - @reaatech/agent-runbook-rollback — generateRollbackProcedures()
+   - @reaatech/agent-runbook-incident — generateIncidentWorkflows()
+   - @reaatech/agent-runbook-health-checks — generateHealthChecks()
+   - @reaatech/agent-runbook-service-map — generateServiceMap()
         │
-5. Map dependencies:
-   - Parse package manifests
-   - Identify upstream/downstream services
-   - Generate dependency graph
+        ▼
+5. @reaatech/agent-runbook-runbook:
+   - buildRunbook() — Assemble all sections
+   - generateTOC() — Create table of contents
+   - exportRunbook() — Format as Markdown/HTML/PDF
         │
-6. Run LLM agent analysis:
-   - Generate insights from code patterns
-   - Identify failure modes
-   - Suggest improvements
+        ▼
+6. Validation (@reaatech/agent-runbook-runbook):
+   - validateCompleteness() — Required sections present
+   - validateRunbookAccuracy() — Content matches repository
+   - validateRunbookLinks() — Cross-references are valid
         │
-7. Generate runbook sections:
-   - Alert definitions
-   - Dashboard configurations
-   - Failure modes and mitigations
-   - Rollback procedures
-   - Incident response workflows
-   - Health check definitions
-        │
-8. Assemble runbook:
-   - Combine all sections
-   - Generate table of contents
-   - Create cross-references
-   - Apply formatting
-        │
-9. Validate runbook:
-   - Check completeness
-   - Verify accuracy
-   - Validate links
-        │
-10. Export runbook:
-    - Markdown format
-    - HTML format (optional)
-    - PDF format (optional)
+        ▼
+7. Export:
+   - Markdown (.md)
+   - HTML (.html)
+   - PDF (.pdf)
 ```
 
 ---
@@ -371,41 +414,31 @@
 │ - Never commit generated runbooks without review                    │
 ├─────────────────────────────────────────────────────────────────────┤
 │ Layer 2: Data Handling                                               │
+│ - @reaatech/agent-runbook utilities: redactSecrets(), looksLikeSecret()
 │ - Never include secrets in generated output                         │
-│ - Redact sensitive information from analysis                        │
 │ - Never log raw repository content                                  │
 ├─────────────────────────────────────────────────────────────────────┤
-│ Layer 3: LLM API                                                     │
+│ Layer 3: LLM API (@reaatech/agent-runbook-agent)                     │
 │ - All LLM API keys from environment variables                       │
 │ - Never log API keys or tokens                                      │
 │ - Separate keys per provider for isolation                          │
 ├─────────────────────────────────────────────────────────────────────┤
-│ Layer 4: Output Security                                             │
+│ Layer 4: Output Security (@reaatech/agent-runbook-runbook)           │
 │ - Validate generated content for sensitive data                     │
 │ - Sanitize Markdown/HTML output                                     │
 │ - Safe for version control (no secrets)                             │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### Secret Detection
-
-The generator automatically detects and redacts:
-- API keys and tokens
-- Database connection strings with passwords
-- Private keys and certificates
-- Personal identifiable information (PII)
-- Internal URLs and IP addresses
-
 ### Repository Access
 
 - **Local repositories**: Direct file system access with read permissions
-- **Remote repositories**: Clone via HTTPS with optional authentication
-- **GitHub integration**: Optional OAuth or token-based access
-- **Read-only by default**: Never modify source repositories
+- **Read-only by default**: Never modifies source repositories
+- **Path validation**: Prevents directory traversal (`isPathWithinBase`)
 
 ---
 
-## Observability
+## Observability (`@reaatech/agent-runbook-observability`)
 
 ### Tracing
 
@@ -424,12 +457,12 @@ Every runbook generation generates OpenTelemetry spans:
 
 | Metric | Type | Labels | Description |
 |--------|------|--------|-------------|
-| `runbook.generate.total` | Counter | `status` | Total generation runs |
-| `runbook.analyze.duration_ms` | Histogram | `component` | Analysis duration |
-| `runbook.sections.generated` | Counter | `section_type` | Sections generated |
-| `runbook.agent.calls` | Counter | `provider`, `status` | LLM agent API calls |
-| `runbook.agent.cost` | Histogram | `provider` | Agent cost tracking |
-| `runbook.validate.completeness` | Gauge | `service` | Completeness score |
+| `runbook_generation_total` | Counter | `status` | Total generation runs |
+| `runbook_section_generated_total` | Counter | `section_type` | Sections generated |
+| `agent_api_calls_total` | Counter | `provider`, `status` | LLM agent API calls |
+| `analysis_duration_ms` | Histogram | `component` | Analysis duration |
+| `agent_cost_total` | Counter | `provider` | Agent cost tracking |
+| `runbook_completeness_score` | Gauge | `service` | Completeness score |
 
 ### Logging
 
@@ -453,28 +486,33 @@ All logs are structured JSON with standard fields:
 
 ## Deployment Architecture
 
-### CLI Tool
+### CLI Tool (`@reaatech/agent-runbook-cli`)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                         CLI Tool                                     │
 │  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                  agent-runbook-generator CLI                  │    │
-│  │  ┌───────────┐  ┌───────────┐  ┌───────────┐                │    │
-│  │  │ Analyze   │  │ Generate  │  │ Validate  │                │    │
-│  │  │ Command   │  │ Command   │  │ Command   │                │    │
-│  │  └───────────┘  └───────────┘  └───────────┘                │    │
+│  │              agent-runbook-generator CLI                      │    │
+│  │  ┌───────────┐  ┌───────────┐  ┌───────────┐  ┌───────────┐│    │
+│  │  │ Analyze   │  │ Generate  │  │ Validate  │  │ Export    ││    │
+│  │  │ Command   │  │ Command   │  │ Command   │  │ Command   ││    │
+│  │  └───────────┘  └───────────┘  └───────────┘  └───────────┘│    │
+│  │  ┌───────────┐                                              │    │
+│  │  │ Serve     │                                              │    │
+│  │  │ Command   │                                              │    │
+│  │  └───────────┘                                              │    │
 │  └─────────────────────────────────────────────────────────────┘    │
 │                                                                      │
 │  Usage:                                                              │
-│  - npx agent-runbook-generator analyze <repo-path>                  │
-│  - npx agent-runbook-generator generate <repo-path> --output <dir>  │
-│  - npx agent-runbook-generator validate <runbook-path>              │
-│  - npx agent-runbook-generator serve --port 3000                    │
+│  - agent-runbook-generator analyze <repo-path>                      │
+│  - agent-runbook-generator generate <repo-path> --output <file>     │
+│  - agent-runbook-generator validate <runbook-path> --ci             │
+│  - agent-runbook-generator export <runbook-path> --format html       │
+│  - agent-runbook-generator serve --port 3000                        │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### MCP Server
+### MCP Server (`@reaatech/agent-runbook-mcp`)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -482,7 +520,7 @@ All logs are structured JSON with standard fields:
 │  ┌─────────────────────────────────────────────────────────────┐    │
 │  │              agent-runbook-generator MCP Server               │    │
 │  │  ┌───────────────────────────────────────────────────────┐  │    │
-│  │  │                  MCP Tools                             │  │    │
+│  │  │                  MCP Tools (16)                         │  │    │
 │  │  │                                                       │  │    │
 │  │  │  runbook.analyze.*     runbook.generate.*    runbook.validate.*
 │  │  │  - repository          - full               - completeness    │  │
@@ -491,10 +529,11 @@ All logs are structured JSON with standard fields:
 │  │  │  - alerts              - rollback           - ci              │  │
 │  │  │  - health_checks       - incident_workflow                     │  │
 │  │  │                        - service_map                            │  │
+│  │  │                        - health_checks                          │  │
 │  │  └───────────────────────────────────────────────────────┘  │    │
 │  └─────────────────────────────────────────────────────────────┘    │
 │                                                                      │
-│  Transport: StreamableHTTP on port 3000 (configurable)              │
+│  Transport: Stdio (default), configurable                           │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -502,9 +541,9 @@ All logs are structured JSON with standard fields:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         Cloud Run                                    │
+│                     Container Deployment                              │
 │  ┌─────────────────────────────────────────────────────────────┐    │
-│  │               agent-runbook-generator Container               │    │
+│  │            agent-runbook-generator Container                  │    │
 │  │  ┌───────────┐  ┌───────────┐  ┌───────────┐                │    │
 │  │  │ App       │  │ OTel      │  │ Secrets   │                │    │
 │  │  │ Container │  │ Sidecar   │  │ Mounted   │                │    │
@@ -517,9 +556,7 @@ All logs are structured JSON with standard fields:
 │  - Memory: 1GB, CPU: 1 vCPU                                         │
 │  - Timeout: 300s (for large repos)                                  │
 │                                                                      │
-│  Secrets: Secret Manager → mounted as env vars                       │
-│  Observability: OTel → Cloud Monitoring / Datadog                    │
-│  Storage: GCS for generated runbooks                                │
+│  CMD: node packages/cli/dist/cli.js serve --port 3000               │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -539,10 +576,34 @@ All logs are structured JSON with standard fields:
 
 ---
 
+## Toolchain
+
+| Tool | Purpose |
+|------|---------|
+| pnpm 10 | Package manager with workspace protocol |
+| turbo | Monorepo build orchestrator |
+| tsup | Per-package dual ESM/CJS build |
+| biome | Linting + formatting |
+| changesets | Version management + CHANGELOG generation |
+| vitest | Per-package testing |
+
+### Development Commands
+
+```bash
+pnpm build          # Build all 15 packages (turbo)
+pnpm test           # Run all tests (turbo)
+pnpm lint           # Lint all files (biome)
+pnpm format         # Format all files (biome)
+pnpm typecheck      # Type-check with path aliases
+pnpm clean          # Clean dist + node_modules
+pnpm changeset      # Create a changeset for versioning
+```
+
+---
+
 ## References
 
-- **AGENTS.md** — Agent development guide
-- **DEV_PLAN.md** — Development checklist
-- **README.md** — Quick start and overview
+- **AGENTS.md** — Agent development guide and conventions
+- **README.md** — Quick start and package overview
 - **skills/** — Skill definitions for agent capabilities
 - **MCP Specification** — https://modelcontextprotocol.io/

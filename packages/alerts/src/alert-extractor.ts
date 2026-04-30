@@ -2,9 +2,9 @@
  * Alert Extractor - Extracts existing alert definitions from configs
  */
 
+import type { AlertDefinition } from '@reaatech/agent-runbook';
+import { listFiles, readFile } from '@reaatech/agent-runbook';
 import YAML from 'yaml';
-import { type AlertDefinition } from '@reaatech/agent-runbook';
-import { readFile, listFiles } from '@reaatech/agent-runbook';
 
 export interface ExtractedAlerts {
   alerts: AlertDefinition[];
@@ -160,7 +160,7 @@ export function generateDefaultAlerts(
     for: '5m',
     annotations: {
       summary: `${serviceName} has high error rate`,
-      description: `Error rate is above 5% for more than 5 minutes`,
+      description: 'Error rate is above 5% for more than 5 minutes',
     },
     labels: { severity: 'critical', team: 'platform' },
   });
@@ -174,7 +174,7 @@ export function generateDefaultAlerts(
     for: '5m',
     annotations: {
       summary: `${serviceName} has high latency`,
-      description: `P95 latency is above 500ms for more than 5 minutes`,
+      description: 'P95 latency is above 500ms for more than 5 minutes',
     },
     labels: { severity: 'warning', team: 'platform' },
   });
@@ -189,7 +189,7 @@ export function generateDefaultAlerts(
       for: '2m',
       annotations: {
         summary: `${serviceName} has database connection errors`,
-        description: `Database connection failures detected`,
+        description: 'Database connection failures detected',
       },
       labels: { severity: 'critical', team: 'platform' },
     });
@@ -205,7 +205,7 @@ export function generateDefaultAlerts(
       for: '2m',
       annotations: {
         summary: `${serviceName} has cache connection errors`,
-        description: `Cache connection failures detected`,
+        description: 'Cache connection failures detected',
       },
       labels: { severity: 'warning', team: 'platform' },
     });
@@ -221,7 +221,7 @@ export function generateDefaultAlerts(
       for: '10m',
       annotations: {
         summary: `${serviceName} has high queue backlog`,
-        description: `Queue depth is above 1000 for more than 10 minutes`,
+        description: 'Queue depth is above 1000 for more than 10 minutes',
       },
       labels: { severity: 'warning', team: 'platform' },
     });

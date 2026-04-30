@@ -149,7 +149,8 @@ For each failure mode, provide:
 
 const RUNBOOK_ALERTS_TEMPLATE: PromptTemplate = {
   type: 'runbook-alerts',
-  systemPrompt: `You are an expert in monitoring and alerting. Generate comprehensive alert definitions for the service.`,
+  systemPrompt:
+    'You are an expert in monitoring and alerting. Generate comprehensive alert definitions for the service.',
   userPrompt: `Generate alert definitions for the following service:
 
 **Service Name:** {serviceName}
@@ -178,7 +179,8 @@ For each alert, specify:
 
 const RUNBOOK_DASHBOARDS_TEMPLATE: PromptTemplate = {
   type: 'runbook-dashboards',
-  systemPrompt: `You are an expert in observability and dashboard design. Create dashboard configurations for the service.`,
+  systemPrompt:
+    'You are an expert in observability and dashboard design. Create dashboard configurations for the service.',
   userPrompt: `Design dashboards for the following service:
 
 **Service Name:** {serviceName}
@@ -204,7 +206,8 @@ For each dashboard, specify:
 
 const RUNBOOK_FAILURE_MODES_TEMPLATE: PromptTemplate = {
   type: 'runbook-failure-modes',
-  systemPrompt: `You are an expert in incident response and failure analysis. Document failure modes and their mitigations.`,
+  systemPrompt:
+    'You are an expert in incident response and failure analysis. Document failure modes and their mitigations.',
   userPrompt: `Document failure modes for the following service:
 
 **Service Name:** {serviceName}
@@ -228,7 +231,8 @@ For each failure mode, document:
 
 const RUNBOOK_ROLLBACK_TEMPLATE: PromptTemplate = {
   type: 'runbook-rollback',
-  systemPrompt: `You are an expert in deployment and rollback procedures. Create detailed rollback instructions.`,
+  systemPrompt:
+    'You are an expert in deployment and rollback procedures. Create detailed rollback instructions.',
   userPrompt: `Create rollback procedures for the following service:
 
 **Service Name:** {serviceName}
@@ -255,7 +259,8 @@ For each procedure, include:
 
 const RUNBOOK_INCIDENT_RESPONSE_TEMPLATE: PromptTemplate = {
   type: 'runbook-incident-response',
-  systemPrompt: `You are an expert in incident management and response. Create incident response procedures.`,
+  systemPrompt:
+    'You are an expert in incident management and response. Create incident response procedures.',
   userPrompt: `Create incident response procedures for the following service:
 
 **Service Name:** {serviceName}
@@ -281,7 +286,8 @@ Include:
 
 const RUNBOOK_HEALTH_CHECKS_TEMPLATE: PromptTemplate = {
   type: 'runbook-health-checks',
-  systemPrompt: `You are an expert in service health and reliability. Define health check strategies.`,
+  systemPrompt:
+    'You are an expert in service health and reliability. Define health check strategies.',
   userPrompt: `Define health checks for the following service:
 
 **Service Name:** {serviceName}

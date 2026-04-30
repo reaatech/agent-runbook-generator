@@ -1,13 +1,13 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as os from 'os';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
+import type { AnalysisContext, ServiceDependency } from '@reaatech/agent-runbook';
 import {
   analyzeDependencies,
   generateDependencyGraph,
   generateMermaidDiagram,
 } from '@reaatech/agent-runbook-service-map';
-import type { AnalysisContext, ServiceDependency } from '@reaatech/agent-runbook';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext {
   return {
@@ -59,8 +59,8 @@ describe('generateDependencyGraph', () => {
     const graph = generateDependencyGraph(deps, 'my-app');
     const serviceNode = graph.nodes.find((n) => n.id === 'my-app');
     expect(serviceNode).toBeDefined();
-    expect(serviceNode!.type).toBe('service');
-    expect(serviceNode!.critical).toBe(true);
+    expect(serviceNode?.type).toBe('service');
+    expect(serviceNode?.critical).toBe(true);
   });
 
   it('creates nodes for all dependencies', () => {
@@ -72,23 +72,23 @@ describe('generateDependencyGraph', () => {
     const graph = generateDependencyGraph(deps, 'my-app');
     const dbNode = graph.nodes.find((n) => n.id === 'postgres');
     const cacheNode = graph.nodes.find((n) => n.id === 'redis');
-    expect(dbNode!.type).toBe('database');
-    expect(cacheNode!.type).toBe('cache');
+    expect(dbNode?.type).toBe('database');
+    expect(cacheNode?.type).toBe('cache');
   });
 
   it('creates upstream edges from service to dep', () => {
     const graph = generateDependencyGraph(deps, 'my-app');
     const upstreamEdge = graph.edges.find((e) => e.target === 'postgres');
     expect(upstreamEdge).toBeDefined();
-    expect(upstreamEdge!.source).toBe('my-app');
-    expect(upstreamEdge!.type).toBe('sync');
+    expect(upstreamEdge?.source).toBe('my-app');
+    expect(upstreamEdge?.type).toBe('sync');
   });
 
   it('creates downstream edges from dep to service', () => {
     const graph = generateDependencyGraph(deps, 'my-app');
     const downstreamEdge = graph.edges.find((e) => e.target === 'my-app');
     expect(downstreamEdge).toBeDefined();
-    expect(downstreamEdge!.source).toBe('payment-svc');
+    expect(downstreamEdge?.source).toBe('payment-svc');
   });
 
   it('uses async edge type for queue dependencies', () => {
@@ -103,7 +103,7 @@ describe('generateDependencyGraph', () => {
     const graph = generateDependencyGraph(deps, 'my-app');
     const dbPath = graph.criticalPaths.find((p) => p.name.includes('postgres'));
     expect(dbPath).toBeDefined();
-    expect(dbPath!.riskLevel).toBe('high');
+    expect(dbPath?.riskLevel).toBe('high');
   });
 
   it('handles empty dependencies', () => {
@@ -169,22 +169,22 @@ describe('analyzeDependencies', () => {
     );
     const dbDep = result.find((d) => d.name === 'postgres');
     expect(dbDep).toBeDefined();
-    expect(dbDep!.direction).toBe('upstream');
-    expect(dbDep!.critical).toBe(true);
+    expect(dbDep?.direction).toBe('upstream');
+    expect(dbDep?.critical).toBe(true);
   });
 
   it('detects API calls in code', () => {
     const result = analyzeDependencies(fixtureDir, makeContext());
     const apiDep = result.find((d) => d.name.includes('external-api'));
     expect(apiDep).toBeDefined();
-    expect(apiDep!.type).toBe('api');
+    expect(apiDep?.type).toBe('api');
   });
 
   it('detects queue calls in code', () => {
     const result = analyzeDependencies(fixtureDir, makeContext());
     const queueDep = result.find((d) => d.name.includes('kafka'));
     expect(queueDep).toBeDefined();
-    expect(queueDep!.critical).toBe(true);
+    expect(queueDep?.critical).toBe(true);
   });
 
   it('returns empty array for empty context and no code patterns', () => {

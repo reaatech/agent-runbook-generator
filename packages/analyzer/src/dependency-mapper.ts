@@ -2,13 +2,13 @@
  * Dependency Mapper - Parses package manifests and generates dependency graphs
  */
 
-import {
-  type Dependency,
-  type DependencyAnalysis,
-  type DependencyNode,
-  type ExternalService,
+import type {
+  Dependency,
+  DependencyAnalysis,
+  DependencyNode,
+  ExternalService,
 } from '@reaatech/agent-runbook';
-import { readFile, readJsonFile, listFiles } from '@reaatech/agent-runbook';
+import { listFiles, readFile, readJsonFile } from '@reaatech/agent-runbook';
 
 // Package categories based on common packages
 const PACKAGE_CATEGORIES: Record<string, Dependency['category']> = {
@@ -64,7 +64,7 @@ const PACKAGE_CATEGORIES: Record<string, Dependency['category']> = {
 /**
  * Map dependencies for a repository
  */
-export function mapDependencies(repoPath: string, includeDev: boolean = false): DependencyAnalysis {
+export function mapDependencies(repoPath: string, includeDev = false): DependencyAnalysis {
   const files = listFiles(repoPath, true);
 
   const directDeps: Dependency[] = [];
@@ -126,7 +126,7 @@ export function mapDependencies(repoPath: string, includeDev: boolean = false): 
         if (trimmed && !trimmed.startsWith('#')) {
           const match = trimmed.match(/^([a-zA-Z0-9_-]+)(?:[=<>!~]+(.+))?$/);
           if (match) {
-            const name = match[1]!;
+            const name = match[1];
             const version = match[2];
             const dep: Dependency = {
               name: name.toLowerCase(),
@@ -153,14 +153,14 @@ export function mapDependencies(repoPath: string, includeDev: boolean = false): 
     if (content) {
       const requireBlock = content.match(/require\s*\(([\s\S]*?)\)/);
       if (requireBlock) {
-        const lines = requireBlock[1]!.split('\n');
+        const lines = requireBlock[1]?.split('\n');
         for (const line of lines) {
           const trimmed = line.trim();
           if (trimmed && !trimmed.startsWith('//')) {
             const match = trimmed.match(/^(\S+)\s+(\S+)/);
             if (match) {
-              const name = match[1]!;
-              const version = match[2]!;
+              const name = match[1];
+              const version = match[2];
               const depName = name.split('/').pop() || name;
               const dep: Dependency = {
                 name: depName,
@@ -188,10 +188,10 @@ export function mapDependencies(repoPath: string, includeDev: boolean = false): 
     if (content) {
       const depPattern =
         /<dependency>\s*<groupId>([^<]+)<\/groupId>\s*<artifactId>([^<]+)<\/artifactId>\s*(?:<version>([^<]+)<\/version>)?/g;
-      let match;
-      while ((match = depPattern.exec(content)) !== null) {
-        const groupId = match[1]!;
-        const artifactId = match[2]!;
+      let match: RegExpExecArray | null = depPattern.exec(content);
+      while (match !== null) {
+        const groupId = match[1];
+        const artifactId = match[2];
         const version = match[3];
         const dep: Dependency = {
           name: artifactId,
@@ -206,6 +206,7 @@ export function mapDependencies(repoPath: string, includeDev: boolean = false): 
           version,
           dependsOn: [],
         });
+        match = depPattern.exec(content);
       }
     }
   }

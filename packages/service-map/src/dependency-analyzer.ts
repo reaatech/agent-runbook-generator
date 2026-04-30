@@ -2,9 +2,9 @@
  * Dependency Analyzer - Analyzes service dependencies from code
  */
 
-import { type AnalysisContext, type ServiceDependency } from '@reaatech/agent-runbook';
+import * as path from 'node:path';
+import type { AnalysisContext, ServiceDependency } from '@reaatech/agent-runbook';
 import { listFiles, readFile } from '@reaatech/agent-runbook';
-import * as path from 'path';
 
 export interface DependencyGraph {
   nodes: DependencyNode[];

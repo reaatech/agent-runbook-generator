@@ -2,7 +2,7 @@
  * Templates - Runbook templates for different scenarios
  */
 
-import { type RunbookSection } from '@reaatech/agent-runbook';
+import type { RunbookSection } from '@reaatech/agent-runbook';
 
 export interface RunbookTemplate {
   id: string;

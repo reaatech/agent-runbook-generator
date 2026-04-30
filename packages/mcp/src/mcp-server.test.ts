@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
 import { RunbookMCPServer, createMCPServer } from '@reaatech/agent-runbook-mcp';
+import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('@modelcontextprotocol/sdk/server/index.js', () => {
   const handlers: Record<string, (...args: unknown[]) => unknown> = {};

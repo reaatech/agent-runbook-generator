@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { AnalysisAgent, createAnalysisAgent } from '@reaatech/agent-runbook-agent';
 import type { AnalysisContext } from '@reaatech/agent-runbook';
+import { AnalysisAgent, createAnalysisAgent } from '@reaatech/agent-runbook-agent';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 const mockContext: AnalysisContext = {
   serviceDefinition: {
@@ -128,7 +128,7 @@ describe('createAnalysisAgent', () => {
   });
 
   it('creates an agent with default config', () => {
-    delete process.env.LLM_PROVIDER;
+    process.env.LLM_PROVIDER = undefined;
     const agent = createAnalysisAgent();
     expect(agent).toBeInstanceOf(AnalysisAgent);
   });

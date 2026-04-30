@@ -2,7 +2,7 @@
  * Mitigation Generator - Generates mitigation strategies for failure modes
  */
 
-import { type FailureMode, type AnalysisContext } from '@reaatech/agent-runbook';
+import type { AnalysisContext, FailureMode } from '@reaatech/agent-runbook';
 
 export interface MitigationPlan {
   failureMode: FailureMode;

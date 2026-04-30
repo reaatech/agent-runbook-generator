@@ -2,8 +2,8 @@
  * Graph Generator - Generates service dependency graphs
  */
 
-import { type ServiceDependency, type AnalysisContext } from '@reaatech/agent-runbook';
-import { generateDependencyGraph, type DependencyGraph } from './dependency-analyzer.js';
+import type { AnalysisContext, ServiceDependency } from '@reaatech/agent-runbook';
+import { type DependencyGraph, generateDependencyGraph } from './dependency-analyzer.js';
 
 export interface GraphExportOptions {
   format: 'mermaid' | 'dot' | 'json' | 'yaml';
@@ -144,7 +144,7 @@ export function exportToYaml(graph: DependencyGraph): string {
   for (const path of graph.criticalPaths) {
     output += `  - name: ${escapeYamlString(path.name)}\n`;
     output += `    description: ${escapeYamlString(path.description)}\n`;
-    output += `    services:\n`;
+    output += '    services:\n';
     for (const service of path.services) {
       output += `      - ${escapeYamlString(service)}\n`;
     }

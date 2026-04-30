@@ -2,7 +2,7 @@
  * Provider Adapter - Handles provider-specific formatting and fallbacks
  */
 
-import { type AgentResponse, type AgentConfig } from './analysis-agent.js';
+import type { AgentConfig, AgentResponse } from './analysis-agent.js';
 
 export interface ProviderMessage {
   role: 'system' | 'user' | 'assistant';

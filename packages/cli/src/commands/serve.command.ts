@@ -2,12 +2,12 @@
  * Serve Command - Start the MCP server
  */
 
-import { Command } from 'commander';
+import { parseIntOptional } from '@reaatech/agent-runbook';
 import { createMCPServer } from '@reaatech/agent-runbook-mcp';
 import { info, initLogger } from '@reaatech/agent-runbook-observability';
 import { initTracing } from '@reaatech/agent-runbook-observability';
 import { initMetrics } from '@reaatech/agent-runbook-observability';
-import { parseIntOptional } from '@reaatech/agent-runbook';
+import type { Command } from 'commander';
 
 export function serveCommand(program: Command): void {
   program

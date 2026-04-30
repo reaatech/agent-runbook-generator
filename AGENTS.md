@@ -1,7 +1,7 @@
 ---
 agent_id: "agent-runbook-generator"
 display_name: "Agent Runbook Generator"
-version: "1.0.0"
+version: "0.1.0"
 description: "Automated runbook generation for agent incident response"
 type: "mcp"
 confidence_threshold: 0.9
@@ -11,22 +11,63 @@ confidence_threshold: 0.9
 
 ## Project Overview
 
-**agent-runbook-generator** is a CLI tool and library that ingests a service
-repository and generates a draft operator runbook including alerts, dashboards,
-failure modes, rollback steps, and incident response workflows. It uses an AI
-agent to analyze code, configuration files, and infrastructure definitions to
-produce comprehensive, actionable runbooks.
+**agent-runbook-generator** is a pnpm monorepo of 15 packages (14 publishable, 1 private) that provides a CLI tool, library, and MCP server for generating operator runbooks from service repositories. It ingests a service repo and produces a complete runbook with alerts, dashboards, failure modes, rollback steps, incident response workflows, health checks, and service dependency maps.
 
-**Target audience:** SRE teams, platform engineers, and DevOps practitioners who
-need to create and maintain operator runbooks for production services.
+**Target audience:** SRE teams, platform engineers, and DevOps practitioners who need to create and maintain operator runbooks for production services.
 
-**Repo type:** Public open-source library, CLI tool, and MCP server.
+**Repo type:** Public open-source pnpm monorepo, CLI tool, library, and MCP server.
+
+---
+
+## Monorepo Structure
+
+The project follows the same conventions as `a2a-reference-ts`:
+
+```
+agent-runbook-generator/
+├── packages/                    # 15 workspace packages
+│   ├── core/                    # @reaatech/agent-runbook — types, schemas, utilities
+│   ├── analyzer/                # @reaatech/agent-runbook-analyzer
+│   ├── alerts/                  # @reaatech/agent-runbook-alerts
+│   ├── dashboards/              # @reaatech/agent-runbook-dashboards
+│   ├── failure-modes/           # @reaatech/agent-runbook-failure-modes
+│   ├── health-checks/           # @reaatech/agent-runbook-health-checks
+│   ├── incident/                # @reaatech/agent-runbook-incident
+│   ├── rollback/                # @reaatech/agent-runbook-rollback
+│   ├── runbook/                 # @reaatech/agent-runbook-runbook
+│   ├── service-map/             # @reaatech/agent-runbook-service-map
+│   ├── agent/                   # @reaatech/agent-runbook-agent
+│   ├── mcp/                     # @reaatech/agent-runbook-mcp
+│   ├── observability/           # @reaatech/agent-runbook-observability
+│   ├── cli/                     # @reaatech/agent-runbook-cli
+│   └── e2e/                     # @reaatech/agent-runbook-e2e (private)
+├── skills/                      # Agent skill definitions
+├── examples/                    # Example runbook output
+├── infra/                       # Terraform deployment modules
+├── pnpm-workspace.yaml          # Workspace definition
+├── turbo.json                   # Build pipeline
+├── biome.json                   # Linting & formatting
+├── tsconfig.json                # Root TypeScript config
+├── tsconfig.typecheck.json      # Typecheck with path aliases
+└── .changeset/                  # Version management
+```
+
+### Root tooling
+
+| Tool | Purpose |
+|------|---------|
+| pnpm 10 | Package manager with workspace protocol |
+| turbo | Monorepo build orchestrator |
+| tsup | Per-package dual ESM/CJS build |
+| biome | Linting + formatting |
+| changesets | Version management + CHANGELOG generation |
+| vitest | Per-package testing |
 
 ---
 
 ## Architecture Overview
 
-The system follows a three-layer architecture:
+The system follows a three-layer architecture, implemented across multiple packages:
 
 ```
 Layer 1: runbook.analyze.* (Atomic Operations)
@@ -42,7 +83,8 @@ Layer 2: runbook.generate.* (Orchestrated Runs)
 ├── runbook.generate.dashboard — Generate dashboard configuration
 ├── runbook.generate.rollback — Generate rollback procedures
 ├── runbook.generate.incident_workflow — Generate incident response
-└── runbook.generate.service_map — Generate service dependency map
+├── runbook.generate.service_map — Generate service dependency map
+└── runbook.generate.health_checks — Generate health check definitions
 
 Layer 3: runbook.validate.* (CI Gates)
 ├── runbook.validate.completeness — Check runbook completeness
@@ -51,13 +93,31 @@ Layer 3: runbook.validate.* (CI Gates)
 └── runbook.validate.ci — Run CI-style validation gate
 ```
 
+### Package Dependency Graph
+
+```
+@reaatech/agent-runbook (core: types + utils + errors)
+    │
+    ├──► @reaatech/agent-runbook-observability
+    │
+    ├──► @reaatech/agent-runbook-analyzer
+    │
+    ├──► 8 generator packages:
+    │       alerts, dashboards, failure-modes, health-checks,
+    │       incident, rollback, runbook, service-map
+    │
+    ├──► @reaatech/agent-runbook-agent ──► @reaatech/agent-runbook-mcp
+    │
+    └──► @reaatech/agent-runbook-cli (orchestrator + binary)
+```
+
 ---
 
 ## MCP Tool Architecture
 
 ### Three-Layer MCP Tools
 
-The MCP server exposes tools in three layers, each with different characteristics:
+The MCP server (`@reaatech/agent-runbook-mcp`) exposes tools in three layers, each with different characteristics:
 
 | Layer | Prefix | Purpose | Rate Limit | Timeout |
 |-------|--------|---------|------------|---------|
@@ -104,7 +164,7 @@ The MCP server exposes tools in three layers, each with different characteristic
 
 ### Service Type Detection
 
-The analyzer detects service types based on file patterns:
+The analyzer (`@reaatech/agent-runbook-analyzer`) detects service types based on file patterns:
 
 | Service Type | Detection Patterns |
 |-------------|-------------------|
@@ -144,51 +204,51 @@ Dependencies are categorized:
 
 ```
 1. Load & scan repository
-   ├── Detect language and framework
+   ├── @reaatech/agent-runbook-analyzer — Detect language and framework
    ├── Map directory structure
    └── Identify key configuration files
 
 2. Parse configurations
-   ├── Extract environment variables
+   ├── @reaatech/agent-runbook-analyzer — Extract environment variables
    ├── Parse infrastructure-as-code
    └── Identify deployment configuration
 
 3. Analyze code
-   ├── Identify entry points
+   ├── @reaatech/agent-runbook-analyzer — Identify entry points
    ├── Extract API endpoints
    └── Detect external service connections
 
 4. Map dependencies
-   ├── Parse package manifests
+   ├── @reaatech/agent-runbook-analyzer — Parse package manifests
    ├── Identify upstream/downstream services
    └── Generate dependency graph
 
 5. Run LLM agent analysis
-   ├── Generate insights from code patterns
+   ├── @reaatech/agent-runbook-agent — Generate insights from code patterns
    ├── Identify failure modes
    └── Suggest improvements
 
 6. Generate runbook sections
-   ├── Alert definitions
-   ├── Dashboard configurations
-   ├── Failure modes and mitigations
-   ├── Rollback procedures
-   ├── Incident response workflows
-   └── Health check definitions
+   ├── @reaatech/agent-runbook-alerts — Alert definitions
+   ├── @reaatech/agent-runbook-dashboards — Dashboard configurations
+   ├── @reaatech/agent-runbook-failure-modes — Failure modes and mitigations
+   ├── @reaatech/agent-runbook-rollback — Rollback procedures
+   ├── @reaatech/agent-runbook-incident — Incident response workflows
+   └── @reaatech/agent-runbook-health-checks — Health check definitions
 
 7. Assemble runbook
-   ├── Combine all sections
+   ├── @reaatech/agent-runbook-runbook — Combine all sections
    ├── Generate table of contents
    ├── Create cross-references
    └── Apply formatting
 
 8. Validate runbook
-   ├── Check completeness
+   ├── @reaatech/agent-runbook-runbook — Check completeness
    ├── Verify accuracy
    └── Validate links
 
 9. Export runbook
-   ├── Markdown format
+   ├── @reaatech/agent-runbook-runbook — Markdown format
    ├── HTML format (optional)
    └── PDF format (optional)
 ```
@@ -199,10 +259,11 @@ Dependencies are categorized:
 
 ### Skill: Repository Analysis
 
+**Package:** `@reaatech/agent-runbook-analyzer`
+
 **Location:** `skills/repo-analysis/skill.md`
 
-**Capability:** Scans a service repository to understand its structure, technology
-stack, configuration, and deployment patterns.
+**Capability:** Scans a service repository to understand its structure, technology stack, configuration, and deployment patterns.
 
 **MCP Tools:**
 - `runbook.analyze.repository` — Analyze repository structure
@@ -210,10 +271,11 @@ stack, configuration, and deployment patterns.
 
 ### Skill: Alert Generation
 
+**Package:** `@reaatech/agent-runbook-alerts`
+
 **Location:** `skills/alert-generation/skill.md`
 
-**Capability:** Extracts existing alerts and generates new alert definitions based
-on service patterns and SLO targets.
+**Capability:** Extracts existing alerts and generates new alert definitions based on service patterns and SLO targets.
 
 **MCP Tools:**
 - `runbook.analyze.alerts` — Extract existing alert definitions
@@ -221,24 +283,29 @@ on service patterns and SLO targets.
 
 ### Skill: Dashboard Generation
 
+**Package:** `@reaatech/agent-runbook-dashboards`
+
 **Location:** `skills/dashboard-generation/skill.md`
 
-**Capability:** Creates dashboard configurations for Grafana, Looker, and CloudWatch.
+**Capability:** Creates dashboard configurations for Grafana and CloudWatch.
 
 **MCP Tools:**
 - `runbook.generate.dashboard` — Generate dashboard configuration
 
 ### Skill: Failure Mode Analysis
 
+**Package:** `@reaatech/agent-runbook-failure-modes`
+
 **Location:** `skills/failure-mode-analysis/skill.md`
 
-**Capability:** Identifies potential failure points and generates detection and
-mitigation strategies.
+**Capability:** Identifies potential failure points and generates detection and mitigation strategies.
 
 **MCP Tools:**
 - `runbook.analyze.failure_modes` — Identify failure modes
 
 ### Skill: Rollback Procedures
+
+**Package:** `@reaatech/agent-runbook-rollback`
 
 **Location:** `skills/rollback-procedures/skill.md`
 
@@ -249,16 +316,19 @@ mitigation strategies.
 
 ### Skill: Runbook Assembly
 
+**Package:** `@reaatech/agent-runbook-runbook`
+
 **Location:** `skills/runbook-assembly/skill.md`
 
-**Capability:** Combines all sections into a complete runbook with formatting and
-cross-references.
+**Capability:** Combines all sections into a complete runbook with formatting and cross-references.
 
 **MCP Tools:**
 - `runbook.generate.full` — Generate complete runbook
 - `runbook.validate.completeness` — Validate runbook completeness
 
 ### Skill: Incident Response
+
+**Package:** `@reaatech/agent-runbook-incident`
 
 **Location:** `skills/incident-response/skill.md`
 
@@ -269,6 +339,8 @@ cross-references.
 
 ### Skill: Service Mapping
 
+**Package:** `@reaatech/agent-runbook-service-map`
+
 **Location:** `skills/service-mapping/skill.md`
 
 **Capability:** Maps service dependencies and generates dependency graphs.
@@ -278,6 +350,8 @@ cross-references.
 - `runbook.generate.service_map` — Generate dependency graph
 
 ### Skill: Health Check Generation
+
+**Package:** `@reaatech/agent-runbook-health-checks`
 
 **Location:** `skills/health-check-generation/skill.md`
 
@@ -293,11 +367,11 @@ cross-references.
 
 ### GitHub Actions Integration
 
-The runbook generator can be integrated into CI/CD pipelines:
+The CI workflow uses pnpm + turbo:
 
 ```yaml
-# .github/workflows/runbook.yml
-name: Runbook Validation
+# .github/workflows/ci.yml
+name: CI
 
 on:
   push:
@@ -306,23 +380,48 @@ on:
     branches: [main]
 
 jobs:
-  validate-runbook:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Generate runbook
-        run: npx agent-runbook-generator generate . --output runbook.md
-
-      - name: Validate runbook
-        run: npx agent-runbook-generator validate runbook.md --ci
-
-      - name: Upload runbook artifact
-        uses: actions/upload-artifact@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
-          name: runbook
-          path: runbook.md
+          node-version: '22'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [build, code-quality]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
 ```
+
+### Release workflow
+
+The release is managed by changesets via `.github/workflows/release.yml`.
 
 ### Exit Codes
 
@@ -332,6 +431,20 @@ jobs:
 | 1 | Error — generation failed |
 | 2 | Warning — runbook generated but validation warnings |
 | 3 | Fail — runbook validation failed (CI gate) |
+
+---
+
+## Development Commands
+
+```bash
+pnpm build          # Build all 15 packages (turbo)
+pnpm test           # Run all tests (turbo)
+pnpm lint           # Lint all files (biome)
+pnpm format         # Format all files (biome)
+pnpm typecheck      # Type-check with path aliases
+pnpm clean          # Clean dist + node_modules
+pnpm changeset      # Create a changeset for versioning
+```
 
 ---
 
@@ -387,7 +500,6 @@ The generator automatically detects and redacts:
 ## References
 
 - **ARCHITECTURE.md** — System design deep dive
-- **DEV_PLAN.md** — Development checklist
 - **README.md** — Quick start and overview
 - **skills/** — Skill definitions for agent capabilities
 - **MCP Specification** — https://modelcontextprotocol.io/

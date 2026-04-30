@@ -2,7 +2,7 @@
  * Input validation utilities
  */
 
-import { ZodSchema, ZodError } from 'zod';
+import { ZodError, type ZodSchema } from 'zod';
 
 export interface InputValidationResult<T> {
   success: boolean;
@@ -40,8 +40,8 @@ export function parseIntOptional(value: unknown, defaultValue: number): number {
   if (value === undefined || value === null) return defaultValue;
   if (typeof value === 'number') return value;
   if (typeof value === 'string') {
-    const parsed = parseInt(value, 10);
-    return isNaN(parsed) ? defaultValue : parsed;
+    const parsed = Number.parseInt(value, 10);
+    return Number.isNaN(parsed) ? defaultValue : parsed;
   }
   return defaultValue;
 }

@@ -1,10 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import type { AnalysisContext, RollbackProcedure, RollbackStep } from '@reaatech/agent-runbook';
 import { generateRollbackProcedures } from '@reaatech/agent-runbook-rollback';
-import type {
-  AnalysisContext,
-  RollbackProcedure,
-  RollbackStep,
-} from '@reaatech/agent-runbook';
+import { describe, expect, it } from 'vitest';
 
 function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext {
   return {

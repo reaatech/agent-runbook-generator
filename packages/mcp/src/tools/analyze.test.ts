@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
 import { registerAnalyzeTools } from '@reaatech/agent-runbook-mcp';
+import { describe, expect, it } from 'vitest';
 
 describe('registerAnalyzeTools', () => {
   it('returns an array of 5 tools', () => {
@@ -26,46 +26,46 @@ describe('registerAnalyzeTools', () => {
     const tools = registerAnalyzeTools();
     const repoTool = tools.find((t) => t.name === 'runbook.analyze.repository');
     expect(repoTool).toBeDefined();
-    expect(repoTool!.inputSchema.required).toContain('path');
-    expect(repoTool!.inputSchema.properties).toHaveProperty('path');
-    expect(repoTool!.inputSchema.properties).toHaveProperty('depth');
-    expect(repoTool!.inputSchema.properties).toHaveProperty('include_patterns');
-    expect(repoTool!.inputSchema.properties).toHaveProperty('exclude_patterns');
+    expect(repoTool?.inputSchema.required).toContain('path');
+    expect(repoTool?.inputSchema.properties).toHaveProperty('path');
+    expect(repoTool?.inputSchema.properties).toHaveProperty('depth');
+    expect(repoTool?.inputSchema.properties).toHaveProperty('include_patterns');
+    expect(repoTool?.inputSchema.properties).toHaveProperty('exclude_patterns');
   });
 
   it('registers runbook.analyze.dependencies tool', () => {
     const tools = registerAnalyzeTools();
     const depsTool = tools.find((t) => t.name === 'runbook.analyze.dependencies');
     expect(depsTool).toBeDefined();
-    expect(depsTool!.inputSchema.required).toContain('path');
-    expect(depsTool!.inputSchema.properties).toHaveProperty('path');
-    expect(depsTool!.inputSchema.properties).toHaveProperty('include_dev');
+    expect(depsTool?.inputSchema.required).toContain('path');
+    expect(depsTool?.inputSchema.properties).toHaveProperty('path');
+    expect(depsTool?.inputSchema.properties).toHaveProperty('include_dev');
   });
 
   it('registers runbook.analyze.failure_modes tool', () => {
     const tools = registerAnalyzeTools();
     const fmTool = tools.find((t) => t.name === 'runbook.analyze.failure_modes');
     expect(fmTool).toBeDefined();
-    expect(fmTool!.inputSchema.required).toContain('analysis_context');
-    expect(fmTool!.inputSchema.properties).toHaveProperty('analysis_context');
-    expect(fmTool!.inputSchema.properties).toHaveProperty('depth');
+    expect(fmTool?.inputSchema.required).toContain('analysis_context');
+    expect(fmTool?.inputSchema.properties).toHaveProperty('analysis_context');
+    expect(fmTool?.inputSchema.properties).toHaveProperty('depth');
   });
 
   it('registers runbook.analyze.alerts tool', () => {
     const tools = registerAnalyzeTools();
     const alertTool = tools.find((t) => t.name === 'runbook.analyze.alerts');
     expect(alertTool).toBeDefined();
-    expect(alertTool!.inputSchema.required).toContain('path');
-    expect(alertTool!.inputSchema.properties).toHaveProperty('path');
-    expect(alertTool!.inputSchema.properties).toHaveProperty('platform');
+    expect(alertTool?.inputSchema.required).toContain('path');
+    expect(alertTool?.inputSchema.properties).toHaveProperty('path');
+    expect(alertTool?.inputSchema.properties).toHaveProperty('platform');
   });
 
   it('registers runbook.analyze.health_checks tool', () => {
     const tools = registerAnalyzeTools();
     const hcTool = tools.find((t) => t.name === 'runbook.analyze.health_checks');
     expect(hcTool).toBeDefined();
-    expect(hcTool!.inputSchema.required).toContain('analysis_context');
-    expect(hcTool!.inputSchema.properties).toHaveProperty('analysis_context');
+    expect(hcTool?.inputSchema.required).toContain('analysis_context');
+    expect(hcTool?.inputSchema.properties).toHaveProperty('analysis_context');
   });
 
   it('all tool names start with runbook.analyze.', () => {

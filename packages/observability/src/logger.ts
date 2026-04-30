@@ -2,7 +2,7 @@
  * Logger - Structured JSON logging using pino
  */
 
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 import type { Logger as PinoLogger } from 'pino';
 
 const require = createRequire(import.meta.url);

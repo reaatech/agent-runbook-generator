@@ -1,14 +1,14 @@
-import { describe, it, expect } from 'vitest';
+import type { AnalysisContext, ServiceDependency } from '@reaatech/agent-runbook';
 import {
-  generateServiceMap,
-  exportToMermaid,
+  exportGraph,
   exportToDot,
   exportToJson,
+  exportToMermaid,
   exportToYaml,
-  exportGraph,
+  generateServiceMap,
   generateServiceMapSummary,
 } from '@reaatech/agent-runbook-service-map';
-import type { ServiceDependency, AnalysisContext } from '@reaatech/agent-runbook';
+import { describe, expect, it } from 'vitest';
 
 function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext {
   return {

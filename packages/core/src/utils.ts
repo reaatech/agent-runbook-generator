@@ -2,8 +2,8 @@
  * Shared utilities
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 /**
  * Check if a file exists
@@ -105,7 +105,7 @@ export function escapeMarkdown(text: string): string {
  */
 export function truncate(str: string, maxLength: number): string {
   if (str.length <= maxLength) return str;
-  return str.substring(0, maxLength - 3) + '...';
+  return `${str.substring(0, maxLength - 3)}...`;
 }
 
 /**
@@ -132,7 +132,7 @@ export async function retry<T>(
     } catch (error) {
       lastError = error as Error;
       if (attempt < attempts - 1) {
-        const delay = baseDelay * Math.pow(2, attempt);
+        const delay = baseDelay * 2 ** attempt;
         await sleep(delay);
       }
     }
@@ -200,9 +200,11 @@ export function parseDuration(duration: string): number {
   let match: RegExpExecArray | null;
   let hasMatch = false;
 
+  // biome-ignore lint/suspicious/noAssignInExpressions: suppressed for existing code
   while ((match = pattern.exec(duration)) !== null) {
     hasMatch = true;
-    const value = parseInt(match[1]!, 10);
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
+    const value = Number.parseInt(match[1]!, 10);
     const unit = match[2];
 
     switch (unit) {
@@ -226,7 +228,8 @@ export function parseDuration(duration: string): number {
 
   if (!hasMatch) {
     const simpleMatch = duration.match(/^(\d+)$/);
-    if (simpleMatch) return parseInt(simpleMatch[1]!, 10);
+    // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
+    if (simpleMatch) return Number.parseInt(simpleMatch[1]!, 10);
   }
 
   return total;
@@ -265,7 +268,7 @@ export function groupBy<T, K extends string>(items: T[], keyFn: (item: T) => K):
       if (!acc[key]) {
         acc[key] = [];
       }
-      acc[key]!.push(item);
+      acc[key]?.push(item);
       return acc;
     },
     {} as Record<K, T[]>,

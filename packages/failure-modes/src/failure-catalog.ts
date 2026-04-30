@@ -2,7 +2,7 @@
  * Failure Catalog - Maintains catalog of common failure modes
  */
 
-import { type FailureMode } from '@reaatech/agent-runbook';
+import type { FailureMode } from '@reaatech/agent-runbook';
 
 /**
  * Catalog of common failure modes organized by category

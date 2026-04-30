@@ -2,9 +2,9 @@
  * Code Analyzer - Identifies entry points, API endpoints, external services
  */
 
-import * as path from 'path';
-import { type ProgrammingLanguage, type Framework } from '@reaatech/agent-runbook';
-import { readFile, listFiles } from '@reaatech/agent-runbook';
+import * as path from 'node:path';
+import type { Framework, ProgrammingLanguage } from '@reaatech/agent-runbook';
+import { listFiles, readFile } from '@reaatech/agent-runbook';
 
 export interface CodeAnalysis {
   entryPoints: CodeEntryPoint[];
@@ -164,14 +164,15 @@ function findApiEndpoints(
       const httpMethods = ['get', 'post', 'put', 'patch', 'delete'];
       for (const method of httpMethods) {
         const pattern = new RegExp(`\\.${method}\\(['"\`]([^'"\`]+)['"\`]`, 'g');
-        let match;
-        while ((match = pattern.exec(content)) !== null) {
+        let match: RegExpExecArray | null = pattern.exec(content);
+        while (match !== null) {
           endpoints.push({
             method: method.toUpperCase() as ApiEndpoint['method'],
-            path: match[1]!,
+            path: match[1],
             handler: '',
             file: relativePath,
           });
+          match = pattern.exec(content);
         }
       }
     }
@@ -180,15 +181,16 @@ function findApiEndpoints(
     if (['flask', 'django', 'fastapi'].includes(framework)) {
       const routePattern =
         /@(?:app|router)\.(?:get|post|put|patch|delete)\(['"\`]([^'"\`]+)['"\`]\)/g;
-      let match;
-      while ((match = routePattern.exec(content)) !== null) {
+      let match: RegExpExecArray | null = routePattern.exec(content);
+      while (match !== null) {
         const methodMatch = match[0].match(/@(?:app|router)\.(\w+)/);
         endpoints.push({
           method: (methodMatch?.[1]?.toUpperCase() ?? 'GET') as ApiEndpoint['method'],
-          path: match[1]!,
+          path: match[1],
           handler: '',
           file: relativePath,
         });
+        match = routePattern.exec(content);
       }
     }
 
@@ -197,14 +199,15 @@ function findApiEndpoints(
       const methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
       for (const method of methods) {
         const pattern = new RegExp(`\\.${method.toLowerCase()}\\(['"\`]([^'"\`]+)['"\`]`, 'g');
-        let match;
-        while ((match = pattern.exec(content)) !== null) {
+        let match: RegExpExecArray | null = pattern.exec(content);
+        while (match !== null) {
           endpoints.push({
             method: method as ApiEndpoint['method'],
-            path: match[1]!,
+            path: match[1],
             handler: '',
             file: relativePath,
           });
+          match = pattern.exec(content);
         }
       }
     }
@@ -282,43 +285,46 @@ function findBackgroundJobs(
     // Look for queue job definitions
     if (content.includes('.queue(') || content.includes('.enqueue(')) {
       const queuePattern = /\.(?:queue|enqueue)\(['"\`]([^'"\`]+)['"\`]/g;
-      let match;
-      while ((match = queuePattern.exec(content)) !== null) {
+      let match: RegExpExecArray | null = queuePattern.exec(content);
+      while (match !== null) {
         jobs.push({
-          name: match[1]!,
+          name: match[1],
           type: 'queue',
-          handler: match[1]!,
+          handler: match[1],
           file: relativePath,
         });
+        match = queuePattern.exec(content);
       }
     }
 
     // Look for cron/scheduled jobs
     if (content.includes('.schedule(') || content.includes('.cron(')) {
       const cronPattern = /\.(?:schedule|cron)\(['"\`]([^'"\`]+)['"\`]/g;
-      let match;
-      while ((match = cronPattern.exec(content)) !== null) {
+      let match: RegExpExecArray | null = cronPattern.exec(content);
+      while (match !== null) {
         jobs.push({
-          name: match[1]!,
+          name: match[1],
           type: 'cron',
           schedule: match[1],
-          handler: match[1]!,
+          handler: match[1],
           file: relativePath,
         });
+        match = cronPattern.exec(content);
       }
     }
 
     // Look for worker patterns
     if (content.includes('worker') || content.includes('Worker')) {
       const workerPattern = /(?:class|function|const)\s+(\w*Worker\w*)/g;
-      let match;
-      while ((match = workerPattern.exec(content)) !== null) {
+      let match: RegExpExecArray | null = workerPattern.exec(content);
+      while (match !== null) {
         jobs.push({
-          name: match[1]!,
+          name: match[1],
           type: 'worker',
-          handler: match[1]!,
+          handler: match[1],
           file: relativePath,
         });
+        match = workerPattern.exec(content);
       }
     }
   }

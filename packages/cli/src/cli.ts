@@ -3,15 +3,15 @@
  * CLI - Command-line interface entry point
  */
 
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Command } from 'commander';
 import { analyzeCommand } from './commands/analyze.command.js';
-import { generateCommand } from './commands/generate.command.js';
-import { validateCommand } from './commands/validate.command.js';
 import { exportCommand } from './commands/export.command.js';
+import { generateCommand } from './commands/generate.command.js';
 import { serveCommand } from './commands/serve.command.js';
-import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { validateCommand } from './commands/validate.command.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

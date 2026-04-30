@@ -1,12 +1,12 @@
-import { describe, it, expect } from 'vitest';
-import { formatAsMarkdown, formatAsHTML, exportRunbook } from '@reaatech/agent-runbook-runbook';
+import type { Runbook, RunbookSection } from '@reaatech/agent-runbook';
+import { exportRunbook, formatAsHTML, formatAsMarkdown } from '@reaatech/agent-runbook-runbook';
 import { generateTOC, validateCompleteness } from '@reaatech/agent-runbook-runbook';
 import {
   STANDARD_SRE_TEMPLATE,
-  getTemplateById,
   getAllTemplates,
+  getTemplateById,
 } from '@reaatech/agent-runbook-runbook';
-import type { Runbook, RunbookSection } from '@reaatech/agent-runbook';
+import { describe, expect, it } from 'vitest';
 
 function makeSection(title: string, content: string, order: number): RunbookSection {
   return {

@@ -1,11 +1,11 @@
-import { describe, it, expect } from 'vitest';
 import {
-  calculateSloThresholds,
-  calculateResourceThresholds,
   calculateBurnRateThresholds,
-  getDefaultThresholds,
   calculateDynamicThreshold,
+  calculateResourceThresholds,
+  calculateSloThresholds,
+  getDefaultThresholds,
 } from '@reaatech/agent-runbook-alerts';
+import { describe, expect, it } from 'vitest';
 
 describe('calculateSloThresholds', () => {
   it('generates error rate threshold from availability SLO', () => {
@@ -13,15 +13,15 @@ describe('calculateSloThresholds', () => {
     expect(thresholds.length).toBeGreaterThan(0);
     const errRate = thresholds.find((t) => t.metric === 'error_rate');
     expect(errRate).toBeDefined();
-    expect(errRate!.threshold).toBeCloseTo(0.1, 1);
-    expect(errRate!.operator).toBe('gt');
+    expect(errRate?.threshold).toBeCloseTo(0.1, 1);
+    expect(errRate?.operator).toBe('gt');
   });
 
   it('includes latency P99 threshold', () => {
     const thresholds = calculateSloThresholds({ availability: 99.9, latencyP99: 200 });
     const p99 = thresholds.find((t) => t.metric === 'latency_p99');
     expect(p99).toBeDefined();
-    expect(p99!.threshold).toBe(200);
+    expect(p99?.threshold).toBe(200);
   });
 
   it('includes latency P95 threshold when provided', () => {
@@ -32,7 +32,7 @@ describe('calculateSloThresholds', () => {
     });
     const p95 = thresholds.find((t) => t.metric === 'latency_p95');
     expect(p95).toBeDefined();
-    expect(p95!.threshold).toBe(100);
+    expect(p95?.threshold).toBe(100);
   });
 
   it('does not include P95 threshold when not provided', () => {
@@ -70,7 +70,9 @@ describe('calculateBurnRateThresholds', () => {
 
   it('fast burn threshold is higher than slow burn', () => {
     const thresholds = calculateBurnRateThresholds({ availability: 99.9, latencyP99: 200 });
+    // biome-ignore lint/style/noNonNullAssertion: guaranteed by test data
     const fast = thresholds.find((t) => t.metric === 'burn_rate_fast')!;
+    // biome-ignore lint/style/noNonNullAssertion: guaranteed by test data
     const slow = thresholds.find((t) => t.metric === 'burn_rate_slow')!;
     expect(fast.threshold).toBeGreaterThan(slow.threshold);
   });

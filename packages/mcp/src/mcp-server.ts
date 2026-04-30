@@ -5,20 +5,23 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
-import { registerAnalyzeTools } from './tools/analyze/index.js';
-import { registerGenerateTools } from './tools/generate/index.js';
-import { registerValidateTools } from './tools/validate/index.js';
+import type {
+  AnalysisContext,
+  DeploymentPlatform,
+  MonitoringPlatform,
+  Runbook,
+  ServiceDependency,
+} from '@reaatech/agent-runbook';
+import { extractAlerts } from '@reaatech/agent-runbook-alerts';
+import { generateAlerts } from '@reaatech/agent-runbook-alerts';
 import { scanRepository } from '@reaatech/agent-runbook-analyzer';
 import { mapDependencies } from '@reaatech/agent-runbook-analyzer';
-import { identifyFailureModes } from '@reaatech/agent-runbook-failure-modes';
-import { extractAlerts } from '@reaatech/agent-runbook-alerts';
-import { identifyHealthChecks } from '@reaatech/agent-runbook-health-checks';
-import { generateAlerts } from '@reaatech/agent-runbook-alerts';
 import { generateDashboard } from '@reaatech/agent-runbook-dashboards';
-import { generateRollbackProcedures } from '@reaatech/agent-runbook-rollback';
-import { generateIncidentWorkflows } from '@reaatech/agent-runbook-incident';
-import { generateServiceMap } from '@reaatech/agent-runbook-service-map';
+import { identifyFailureModes } from '@reaatech/agent-runbook-failure-modes';
+import { identifyHealthChecks } from '@reaatech/agent-runbook-health-checks';
 import { generateHealthChecks } from '@reaatech/agent-runbook-health-checks';
+import { generateIncidentWorkflows } from '@reaatech/agent-runbook-incident';
+import { generateRollbackProcedures } from '@reaatech/agent-runbook-rollback';
 import { validateCompleteness } from '@reaatech/agent-runbook-runbook';
 import {
   createCiValidationResult,
@@ -26,13 +29,10 @@ import {
   validateRunbookAccuracy,
   validateRunbookLinks,
 } from '@reaatech/agent-runbook-runbook';
-import type {
-  AnalysisContext,
-  Runbook,
-  MonitoringPlatform,
-  DeploymentPlatform,
-  ServiceDependency,
-} from '@reaatech/agent-runbook';
+import { generateServiceMap } from '@reaatech/agent-runbook-service-map';
+import { registerAnalyzeTools } from './tools/analyze/index.js';
+import { registerGenerateTools } from './tools/generate/index.js';
+import { registerValidateTools } from './tools/validate/index.js';
 
 export interface MCPServerConfig {
   name: string;
@@ -251,9 +251,11 @@ export class RunbookMCPServer {
         const resultPromise = (async () => {
           if (name.startsWith('runbook.analyze.')) {
             return await this.handleAnalyzeTool(name, args as ToolArgs);
-          } else if (name.startsWith('runbook.generate.')) {
+          }
+          if (name.startsWith('runbook.generate.')) {
             return await this.handleGenerateTool(name, args as ToolArgs);
-          } else if (name.startsWith('runbook.validate.')) {
+          }
+          if (name.startsWith('runbook.validate.')) {
             return await this.handleValidateTool(name, args as ToolArgs);
           }
           throw new Error(`Unknown tool: ${name}`);
@@ -280,7 +282,7 @@ export class RunbookMCPServer {
       case 'runbook.analyze.repository': {
         const repoPath = getRepoPath(args);
         const result = await scanRepository(repoPath, {
-          depth: args.depth ? parseInt(args.depth, 10) : undefined,
+          depth: args.depth ? Number.parseInt(args.depth, 10) : undefined,
         });
         return this.successResponse(result);
       }

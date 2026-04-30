@@ -4,12 +4,12 @@
 
 import type { AnalysisContext, RepositoryAnalysis } from '@reaatech/agent-runbook';
 import { scanRepository } from '@reaatech/agent-runbook-analyzer';
+import { mapDependencies } from '@reaatech/agent-runbook-analyzer';
 import {
+  type HealthCheckConfig,
   generateHealthChecks,
   generateKubernetesProbeYaml,
-  type HealthCheckConfig,
 } from '@reaatech/agent-runbook-health-checks';
-import { mapDependencies } from '@reaatech/agent-runbook-analyzer';
 
 interface HealthChecksArgs {
   service_context: {

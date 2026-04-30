@@ -1,12 +1,9 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as os from 'os';
-import {
-  analyzeDeployment,
-  getRollbackCommands,
-} from '@reaatech/agent-runbook-rollback';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import type { AnalysisContext } from '@reaatech/agent-runbook';
+import { analyzeDeployment, getRollbackCommands } from '@reaatech/agent-runbook-rollback';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 function makeContext(overrides: Partial<AnalysisContext> = {}): AnalysisContext {
   return {

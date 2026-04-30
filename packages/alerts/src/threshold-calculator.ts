@@ -2,7 +2,7 @@
  * Threshold Calculator - Calculates alert thresholds based on SLO targets
  */
 
-import { type SLOTargets, type ThresholdConfig } from '@reaatech/agent-runbook';
+import type { SLOTargets, ThresholdConfig } from '@reaatech/agent-runbook';
 
 export interface ThresholdRecommendation {
   metric: string;
@@ -143,11 +143,11 @@ export function getDefaultThresholds(): ThresholdConfig[] {
 /**
  * Calculate threshold based on historical data patterns
  */
-export function calculateDynamicThreshold(values: number[], multiplier: number = 3): number {
+export function calculateDynamicThreshold(values: number[], multiplier = 3): number {
   if (values.length === 0) return 0;
 
   const mean = values.reduce((a, b) => a + b, 0) / values.length;
-  const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
+  const variance = values.reduce((sum, val) => sum + (val - mean) ** 2, 0) / values.length;
   const stdDev = Math.sqrt(variance);
 
   return mean + multiplier * stdDev;

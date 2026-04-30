@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest';
 import {
+  createPromptTemplate,
   generatePrompt,
   getPromptTemplate,
   getSystemPrompt,
-  createPromptTemplate,
 } from '@reaatech/agent-runbook-agent';
+import { describe, expect, it } from 'vitest';
 
 const baseVariables = {
   serviceName: 'my-service',

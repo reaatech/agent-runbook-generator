@@ -2,18 +2,18 @@
  * Repository Scanner - Detects service type, language, framework, and structure
  */
 
-import * as path from 'path';
-import {
-  type ServiceType,
-  type ProgrammingLanguage,
-  type Framework,
-  type RepositoryAnalysis,
-  type RepositoryStructure,
-  type EntryPoint,
-  type ExternalService,
-  type DeploymentPlatform,
+import * as path from 'node:path';
+import type {
+  DeploymentPlatform,
+  EntryPoint,
+  ExternalService,
+  Framework,
+  ProgrammingLanguage,
+  RepositoryAnalysis,
+  RepositoryStructure,
+  ServiceType,
 } from '@reaatech/agent-runbook';
-import { directoryExists, readFile, readJsonFile, listFiles } from '@reaatech/agent-runbook';
+import { directoryExists, listFiles, readFile, readJsonFile } from '@reaatech/agent-runbook';
 
 // File patterns for language detection
 const LANGUAGE_PATTERNS: Record<ProgrammingLanguage, string[]> = {
@@ -358,6 +358,7 @@ function analyzeStructure(
 
     // Track main directories (first level)
     if (parts.length > 1) {
+      // biome-ignore lint/style/noNonNullAssertion: suppressed for existing code
       directories.add(parts[0]!);
     }
   }

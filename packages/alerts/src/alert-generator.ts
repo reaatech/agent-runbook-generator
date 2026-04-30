@@ -2,7 +2,7 @@
  * Alert Generator - Generates alert definitions based on service patterns
  */
 
-import { type AlertDefinition, type AnalysisContext, type SLOTargets } from '@reaatech/agent-runbook';
+import type { AlertDefinition, AnalysisContext, SLOTargets } from '@reaatech/agent-runbook';
 
 export interface AlertGenerationConfig {
   sloTargets?: SLOTargets;
@@ -376,14 +376,14 @@ function formatDatadogAlerts(alerts: AlertDefinition[]): string {
 
   for (const alert of alerts) {
     output += `  - name: ${alert.name}\n`;
-    output += `    type: metric alert\n`;
+    output += '    type: metric alert\n';
     output += `    query: ${alert.expression}\n`;
     output += '    options:\n';
-    output += `      notify_no_data: true\n`;
-    output += `      no_data_timeframe: 10\n`;
+    output += '      notify_no_data: true\n';
+    output += '      no_data_timeframe: 10\n';
     output += `      message: "${alert.annotations.summary}\\n\\n${alert.annotations.description}"\n`;
     if (alert.for) {
-      output += `      notify_audit: true\n`;
+      output += '      notify_audit: true\n';
     }
   }
 
