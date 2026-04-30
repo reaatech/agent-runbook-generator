@@ -77,6 +77,9 @@ CMD ["node", "src/index.js"]`,
       );
 
       expect(result.exitCode).toBe(0);
+      if (result.stderr) {
+        console.error('CLI stderr:', result.stderr);
+      }
       expect(result.stdout).toBeTruthy();
 
       const parsed = JSON.parse(result.stdout) as Record<string, unknown>;
