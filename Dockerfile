@@ -1,52 +1,33 @@
-# Stage 1: Build
-FROM node:22-alpine AS builder
+FROM node:22-alpine AS base
+RUN npm install -g pnpm@10
 
+FROM base AS deps
 WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json tsconfig.json biome.json .npmrc ./
+COPY packages/ ./packages/
+RUN pnpm install --frozen-lockfile
 
-RUN apk add --no-cache cmake gcc g++ make python3
-
-# Copy package files
-COPY package*.json ./
-COPY tsconfig.json ./
-
-# Install dependencies
-RUN npm ci
-
-# Copy source code
-COPY src ./src
-
-# Build the project
-RUN npm run build
-
-# Stage 2: Production
-FROM node:22-alpine AS production
-
+FROM base AS builder
 WORKDIR /app
+COPY --from=deps /app ./
+RUN pnpm build
 
-RUN apk add --no-cache cmake gcc g++ make python3
-
-# Create non-root user
-RUN addgroup -g 1001 -S appgroup && \
-    adduser -S appuser -u 1001 -G appgroup
-
-# Copy package files and install production dependencies only
-COPY package*.json ./
-RUN npm pkg delete scripts.prepare && \
-    npm ci --omit=dev && \
-    npm cache clean --force
-
-# Copy built artifacts from builder
-COPY --from=builder --chown=appuser:appgroup /app/dist ./dist
-
-# Switch to non-root user
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+RUN addgroup -g 1001 -S appgroup && adduser -S appuser -u 1001 -G appgroup
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=builder /app/turbo.json ./turbo.json
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
+COPY --from=builder /app/biome.json ./biome.json
+COPY --from=builder /app/packages ./packages
+RUN pnpm install --prod --frozen-lockfile
 USER appuser
 
-# Expose port
 EXPOSE 3000
-
-# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node dist/healthcheck.js || exit 1
+  CMD node packages/cli/dist/healthcheck.js || exit 1
 
-# Start the application
-CMD ["node", "dist/cli.js"]
+CMD ["node", "packages/cli/dist/cli.js"]
