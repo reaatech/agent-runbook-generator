@@ -21,9 +21,6 @@ vi.mock('@reaatech/agent-runbook-analyzer', () => ({
       hasTerraform: false,
     },
   })),
-}));
-
-vi.mock('@reaatech/agent-runbook-analyzer', () => ({
   analyzeDependencies: vi.fn(() => ({
     directDeps: [],
     transitiveDeps: [],
@@ -38,6 +35,7 @@ vi.mock('@reaatech/agent-runbook-runbook', () => ({
     title: 'Test Runbook',
     sections: [{ type: 'overview', content: 'test' }],
   })),
+  formatRunbook: vi.fn(() => '# Runbook\n\ntest content'),
   validateCompleteness: vi.fn(() => ({
     score: 0.9,
     missingSections: [],
@@ -46,27 +44,17 @@ vi.mock('@reaatech/agent-runbook-runbook', () => ({
   })),
 }));
 
-vi.mock('@reaatech/agent-runbook-runbook', () => ({
-  formatRunbook: vi.fn(() => '# Runbook\n\ntest content'),
-}));
-
 vi.mock('@reaatech/agent-runbook-observability', () => ({
   info: vi.fn(),
   warn: vi.fn(),
   error: vi.fn(),
   debug: vi.fn(),
   initLogger: vi.fn(),
-}));
-
-vi.mock('@reaatech/agent-runbook-observability', () => ({
   startAnalysisSpan: vi.fn(() => ({ setStatus: vi.fn(), end: vi.fn() })),
   startGenerationSpan: vi.fn(() => ({ setStatus: vi.fn(), end: vi.fn() })),
   startValidationSpan: vi.fn(() => ({ setStatus: vi.fn(), end: vi.fn() })),
   endSpanSuccess: vi.fn(),
   endSpanError: vi.fn(),
-}));
-
-vi.mock('@reaatech/agent-runbook-observability', () => ({
   recordGeneration: vi.fn(),
   recordSectionGenerated: vi.fn(),
 }));

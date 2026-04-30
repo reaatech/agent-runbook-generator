@@ -19,9 +19,6 @@ vi.mock('@reaatech/agent-runbook-analyzer', () => ({
     entryPoints: ['src/index.ts'],
     externalServices: [],
   }),
-}));
-
-vi.mock('@reaatech/agent-runbook-analyzer', () => ({
   mapDependencies: vi.fn().mockReturnValue({
     directDeps: [
       { name: 'express', version: '4.18.0', purpose: 'Web framework', category: 'framework' },
