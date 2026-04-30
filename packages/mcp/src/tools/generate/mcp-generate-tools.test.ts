@@ -44,9 +44,6 @@ vi.mock('@reaatech/agent-runbook-service-map', () => ({
     edges: [{ source: 'test-service', target: 'express', type: 'depends-on', critical: false }],
     criticalPaths: [['test-service']],
   }),
-}));
-
-vi.mock('@reaatech/agent-runbook-service-map', () => ({
   exportGraph: vi.fn().mockReturnValue('graph-export-content'),
 }));
 
