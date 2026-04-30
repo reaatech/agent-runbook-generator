@@ -1,13 +1,17 @@
 import { spawn } from 'node:child_process';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe('CLI Integration Tests', () => {
   const testDir = mkdtempSync(join(tmpdir(), 'runbook-cli-test-'));
   const testRepoPath = join(testDir, 'test-repo');
-  const cliPath = join(process.cwd(), 'packages', 'cli', 'dist', 'cli.js');
+  const cliPath = join(__dirname, '..', '..', 'cli', 'dist', 'cli.js');
 
   beforeAll(() => {
     mkdirSync(testRepoPath, { recursive: true });
@@ -77,9 +81,6 @@ CMD ["node", "src/index.js"]`,
       );
 
       expect(result.exitCode).toBe(0);
-      if (result.stderr) {
-        console.error('CLI stderr:', result.stderr);
-      }
       expect(result.stdout).toBeTruthy();
 
       const parsed = JSON.parse(result.stdout) as Record<string, unknown>;
