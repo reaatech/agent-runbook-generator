@@ -6,6 +6,10 @@ Service dependency mapping — analyzes code, configuration, and network traffic
 identify and map service dependencies. Generates dependency graphs, API contracts,
 and impact analysis for failure scenarios.
 
+## Package
+
+**[@reaatech/agent-runbook-service-map](../packages/service-map)** — provides `analyzeDependencies()`, `generateDependencyGraph()`, `generateServiceMap()`, and `exportGraph()`.
+
 ## MCP Tools
 
 | Tool | Input Schema | Output | Rate Limit |

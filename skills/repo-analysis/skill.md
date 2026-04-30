@@ -6,6 +6,10 @@ Repository analysis — the core skill that scans a service repository to unders
 its structure, technology stack, configuration, and deployment patterns. This
 analysis forms the foundation for all subsequent runbook generation.
 
+## Package
+
+**[@reaatech/agent-runbook-analyzer](../packages/analyzer)** — provides `scanRepository()`, `mapDependencies()`, `parseConfigs()`, and `analyzeCode()`.
+
 ## MCP Tools
 
 | Tool | Input Schema | Output | Rate Limit |

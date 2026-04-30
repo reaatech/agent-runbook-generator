@@ -1,0 +1,54 @@
+{
+  "name": "@reaatech/agent-runbook-observability",
+  "version": "0.1.0",
+  "description": "Observability layer for agent-runbook-generator — structured logging, tracing, and metrics",
+  "license": "MIT",
+  "author": "Rick Somers <rick@reaatech.com> (https://reaatech.com)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reaatech/agent-runbook-generator.git",
+    "directory": "packages/observability"
+  },
+  "homepage": "https://github.com/reaatech/agent-runbook-generator/tree/main/packages/observability#readme",
+  "bugs": {
+    "url": "https://github.com/reaatech/agent-runbook-generator/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "^1.9.1",
+    "@opentelemetry/exporter-metrics-otlp-http": "^0.215.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.215.0",
+    "@opentelemetry/resources": "^2.7.0",
+    "@opentelemetry/sdk-metrics": "^2.7.0",
+    "@opentelemetry/sdk-trace-base": "^2.7.0",
+    "@opentelemetry/sdk-trace-node": "^2.7.0",
+    "@opentelemetry/semantic-conventions": "^1.19.0",
+    "pino": "^10.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
+  }
+}

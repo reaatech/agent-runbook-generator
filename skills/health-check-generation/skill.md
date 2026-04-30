@@ -6,6 +6,10 @@ Health check generation — analyzes service architecture to identify appropriat
 check endpoints and generates health check definitions for Kubernetes probes, load
 balancers, and monitoring systems. Includes liveness, readiness, and deep health checks.
 
+## Package
+
+**[@reaatech/agent-runbook-health-checks](../packages/health-checks)** — provides `identifyHealthChecks()`, `generateHealthChecks()`, `generateKubernetesProbeYaml()`, and `generateHealthCheckEndpoint()`.
+
 ## MCP Tools
 
 | Tool | Input Schema | Output | Rate Limit |

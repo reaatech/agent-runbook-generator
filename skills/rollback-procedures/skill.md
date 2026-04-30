@@ -6,6 +6,10 @@ Rollback procedure generation — analyzes deployment configurations and generat
 step-by-step rollback procedures for various failure scenarios. Supports Kubernetes,
 ECS, Cloud Run, and other deployment platforms.
 
+## Package
+
+**[@reaatech/agent-runbook-rollback](../packages/rollback)** — provides `analyzeDeployment()`, `generateRollbackProcedures()`, and `generateVerificationSteps()`.
+
 ## MCP Tools
 
 | Tool | Input Schema | Output | Rate Limit |

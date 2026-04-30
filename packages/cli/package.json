@@ -1,0 +1,65 @@
+{
+  "name": "@reaatech/agent-runbook-cli",
+  "version": "0.1.0",
+  "description": "CLI and orchestrator for agent-runbook-generator",
+  "license": "MIT",
+  "author": "Rick Somers <rick@reaatech.com> (https://reaatech.com)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reaatech/agent-runbook-generator.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/reaatech/agent-runbook-generator/tree/main/packages/cli#readme",
+  "bugs": {
+    "url": "https://github.com/reaatech/agent-runbook-generator/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "agent-runbook-generator": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/cli.ts --format cjs,esm --dts --clean",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@reaatech/agent-runbook": "workspace:*",
+    "@reaatech/agent-runbook-agent": "workspace:*",
+    "@reaatech/agent-runbook-alerts": "workspace:*",
+    "@reaatech/agent-runbook-analyzer": "workspace:*",
+    "@reaatech/agent-runbook-dashboards": "workspace:*",
+    "@reaatech/agent-runbook-failure-modes": "workspace:*",
+    "@reaatech/agent-runbook-health-checks": "workspace:*",
+    "@reaatech/agent-runbook-incident": "workspace:*",
+    "@reaatech/agent-runbook-mcp": "workspace:*",
+    "@reaatech/agent-runbook-observability": "workspace:*",
+    "@reaatech/agent-runbook-rollback": "workspace:*",
+    "@reaatech/agent-runbook-runbook": "workspace:*",
+    "@reaatech/agent-runbook-service-map": "workspace:*",
+    "chalk": "^5.3.0",
+    "cli-progress": "^3.12.0",
+    "commander": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/cli-progress": "^3.11.5",
+    "@types/node": "^20.11.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
+  }
+}

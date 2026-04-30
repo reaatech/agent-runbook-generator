@@ -1,0 +1,57 @@
+{
+  "name": "@reaatech/agent-runbook-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for agent-runbook-generator — Model Context Protocol tool registry",
+  "license": "MIT",
+  "author": "Rick Somers <rick@reaatech.com> (https://reaatech.com)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reaatech/agent-runbook-generator.git",
+    "directory": "packages/mcp"
+  },
+  "homepage": "https://github.com/reaatech/agent-runbook-generator/tree/main/packages/mcp#readme",
+  "bugs": {
+    "url": "https://github.com/reaatech/agent-runbook-generator/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@reaatech/agent-runbook": "workspace:*",
+    "@reaatech/agent-runbook-agent": "workspace:*",
+    "@reaatech/agent-runbook-alerts": "workspace:*",
+    "@reaatech/agent-runbook-analyzer": "workspace:*",
+    "@reaatech/agent-runbook-dashboards": "workspace:*",
+    "@reaatech/agent-runbook-failure-modes": "workspace:*",
+    "@reaatech/agent-runbook-health-checks": "workspace:*",
+    "@reaatech/agent-runbook-incident": "workspace:*",
+    "@reaatech/agent-runbook-rollback": "workspace:*",
+    "@reaatech/agent-runbook-runbook": "workspace:*",
+    "@reaatech/agent-runbook-service-map": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
+  }
+}

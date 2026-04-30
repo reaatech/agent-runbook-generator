@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@reaatech/agent-runbook": ["./packages/core/src/index.ts"],
+      "@reaatech/agent-runbook-analyzer": ["./packages/analyzer/src/index.ts"],
+      "@reaatech/agent-runbook-alerts": ["./packages/alerts/src/index.ts"],
+      "@reaatech/agent-runbook-dashboards": ["./packages/dashboards/src/index.ts"],
+      "@reaatech/agent-runbook-failure-modes": ["./packages/failure-modes/src/index.ts"],
+      "@reaatech/agent-runbook-health-checks": ["./packages/health-checks/src/index.ts"],
+      "@reaatech/agent-runbook-incident": ["./packages/incident/src/index.ts"],
+      "@reaatech/agent-runbook-rollback": ["./packages/rollback/src/index.ts"],
+      "@reaatech/agent-runbook-runbook": ["./packages/runbook/src/index.ts"],
+      "@reaatech/agent-runbook-service-map": ["./packages/service-map/src/index.ts"],
+      "@reaatech/agent-runbook-agent": ["./packages/agent/src/index.ts"],
+      "@reaatech/agent-runbook-mcp": ["./packages/mcp/src/index.ts"],
+      "@reaatech/agent-runbook-observability": ["./packages/observability/src/index.ts"],
+      "@reaatech/agent-runbook-cli": ["./packages/cli/src/index.ts"]
+    }
+  }
+}

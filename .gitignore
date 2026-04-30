@@ -39,6 +39,9 @@ dist/tests/
 tmp/
 temp/
 
+# Turbo
+.turbo/
+
 # Cache
 .cache/
 *.cache
@@ -47,6 +50,12 @@ temp/
 *.tfstate
 *.tfstate.backup
 .terraform/
+
+# Avoid accidental commit of build output in source dirs
+packages/*/src/**/*.js
+packages/*/src/**/*.js.map
+packages/*/src/**/*.d.ts
+packages/*/src/**/*.d.ts.map
 
 # Project-specific
 DEV_PLAN.md

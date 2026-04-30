@@ -6,6 +6,10 @@ Failure mode analysis — identifies potential failure points in a service by an
 code patterns, dependencies, and architecture. Generates detection strategies,
 mitigation steps, and escalation procedures for each identified failure mode.
 
+## Package
+
+**[@reaatech/agent-runbook-failure-modes](../packages/failure-modes)** — provides `identifyFailureModes()`, `generateMitigations()`, `getAllFailureModes()`, and catalog utilities.
+
 ## MCP Tools
 
 | Tool | Input Schema | Output | Rate Limit |

@@ -18,7 +18,7 @@ services:
       - otel-collector
     volumes:
       - ./repos:/repos:ro
-    command: ["serve", "--port", "3000"]
+    command: ["node", "packages/cli/dist/cli.js", "serve", "--port", "3000"]
 
   # OpenTelemetry Collector
   otel-collector:
