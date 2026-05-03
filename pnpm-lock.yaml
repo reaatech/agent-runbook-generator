@@ -43,7 +43,7 @@ importers:
         version: link:../core
       openai:
         specifier: ^6.35.0
-        version: 6.35.0(zod@3.25.76)
+        version: 6.35.0(zod@4.4.2)
     devDependencies:
       tsup:
         specifier: ^8.4.0
@@ -172,8 +172,8 @@ importers:
   packages/core:
     dependencies:
       zod:
-        specifier: ^3.24.2
-        version: 3.25.76
+        specifier: ^4.4.2
+        version: 4.4.2
     devDependencies:
       '@types/node':
         specifier: ^20.11.0
@@ -317,7 +317,7 @@ importers:
     dependencies:
       '@modelcontextprotocol/sdk':
         specifier: ^1.0.0
-        version: 1.29.0(zod@3.25.76)
+        version: 1.29.0(zod@4.4.2)
       '@reaatech/agent-runbook':
         specifier: workspace:*
         version: link:../core
@@ -2430,8 +2430,8 @@ packages:
     peerDependencies:
       zod: ^3.25.28 || ^4
 
-  zod@3.25.76:
-    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+  zod@4.4.2:
+    resolution: {integrity: sha512-IynmDyxsEsb9RKzO3J9+4SxXnl2FTFSzNBaKKaMV6tsSk0rw9gYw9gs+JFCq/qk2LCZ78KDwyj+Z289TijSkUw==}
 
 snapshots:
 
@@ -2794,7 +2794,7 @@ snapshots:
       globby: 11.1.0
       read-yaml-file: 1.1.0
 
-  '@modelcontextprotocol/sdk@1.29.0(zod@3.25.76)':
+  '@modelcontextprotocol/sdk@1.29.0(zod@4.4.2)':
     dependencies:
       '@hono/node-server': 1.19.14(hono@4.12.16)
       ajv: 8.20.0
@@ -2811,8 +2811,8 @@ snapshots:
       json-schema-typed: 8.0.2
       pkce-challenge: 5.0.1
       raw-body: 3.0.2
-      zod: 3.25.76
-      zod-to-json-schema: 3.25.2(zod@3.25.76)
+      zod: 4.4.2
+      zod-to-json-schema: 3.25.2(zod@4.4.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -3797,9 +3797,9 @@ snapshots:
     dependencies:
       wrappy: 1.0.2
 
-  openai@6.35.0(zod@3.25.76):
+  openai@6.35.0(zod@4.4.2):
     optionalDependencies:
-      zod: 3.25.76
+      zod: 4.4.2
 
   outdent@0.5.0: {}
 
@@ -4339,8 +4339,8 @@ snapshots:
 
   yaml@2.8.3: {}
 
-  zod-to-json-schema@3.25.2(zod@3.25.76):
+  zod-to-json-schema@3.25.2(zod@4.4.2):
     dependencies:
-      zod: 3.25.76
+      zod: 4.4.2
 
-  zod@3.25.76: {}
+  zod@4.4.2: {}
