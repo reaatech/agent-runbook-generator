@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@reaatech/agent-runbook": "workspace:*",
-    "ignore": "^5.3.0",
+    "ignore": "^7.0.5",
     "yaml": "^2.3.4"
   },
   "devDependencies": {
