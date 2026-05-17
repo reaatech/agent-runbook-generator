@@ -1,5 +1,5 @@
-import { ProviderAdapter, createProviderAdapter } from '@reaatech/agent-runbook-agent';
 import type { AgentConfig } from '@reaatech/agent-runbook-agent';
+import { createProviderAdapter, ProviderAdapter } from '@reaatech/agent-runbook-agent';
 import { describe, expect, it } from 'vitest';
 
 const mockConfig: AgentConfig = {

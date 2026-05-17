@@ -23,7 +23,6 @@ export function formatAsMarkdown(runbook: Runbook): string {
   markdown += '\n---\n\n';
 
   // Sections
-  // biome-ignore lint/complexity/noForEach: suppressed for existing code
   runbook.sections.forEach((section) => {
     markdown += formatSectionAsMarkdown(section);
   });
@@ -34,7 +33,6 @@ export function formatAsMarkdown(runbook: Runbook): string {
 function generateMarkdownTOC(runbook: Runbook): string {
   let toc = '## Table of Contents\n\n';
 
-  // biome-ignore lint/complexity/noForEach: suppressed for existing code
   runbook.sections.forEach((section) => {
     const anchor = section.title
       .toLowerCase()
@@ -59,7 +57,6 @@ function formatSectionAsMarkdown(section: RunbookSection): string {
   content += normalizeEmbeddedHeadings(section.content, 2);
   content += '\n\n';
 
-  // biome-ignore lint/complexity/noForEach: suppressed for existing code
   section.subsections.forEach((sub) => {
     content += `### ${sub.title}\n\n`;
     content += `${normalizeEmbeddedHeadings(sub.content, 3)}\n\n`;
@@ -218,7 +215,7 @@ function markdownToHtml(md: string): string {
   });
 
   // Lists
-  html = html.replace(/^\- (.*$)/gm, '<li>$1</li>');
+  html = html.replace(/^- (.*$)/gm, '<li>$1</li>');
   html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
 
   // Tables (simplified)

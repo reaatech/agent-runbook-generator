@@ -12,20 +12,17 @@ import type {
   Runbook,
   ServiceDependency,
 } from '@reaatech/agent-runbook';
-import { extractAlerts } from '@reaatech/agent-runbook-alerts';
-import { generateAlerts } from '@reaatech/agent-runbook-alerts';
-import { scanRepository } from '@reaatech/agent-runbook-analyzer';
-import { mapDependencies } from '@reaatech/agent-runbook-analyzer';
+import { extractAlerts, generateAlerts } from '@reaatech/agent-runbook-alerts';
+import { mapDependencies, scanRepository } from '@reaatech/agent-runbook-analyzer';
 import { generateDashboard } from '@reaatech/agent-runbook-dashboards';
 import { identifyFailureModes } from '@reaatech/agent-runbook-failure-modes';
-import { identifyHealthChecks } from '@reaatech/agent-runbook-health-checks';
-import { generateHealthChecks } from '@reaatech/agent-runbook-health-checks';
+import { generateHealthChecks, identifyHealthChecks } from '@reaatech/agent-runbook-health-checks';
 import { generateIncidentWorkflows } from '@reaatech/agent-runbook-incident';
 import { generateRollbackProcedures } from '@reaatech/agent-runbook-rollback';
-import { validateCompleteness } from '@reaatech/agent-runbook-runbook';
 import {
   createCiValidationResult,
   generateRunbookArtifacts,
+  validateCompleteness,
   validateRunbookAccuracy,
   validateRunbookLinks,
 } from '@reaatech/agent-runbook-runbook';

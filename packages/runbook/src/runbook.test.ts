@@ -1,10 +1,13 @@
 import type { Runbook, RunbookSection } from '@reaatech/agent-runbook';
-import { exportRunbook, formatAsHTML, formatAsMarkdown } from '@reaatech/agent-runbook-runbook';
-import { generateTOC, validateCompleteness } from '@reaatech/agent-runbook-runbook';
 import {
-  STANDARD_SRE_TEMPLATE,
+  exportRunbook,
+  formatAsHTML,
+  formatAsMarkdown,
+  generateTOC,
   getAllTemplates,
   getTemplateById,
+  STANDARD_SRE_TEMPLATE,
+  validateCompleteness,
 } from '@reaatech/agent-runbook-runbook';
 import { describe, expect, it } from 'vitest';
 

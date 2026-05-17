@@ -3,10 +3,8 @@
  */
 
 import type { ServiceDependency } from '@reaatech/agent-runbook';
-import { mapDependencies } from '@reaatech/agent-runbook-analyzer';
-import { scanRepository } from '@reaatech/agent-runbook-analyzer';
-import { generateDependencyGraph } from '@reaatech/agent-runbook-service-map';
-import { exportGraph } from '@reaatech/agent-runbook-service-map';
+import { mapDependencies, scanRepository } from '@reaatech/agent-runbook-analyzer';
+import { exportGraph, generateDependencyGraph } from '@reaatech/agent-runbook-service-map';
 
 interface ServiceMapArgs {
   analysis_context: {

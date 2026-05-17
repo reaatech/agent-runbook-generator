@@ -2,8 +2,8 @@
  * Tracing - OpenTelemetry tracing configuration
  */
 
-import { SpanStatusCode, trace } from '@opentelemetry/api';
 import type { Span } from '@opentelemetry/api';
+import { SpanStatusCode, trace } from '@opentelemetry/api';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import {
   BatchSpanProcessor,

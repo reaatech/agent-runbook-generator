@@ -1,5 +1,3 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
 import {
   createChildLogger,
   debug,
@@ -13,6 +11,7 @@ import {
   trace,
   warn,
 } from '@reaatech/agent-runbook-observability';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('initLogger', () => {
   beforeEach(() => {

@@ -3,7 +3,7 @@
  */
 
 import type { AnalysisContext, AnalysisInsight } from '@reaatech/agent-runbook';
-import { type PromptType, generatePrompt, getSystemPrompt } from './prompt-templates.js';
+import { generatePrompt, getSystemPrompt, type PromptType } from './prompt-templates.js';
 import { ProviderAdapter } from './provider-adapter.js';
 
 export interface AgentConfig {
@@ -318,7 +318,7 @@ This service is a critical component of the platform, handling core business log
       } else if (line.startsWith('1.') || line.startsWith('-')) {
         insights.push({
           category: currentSection || 'general',
-          finding: line.replace(/^[\d\-\.]+\s*/, '').trim(),
+          finding: line.replace(/^[\d\-.]+\s*/, '').trim(),
           confidence: 'medium',
         });
       }

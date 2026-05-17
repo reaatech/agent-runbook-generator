@@ -1,9 +1,12 @@
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { detectDeploymentPlatform, scanRepository } from '@reaatech/agent-runbook-analyzer';
-import { mapDependencies } from '@reaatech/agent-runbook-analyzer';
-import { parseConfigs } from '@reaatech/agent-runbook-analyzer';
+import {
+  detectDeploymentPlatform,
+  mapDependencies,
+  parseConfigs,
+  scanRepository,
+} from '@reaatech/agent-runbook-analyzer';
 import { describe, expect, it } from 'vitest';
 
 describe('Repository Scanner', () => {

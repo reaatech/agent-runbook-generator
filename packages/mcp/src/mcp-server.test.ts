@@ -1,4 +1,4 @@
-import { RunbookMCPServer, createMCPServer } from '@reaatech/agent-runbook-mcp';
+import { createMCPServer, RunbookMCPServer } from '@reaatech/agent-runbook-mcp';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('@modelcontextprotocol/sdk/server/index.js', () => {

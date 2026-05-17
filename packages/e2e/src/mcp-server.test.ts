@@ -5,18 +5,15 @@
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { AnalysisContext } from '@reaatech/agent-runbook';
-import { extractAlerts } from '@reaatech/agent-runbook-alerts';
-import { generateAlerts } from '@reaatech/agent-runbook-alerts';
-import { scanRepository } from '@reaatech/agent-runbook-analyzer';
-import { mapDependencies } from '@reaatech/agent-runbook-analyzer';
+import { extractAlerts, generateAlerts } from '@reaatech/agent-runbook-alerts';
+import { mapDependencies, scanRepository } from '@reaatech/agent-runbook-analyzer';
 import { generateDashboard } from '@reaatech/agent-runbook-dashboards';
 import { identifyFailureModes } from '@reaatech/agent-runbook-failure-modes';
 import { identifyHealthChecks } from '@reaatech/agent-runbook-health-checks';
 import { generateIncidentWorkflows } from '@reaatech/agent-runbook-incident';
 import { RunbookMCPServer } from '@reaatech/agent-runbook-mcp';
 import { generateRollbackProcedures } from '@reaatech/agent-runbook-rollback';
-import { buildRunbook } from '@reaatech/agent-runbook-runbook';
-import { validateCompleteness } from '@reaatech/agent-runbook-runbook';
+import { buildRunbook, validateCompleteness } from '@reaatech/agent-runbook-runbook';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const testRepoPath = join(process.cwd(), 'tests', 'fixtures', 'mcp-test-repo');

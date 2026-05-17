@@ -4,17 +4,19 @@
 
 import { readFileSync } from 'node:fs';
 import type { AnalysisContext } from '@reaatech/agent-runbook';
-import { scanRepository } from '@reaatech/agent-runbook-analyzer';
-import { mapDependencies } from '@reaatech/agent-runbook-analyzer';
-import { parseConfigs } from '@reaatech/agent-runbook-analyzer';
-import { info, initLogger } from '@reaatech/agent-runbook-observability';
+import { mapDependencies, parseConfigs, scanRepository } from '@reaatech/agent-runbook-analyzer';
 import {
   endSpanError,
   endSpanSuccess,
+  info,
+  initLogger,
   startValidationSpan,
 } from '@reaatech/agent-runbook-observability';
-import { validateCompleteness } from '@reaatech/agent-runbook-runbook';
-import { parseRunbookDocument, validateRunbookAccuracy } from '@reaatech/agent-runbook-runbook';
+import {
+  parseRunbookDocument,
+  validateCompleteness,
+  validateRunbookAccuracy,
+} from '@reaatech/agent-runbook-runbook';
 import type { Command } from 'commander';
 
 export function validateCommand(program: Command): void {
@@ -158,7 +160,6 @@ async function executeValidate(path: string, options: Record<string, unknown>): 
       if (warnings.length > 0) {
         // eslint-disable-next-line no-console
         console.log('\nWarnings:');
-        // biome-ignore lint/complexity/noForEach: suppressed for existing code
         warnings.forEach((w) => {
           // eslint-disable-next-line no-console
           console.log(`  - ${w}`);
@@ -168,7 +169,6 @@ async function executeValidate(path: string, options: Record<string, unknown>): 
       if (completenessResult.suggestions.length > 0) {
         // eslint-disable-next-line no-console
         console.log('\nSuggestions:');
-        // biome-ignore lint/complexity/noForEach: suppressed for existing code
         completenessResult.suggestions.forEach((s) => {
           // eslint-disable-next-line no-console
           console.log(`  - ${s}`);
