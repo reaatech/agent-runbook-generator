@@ -2,6 +2,12 @@
  * Error classes for agent-runbook-generator
  */
 
+declare global {
+  interface ErrorConstructor {
+    captureStackTrace(targetObject: object, constructorOpt?: (...args: unknown[]) => unknown): void;
+  }
+}
+
 export class AppError extends Error {
   constructor(
     message: string,
