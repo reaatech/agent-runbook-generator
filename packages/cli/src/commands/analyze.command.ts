@@ -3,12 +3,12 @@
  */
 
 import { parseIntOptional } from '@reaatech/agent-runbook';
-import { scanRepository } from '@reaatech/agent-runbook-analyzer';
-import { analyzeDependencies } from '@reaatech/agent-runbook-analyzer';
-import { info, initLogger } from '@reaatech/agent-runbook-observability';
+import { analyzeDependencies, scanRepository } from '@reaatech/agent-runbook-analyzer';
 import {
   endSpanError,
   endSpanSuccess,
+  info,
+  initLogger,
   startAnalysisSpan,
 } from '@reaatech/agent-runbook-observability';
 import type { Command } from 'commander';

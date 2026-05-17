@@ -11,9 +11,9 @@ import {
   HealthCheckSchema,
   RepositoryStructureSchema,
   RollbackStepSchema,
-  SLOTargetsSchema,
   ServiceDefinitionSchema,
   ServiceDependencySchema,
+  SLOTargetsSchema,
   ValidationResultSchema,
 } from './schemas.js';
 

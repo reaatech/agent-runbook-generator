@@ -3,15 +3,16 @@
  */
 
 import { writeFileSync } from 'node:fs';
-import { info, initLogger } from '@reaatech/agent-runbook-observability';
 import {
   endSpanError,
   endSpanSuccess,
+  info,
+  initLogger,
+  recordGeneration,
+  recordSectionGenerated,
   startGenerationSpan,
 } from '@reaatech/agent-runbook-observability';
-import { recordGeneration, recordSectionGenerated } from '@reaatech/agent-runbook-observability';
-import { formatRunbook } from '@reaatech/agent-runbook-runbook';
-import { generateRunbookArtifacts } from '@reaatech/agent-runbook-runbook';
+import { formatRunbook, generateRunbookArtifacts } from '@reaatech/agent-runbook-runbook';
 import type { Command } from 'commander';
 
 export function generateCommand(program: Command): void {

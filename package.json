@@ -55,6 +55,10 @@
     "vitest": "^3.1.1"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["@biomejs/biome", "esbuild", "protobufjs"]
+    "onlyBuiltDependencies": [
+      "@biomejs/biome",
+      "esbuild",
+      "protobufjs"
+    ]
   }
 }

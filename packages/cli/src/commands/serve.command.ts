@@ -4,9 +4,7 @@
 
 import { parseIntOptional } from '@reaatech/agent-runbook';
 import { createMCPServer } from '@reaatech/agent-runbook-mcp';
-import { info, initLogger } from '@reaatech/agent-runbook-observability';
-import { initTracing } from '@reaatech/agent-runbook-observability';
-import { initMetrics } from '@reaatech/agent-runbook-observability';
+import { info, initLogger, initMetrics, initTracing } from '@reaatech/agent-runbook-observability';
 import type { Command } from 'commander';
 
 export function serveCommand(program: Command): void {

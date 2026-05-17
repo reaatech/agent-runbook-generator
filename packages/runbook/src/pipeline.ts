@@ -12,9 +12,7 @@ import type {
   ServiceDependency,
 } from '@reaatech/agent-runbook';
 import { generateAlerts } from '@reaatech/agent-runbook-alerts';
-import { scanRepository } from '@reaatech/agent-runbook-analyzer';
-import { mapDependencies } from '@reaatech/agent-runbook-analyzer';
-import { parseConfigs } from '@reaatech/agent-runbook-analyzer';
+import { mapDependencies, parseConfigs, scanRepository } from '@reaatech/agent-runbook-analyzer';
 import { generateDashboard } from '@reaatech/agent-runbook-dashboards';
 import { identifyFailureModes } from '@reaatech/agent-runbook-failure-modes';
 import { generateHealthChecks } from '@reaatech/agent-runbook-health-checks';

@@ -179,8 +179,7 @@ function findApiEndpoints(
 
     // Flask routes
     if (['flask', 'django', 'fastapi'].includes(framework)) {
-      const routePattern =
-        /@(?:app|router)\.(?:get|post|put|patch|delete)\(['"\`]([^'"\`]+)['"\`]\)/g;
+      const routePattern = /@(?:app|router)\.(?:get|post|put|patch|delete)\(['"`]([^'"`]+)['"`]\)/g;
       let match: RegExpExecArray | null = routePattern.exec(content);
       while (match !== null) {
         const methodMatch = match[0].match(/@(?:app|router)\.(\w+)/);
@@ -284,7 +283,7 @@ function findBackgroundJobs(
 
     // Look for queue job definitions
     if (content.includes('.queue(') || content.includes('.enqueue(')) {
-      const queuePattern = /\.(?:queue|enqueue)\(['"\`]([^'"\`]+)['"\`]/g;
+      const queuePattern = /\.(?:queue|enqueue)\(['"`]([^'"`]+)['"`]/g;
       let match: RegExpExecArray | null = queuePattern.exec(content);
       while (match !== null) {
         jobs.push({
@@ -299,7 +298,7 @@ function findBackgroundJobs(
 
     // Look for cron/scheduled jobs
     if (content.includes('.schedule(') || content.includes('.cron(')) {
-      const cronPattern = /\.(?:schedule|cron)\(['"\`]([^'"\`]+)['"\`]/g;
+      const cronPattern = /\.(?:schedule|cron)\(['"`]([^'"`]+)['"`]/g;
       let match: RegExpExecArray | null = cronPattern.exec(content);
       while (match !== null) {
         jobs.push({

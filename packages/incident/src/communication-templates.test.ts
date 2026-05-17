@@ -1,6 +1,6 @@
 import {
-  COMMUNICATION_TEMPLATES,
   applyTemplateVariables,
+  COMMUNICATION_TEMPLATES,
   createTemplate,
   getTemplateByName,
   getTemplatesByCategory,
