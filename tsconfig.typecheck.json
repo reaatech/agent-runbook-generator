@@ -1,7 +1,6 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@reaatech/agent-runbook": ["./packages/core/src/index.ts"],
       "@reaatech/agent-runbook-analyzer": ["./packages/analyzer/src/index.ts"],
