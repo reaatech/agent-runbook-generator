@@ -37,7 +37,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.111.0",
+    "@anthropic-ai/sdk": "^0.112.3",
     "@google/generative-ai": "^0.24.1",
     "@reaatech/agent-runbook": "workspace:*",
     "openai": "^6.46.0"
